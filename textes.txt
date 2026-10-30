@@ -63,12 +63,6 @@ Véhicules — mini moto, moto de vitesse et remorque à tarif membre
 Roulages — dates en avance, avance de fonds pour réserver (sous réserve)
 Accompagnement — aides mécaniques et techniques, découverte des disciplines
 
-[membre.cotisation]
-100 €
-
-[membre.cotisation_detail]
-saison octobre à octobre
-
 === PHRASES D'INTRODUCTION DES ONGLETS ===
 
 [gazettes.intro]

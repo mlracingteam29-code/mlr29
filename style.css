@@ -147,7 +147,7 @@
   .perks li::before{content:"";position:absolute;left:0;top:.45em;width:10px;height:10px;background:var(--red);transform:skewX(-14deg)}
   .perks b{color:#fff}
   .join{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
-  .join span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .join span{display:block;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
   .join strong{font-family:"Saira Condensed";font-size:32px;line-height:1}
   .join small{display:block;color:var(--muted);font-size:12px}
 
