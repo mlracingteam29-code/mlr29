@@ -1,0 +1,4 @@
+# VIDÉOS YOUTUBE — onglet "Multimédia"
+# Une vidéo par ligne :  Titre | lien YouTube
+# Exemple (enlevez le # au début pour l'afficher) :
+# Premier week-end en R7 Cup | https://www.youtube.com/watch?v=XXXXXXXXXXX

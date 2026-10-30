@@ -22,6 +22,7 @@
     <div class="wrap">
       <button data-go="roulages">Dates de roulages</button>
       <button data-go="gazettes">Gazettes</button>
+      <button data-go="multimedia">Multimédia</button>
       <button data-go="fichiers">Fichiers</button>
       <button data-go="echange">Messagerie directe</button>
       <button data-go="partenaires">Nos partenaires</button>
@@ -177,6 +178,25 @@
   </div>
 </section>
 
+<!-- MULTIMEDIA -->
+<section class="tab" data-tab="multimedia">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Multimédia</h2>
+      <p data-txt="multimedia.intro">Photos et vidéos de la team : roulages, courses, enduro, vie du paddock.</p>
+    </div>
+    <div id="videosYT"></div>
+    <div id="albums"></div>
+    <div class="empty" id="mediaEmpty">Les premières photos et vidéos arrivent bientôt !</div>
+  </div>
+</section>
+<div class="lightbox" id="lb" hidden>
+  <button class="lb-close" id="lbClose" aria-label="Fermer">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Précédente">‹</button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Suivante">›</button>
+</div>
+
 <!-- FICHIERS -->
 <section class="tab" data-tab="fichiers">
   <div class="wrap">
@@ -307,8 +327,8 @@ function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTi
 $("#year").textContent = new Date().getFullYear();
 
 /* Onglets */
-const TABS=["presentation","roulages","gazettes","fichiers","echange","partenaires","contact","inscriptions"];
-const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",dates:"roulages",telechargements:"fichiers"};
+const TABS=["presentation","roulages","gazettes","multimedia","fichiers","echange","partenaires","contact","inscriptions"];
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",dates:"roulages",telechargements:"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
 function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
@@ -415,6 +435,63 @@ fetch("https://api.github.com/repos/"+DEPOT+"/contents/fichiers",{headers:{Accep
     a.append(badge,txt,dl); box.appendChild(a);
   });
 }).catch(()=>{});
+
+/* Multimédia : photos et vidéos du dossier "medias" (sous-dossiers = albums) + liens YouTube de videos.txt */
+(function(){
+  const API="https://api.github.com/repos/"+DEPOT+"/contents/";
+  const IMG=/\.(jpe?g|png|gif|webp|avif)$/i, VID=/\.(mp4|webm|mov|m4v)$/i;
+  const nice=n=>n.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+  const enc=p=>p.split("/").map(encodeURIComponent).join("/");
+  const ls=path=>fetch(API+enc(path),{headers:{Accept:"application/vnd.github+json"}}).then(r=>r.ok?r.json():[]).catch(()=>[]);
+  let shown=false; const markShown=()=>{ if(!shown){ shown=true; $("#mediaEmpty").hidden=true; } };
+  let lbList=[], lbIdx=0;
+  function lbShow(i){ lbIdx=(i+lbList.length)%lbList.length; const it=lbList[lbIdx]; $("#lbImg").src=it.src; $("#lbImg").alt=it.cap; $("#lbCap").textContent=it.cap+"  ·  "+(lbIdx+1)+" / "+lbList.length; }
+  function lbOpen(list,i){ lbList=list; $("#lb").hidden=false; document.body.style.overflow="hidden"; lbShow(i); }
+  function lbClose(){ $("#lb").hidden=true; document.body.style.overflow=""; $("#lbImg").removeAttribute("src"); }
+  $("#lbClose").onclick=lbClose; $("#lbPrev").onclick=()=>lbShow(lbIdx-1); $("#lbNext").onclick=()=>lbShow(lbIdx+1);
+  $("#lb").addEventListener("click",e=>{ if(e.target.id==="lb") lbClose(); });
+  document.addEventListener("keydown",e=>{ if($("#lb").hidden) return; if(e.key==="Escape") lbClose(); if(e.key==="ArrowLeft") lbShow(lbIdx-1); if(e.key==="ArrowRight") lbShow(lbIdx+1); });
+
+  function album(title,files){
+    const imgs=files.filter(f=>IMG.test(f.name)), vids=files.filter(f=>VID.test(f.name));
+    if(!imgs.length && !vids.length) return;
+    markShown();
+    const sec=document.createElement("div"); sec.className="album";
+    const h=document.createElement("h3"); h.textContent=title;
+    const meta=document.createElement("span"); meta.className="album-meta";
+    meta.textContent=[imgs.length?imgs.length+" photo"+(imgs.length>1?"s":""):"", vids.length?vids.length+" vidéo"+(vids.length>1?"s":""):""].filter(Boolean).join(" · ");
+    h.appendChild(meta); sec.appendChild(h);
+    const grid=document.createElement("div"); grid.className="mgrid";
+    const list=imgs.map(f=>({src:enc(f.path),cap:nice(f.name)}));
+    imgs.forEach((f,i)=>{ const b=document.createElement("button"); b.className="thumb"; b.setAttribute("aria-label","Agrandir "+nice(f.name));
+      const im=document.createElement("img"); im.src=enc(f.path); im.alt=nice(f.name); im.loading="lazy"; b.appendChild(im); b.onclick=()=>lbOpen(list,i); grid.appendChild(b); });
+    vids.forEach(f=>{ const w=document.createElement("div"); w.className="vthumb"; const v=document.createElement("video"); v.src=enc(f.path); v.controls=true; v.preload="metadata"; v.playsInline=true;
+      const c=document.createElement("div"); c.className="vcap"; c.textContent=nice(f.name); w.append(v,c); grid.appendChild(w); });
+    sec.appendChild(grid); $("#albums").appendChild(sec);
+  }
+  ls("medias").then(async items=>{
+    if(!Array.isArray(items)) return;
+    const dirs=items.filter(i=>i.type==="dir").sort((a,b)=>b.name.localeCompare(a.name,"fr",{numeric:true}));
+    for(const d of dirs){ const files=await ls(d.path); if(Array.isArray(files)) album(nice(d.name),files.filter(f=>f.type==="file").sort((a,b)=>a.name.localeCompare(b.name,"fr",{numeric:true}))); }
+    const loose=items.filter(i=>i.type==="file").sort((a,b)=>a.name.localeCompare(b.name,"fr",{numeric:true}));
+    if(loose.length) album(dirs.length?"Divers":"Photos et vidéos",loose);
+  });
+  fetch("videos.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+    const vids=t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith("#")).map(l=>{
+      const [a,b]=l.split("|").map(x=>x.trim()); const url=/^https?:/.test(a)?a:b, title=/^https?:/.test(a)?(b||""):a;
+      const m=(url||"").match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/); return m?{id:m[1],title}:null;
+    }).filter(Boolean);
+    if(!vids.length) return; markShown();
+    const sec=document.createElement("div"); sec.className="album";
+    const h=document.createElement("h3"); h.textContent="Vidéos"; sec.appendChild(h);
+    const grid=document.createElement("div"); grid.className="ygrid";
+    vids.forEach(v=>{ const w=document.createElement("div"); w.className="vthumb";
+      const f=document.createElement("iframe"); f.src="https://www.youtube-nocookie.com/embed/"+v.id; f.title=v.title||"Vidéo ML Racing Team"; f.loading="lazy";
+      f.allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"; f.allowFullscreen=true;
+      w.appendChild(f); if(v.title){ const c=document.createElement("div"); c.className="vcap"; c.textContent=v.title; w.appendChild(c); } grid.appendChild(w); });
+    sec.appendChild(grid); $("#videosYT").appendChild(sec);
+  }).catch(()=>{});
+})();
 
 /* Formulaire de contact (FormSubmit) */
 $("#contactForm").addEventListener("submit",async e=>{

@@ -77,6 +77,20 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    - Comme pour l'inscription : au premier message, cliquez le lien d'activation
      reçu par e-mail ("Activate Form"). Pensez aux spams.
 
+10. PHOTOS ET VIDÉOS (onglet "Multimédia")
+   - Un album = un dossier dans "medias". Pour créer l'album "R7 Cup 2026" :
+     ouvrez https://github.com/mlracingteam29-code/mlr29/new/main/medias
+     tapez dans le nom :  R7-Cup-2026/LISEZMOI.txt  , écrivez "album", "Commit changes".
+   - Puis ouvrez le dossier medias/R7-Cup-2026 sur GitHub > "Add file" > "Upload files",
+     glissez vos photos (JPG, PNG…) et vidéos courtes (MP4), puis "Commit changes".
+     (Ou directement : https://github.com/mlracingteam29-code/mlr29/upload/main/medias/R7-Cup-2026 )
+   - Les photos s'affichent en galerie (clic = plein écran, flèches pour défiler).
+   - Taille max : 25 Mo par fichier. Réduisez les photos avant (1 à 3 Mo suffit).
+   - Vidéos longues : mettez-les sur YouTube, puis ajoutez une ligne dans
+     https://github.com/mlracingteam29-code/mlr29/edit/main/videos.txt
+       Titre | lien YouTube
+   - Les albums les plus récents (nom le plus "grand", ex. 2027 avant 2026) s'affichent en premier.
+
 APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
    (Inutile pour les gazettes ajoutées dans Drive : elles s'affichent toutes seules.)

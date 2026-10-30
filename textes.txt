@@ -77,6 +77,9 @@ Rejoindre la ML Racing Team pour la prochaine saison.
 [roulages.intro]
 Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.
 
+[multimedia.intro]
+Photos et vidéos de la team : roulages, courses, enduro, vie du paddock.
+
 [fichiers.intro]
 Documents de l'association : dossiers, règlements, plannings… Cliquez pour télécharger.
 
