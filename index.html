@@ -147,7 +147,7 @@
       <h2>Nos partenaires</h2>
       <p>Merci à celles et ceux qui soutiennent l'association tout au long de la saison.</p>
     </div>
-    <div class="partners">
+    <div class="partners" id="partners">
       <div class="partner">E.Leclerc Lannilis</div>
       <div class="partner">Scoot Xtreme</div>
       <div class="partner">Yamaha Brest</div>
@@ -243,6 +243,14 @@ $("#burger").addEventListener("click",()=>$("#links").classList.toggle("open"));
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
   try{ await navigator.clipboard.writeText(CONTACT); toast("Adresse copiée ✓"); }catch(e){ toast(CONTACT); }
 }));
+
+/* Partenaires : lus depuis partenaires.txt (modifiable sur GitHub) */
+fetch("partenaires.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+  const names=t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith("#"));
+  if(!names.length) return;
+  const box=document.getElementById("partners"); box.innerHTML="";
+  names.forEach(n=>{ const d=document.createElement("div"); d.className="partner"; d.textContent=n; box.appendChild(d); });
+}).catch(()=>{});
 
 /* Gazettes */
 const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];

@@ -1,0 +1,27 @@
+# PARTENAIRES DU SITE ML RACING TEAM
+# Un partenaire par ligne, dans l'ordre d'affichage.
+# Pour ajouter : écrivez le nom sur une nouvelle ligne.
+# Pour modifier ou retirer : changez ou supprimez la ligne.
+# Les lignes qui commencent par # ne s'affichent pas.
+
+E.Leclerc Lannilis
+Scoot Xtreme
+Yamaha Brest
+Ludovic Garnier
+Aria Energies
+Matt Racing
+Maxxess Brest
+Carrosserie Le Frout
+ARP Exhaust
+PCB Publicité
+SL Moto
+D-Photos
+SKdesign
+S2 Concept
+Imprimerie Cerid
+Circuit de Guillac
+Printfloor
+Tournay Distribution
+BMD Performance
+Box ACO
+Moto West
