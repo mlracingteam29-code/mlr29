@@ -235,3 +235,6 @@
   .fbfallback p{margin:0;color:#cfcfd6;font-size:15px}
   .fbbtn{justify-content:center}
   @media(max-width:960px){.fbbox{position:static}}
+
+  .valid-note{margin:22px 0 0;background:#211c10;border:1px solid #4a3d18;border-left:5px solid #e5c07b;border-radius:10px;padding:14px 16px;color:#f1e3bf;font-size:15px}
+  .valid-note strong{color:#fff}
