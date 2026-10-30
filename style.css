@@ -163,3 +163,11 @@
   .join span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
   .join strong{font-family:"Saira Condensed";font-size:32px;line-height:1}
   .join small{display:block;color:var(--muted);font-size:12px}
+
+  .banner{position:relative;background:#000;line-height:0}
+  .banner img{display:block;width:100%;height:auto;max-height:520px;object-fit:cover;object-position:center}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .intro-band{padding:44px 0 0}
+  .intro-band .accroche{margin:10px 0 0;font-family:"Saira Condensed";font-weight:800;text-transform:uppercase;font-size:clamp(26px,4.2vw,44px);line-height:1.08;max-width:900px}
+  .intro-band + section{padding-top:36px}
+  @media(max-width:600px){.banner img{min-height:150px}}
