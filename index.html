@@ -13,35 +13,38 @@
 
 <header class="nav">
   <div class="wrap">
-    <div class="logo" data-go="accueil"><span class="badge"><span>ML</span></span> Racing Team</div>
+    <div class="logo" data-go="presentation"><span class="badge"><span>ML</span></span> Racing Team</div>
     <button class="burger" id="burger" aria-label="Menu">☰</button>
     <nav class="links" id="links">
-      <button data-go="association">L'association</button>
+      <button data-go="presentation">Présentation</button>
       <button data-go="gazettes">Gazettes</button>
-      <button data-go="discussion">Échanger</button>
-      <button data-go="inscription">Inscription</button>
+      <button data-go="echange">Échange en direct</button>
+      <button data-go="inscriptions">Inscriptions</button>
+      <button data-go="roulages">Dates roulages</button>
       <button data-go="partenaires">Partenaires</button>
       <button data-go="contact">Contact</button>
     </nav>
   </div>
 </header>
 
-<div class="hero" id="accueil">
+<main id="tabs">
+<div class="tab" data-tab="presentation">
+<div class="hero">
   <div class="wrap">
     <div class="kicker">Association moto · Circuit · Mini moto · Enduro</div>
     <h1>ML <em>Racing</em><br>Team</h1>
     <p class="lead">Rouler ensemble, progresser en sécurité et vivre la piste en équipe. Retrouvez ici nos gazettes, échangez avec les membres et contactez-nous.</p>
     <div class="cta">
       <button class="btn red" data-go="gazettes">Lire les gazettes</button>
-      <button class="btn ghost" data-go="discussion">Échanger en direct</button>
-      <button class="btn ghost" data-go="contact">Nous contacter</button>
+      <button class="btn ghost" data-go="roulages">Dates roulages</button>
+      <button class="btn ghost" data-go="inscriptions">Adhérer</button>
     </div>
   </div>
 </div>
 <div class="checker"></div>
 
 <!-- ASSOCIATION -->
-<section id="association">
+<section>
   <div class="wrap">
     <div class="sec-head">
       <h2>L'association</h2>
@@ -53,11 +56,29 @@
       <div class="card"><div class="num">03 · COURSE</div><h3>Ultimate 700</h3><p>Participation à l'Ultimate 700 au Vigeant, et accompagnement des membres vers leur première course officielle.</p></div>
       <div class="card"><div class="num">04 · ENDURO</div><h3>Développer l'enduro</h3><p>Recherche de terrains privés, journée d'essai Stark et ouverture de la pratique aux plus jeunes.</p></div>
     </div>
+    <div class="grid two" style="margin-top:16px">
+      <div class="card">
+        <h3>Nos buts</h3>
+        <p>Association sportive dans le domaine du sport mécanique : <strong>découvrir, progresser, s'amuser et partager</strong>.</p>
+        <div class="tags"><span>Moto vitesse</span><span>Mini moto</span><span>Supermotard</span><span>Enduro</span><span>Motocross</span></div>
+      </div>
+      <div class="card">
+        <h3>Être membre, c'est…</h3>
+        <ul class="steps">
+          <li>Des avantages négociés chez nos partenaires</li>
+          <li>L'accès au matériel et à l'atelier (pont pro, démonte-pneu)</li>
+          <li>Des aides mécaniques et techniques</li>
+          <li>Des véhicules à disposition : mini moto, moto de vitesse, remorque</li>
+          <li>Les dates de roulage en avance</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
+</div>
 
 <!-- GAZETTES -->
-<section id="gazettes">
+<section class="tab" data-tab="gazettes">
   <div class="wrap">
     <div class="sec-head">
       <h2>Les gazettes</h2>
@@ -72,8 +93,8 @@
   </div>
 </section>
 
-<!-- DISCUSSION -->
-<section id="discussion">
+<!-- ECHANGE -->
+<section class="tab" data-tab="echange">
   <div class="wrap">
     <div class="sec-head">
       <h2>Échanger en direct</h2>
@@ -105,11 +126,11 @@
   </div>
 </section>
 
-<!-- INSCRIPTION -->
-<section id="inscription">
+<!-- INSCRIPTIONS -->
+<section class="tab" data-tab="inscriptions">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Inscription</h2>
+      <h2>Inscriptions</h2>
       <p>Rejoindre la ML Racing Team pour la prochaine saison.</p>
     </div>
     <div class="soon">
@@ -140,8 +161,24 @@
   </div>
 </section>
 
+<!-- DATES ROULAGES -->
+<section class="tab" data-tab="roulages">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Dates roulages</h2>
+      <p>Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.</p>
+    </div>
+    <div class="dates" id="dates"></div>
+    <div class="empty" id="datesEmpty">Les dates de la saison 2027 arrivent très bientôt. Les membres les reçoivent en avance !</div>
+    <div class="cta" style="margin-top:20px">
+      <a class="btn red small" href="mailto:mlracingteam29@gmail.com?subject=R%C3%A9servation%20roulage">Réserver un roulage</a>
+      <button class="btn ghost small" data-copy>Copier l'adresse mail</button>
+    </div>
+  </div>
+</section>
+
 <!-- PARTENAIRES -->
-<section id="partenaires">
+<section class="tab" data-tab="partenaires">
   <div class="wrap">
     <div class="sec-head">
       <h2>Nos partenaires</h2>
@@ -174,7 +211,7 @@
 </section>
 
 <!-- CONTACT -->
-<section id="contact">
+<section class="tab" data-tab="contact">
   <div class="wrap">
     <div class="sec-head">
       <h2>Contact</h2>
@@ -191,6 +228,7 @@
     <p class="hint" style="margin-top:14px">Retrouvez aussi l'association sur Facebook : <strong>ML Racing Team</strong>.</p>
   </div>
 </section>
+</main>
 
 <div class="checker"></div>
 <footer>
@@ -235,10 +273,20 @@ const toastEl = $("#toast");
 function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove("show"),2200); }
 $("#year").textContent = new Date().getFullYear();
 
-document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{
-  const el=document.getElementById(b.dataset.go); if(el) el.scrollIntoView({behavior:"smooth"});
+/* Onglets */
+const TABS=["presentation","gazettes","echange","inscriptions","roulages","partenaires","contact"];
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",inscription:"inscriptions"};
+function showTab(name,push){
+  name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
+  document.querySelectorAll("#links [data-go]").forEach(b=>b.classList.toggle("active",b.dataset.go===name));
   $("#links").classList.remove("open");
-}));
+  if(push){ try{ history.replaceState(null,"","#"+name); }catch(e){ location.hash=name; } }
+  window.scrollTo({top:0,behavior:"instant"});
+}
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.go,true)));
+window.addEventListener("hashchange",()=>showTab(location.hash.slice(1),false));
+showTab(location.hash.slice(1),false);
 $("#burger").addEventListener("click",()=>$("#links").classList.toggle("open"));
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
   try{ await navigator.clipboard.writeText(CONTACT); toast("Adresse copiée ✓"); }catch(e){ toast(CONTACT); }
@@ -250,6 +298,33 @@ fetch("partenaires.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject
   if(!names.length) return;
   const box=document.getElementById("partners"); box.innerHTML="";
   names.forEach(n=>{ const d=document.createElement("div"); d.className="partner"; d.textContent=n; box.appendChild(d); });
+}).catch(()=>{});
+
+/* Dates roulages : lues depuis roulages.txt (modifiable sur GitHub) */
+fetch("roulages.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+  const today=new Date(); today.setHours(0,0,0,0);
+  const rows=t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith("#")).map(l=>{
+    const [d,lieu,type,infos]=l.split("|").map(x=>(x||"").trim());
+    const m=d.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    return {d, date:m?new Date(+m[3],+m[2]-1,+m[1]):null, lieu, type, infos};
+  }).filter(r=>r.date).sort((a,b)=>a.date-b.date);
+  if(!rows.length) return;
+  const box=$("#dates"); $("#datesEmpty").hidden=true;
+  const MO=["JANV","FÉVR","MARS","AVR","MAI","JUIN","JUIL","AOÛT","SEPT","OCT","NOV","DÉC"];
+  rows.forEach(r=>{
+    const past=r.date<today;
+    const el=document.createElement("div"); el.className="date"+(past?" past":"");
+    const cal=document.createElement("div"); cal.className="cal";
+    const dd=document.createElement("b"); dd.textContent=r.date.getDate();
+    const mm=document.createElement("span"); mm.textContent=MO[r.date.getMonth()]+" "+r.date.getFullYear();
+    cal.append(dd,mm);
+    const info=document.createElement("div"); info.className="info";
+    const h=document.createElement("h3"); h.textContent=r.lieu||"Roulage";
+    const ty=document.createElement("div"); ty.className="type"; ty.textContent=(r.type||"")+(past?" · terminé":"");
+    info.append(h,ty);
+    if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
+    el.append(cal,info); box.appendChild(el);
+  });
 }).catch(()=>{});
 
 /* Gazettes */

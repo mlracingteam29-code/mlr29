@@ -1,0 +1,6 @@
+# DATES DE ROULAGE DU SITE ML RACING TEAM
+# Une date par ligne, sous la forme :
+#   JJ/MM/AAAA | Lieu | Type de roulage | Infos (facultatif)
+# Exemple (enlevez le # au début pour l'afficher) :
+# 15/03/2027 | Circuit de Guillac | Roulage vitesse | Inscription auprès du bureau
+# Les dates passées restent affichées en grisé. Les lignes qui commencent par # ne s'affichent pas.

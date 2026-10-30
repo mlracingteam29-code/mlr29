@@ -46,6 +46,13 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    - Cliquez sur "Commit changes..." puis de nouveau "Commit changes".
    - Une fois le site lancé, la modification apparaît en 1 à 2 minutes.
 
+6. AJOUTER LES DATES DE ROULAGE (onglet "Dates roulages")
+   - Ouvrez : https://github.com/mlracingteam29-code/mlr29/edit/main/roulages.txt
+   - Une date par ligne :  JJ/MM/AAAA | Lieu | Type de roulage | Infos (facultatif)
+     ex.  15/03/2027 | Circuit de Guillac | Roulage vitesse | Inscription auprès du bureau
+   - Les dates sont triées automatiquement ; les dates passées s'affichent en grisé.
+   - "Commit changes..." puis "Commit changes".
+
 APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
    (Inutile pour les gazettes ajoutées dans Drive : elles s'affichent toutes seules.)
