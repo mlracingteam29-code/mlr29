@@ -13,3 +13,4 @@
 # Terrain privé enduro | 02/05/2027, 06/06/2027 | Enduro
 #
 # Les dates sont triées toutes seules ; les dates passées s'affichent en grisé.
+Circuit du Mans | 13/08/2027 au 14/08/2027
