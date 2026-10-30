@@ -293,12 +293,44 @@
     </div>
   </div>
 </section>
+<!-- INFOS LEGALES -->
+<section class="tab" data-tab="infos">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>L'association</h2>
+      <p>Informations officielles et mentions légales de ML Racing Team.</p>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <div class="num">FICHE OFFICIELLE</div>
+        <h3 style="margin:6px 0 14px">ML Racing Team</h3>
+        <dl class="facts">
+          <dt>Date de création</dt><dd>26/12/2022</dd>
+          <dt>Date de publication</dt><dd>09/02/2021</dd>
+          <dt>Dernière modification</dt><dd>27/06/2023</dd>
+          <dt>N° RNA</dt><dd>W291014847</dd>
+          <dt>Type</dt><dd>Sport</dd>
+          <dt>Objet</dt><dd>L'association se concentre sur la pratique du sport mécanique à la fois pour le loisir et la compétition.</dd>
+          <dt>Contact</dt><dd>mlracingteam29@gmail.com</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <div class="num">PROPRIÉTÉ INTELLECTUELLE</div>
+        <h3 style="margin:6px 0 14px">Reproduction interdite</h3>
+        <p>L'ensemble du contenu de ce site (textes, logos, photos, vidéos, gazettes, documents et mise en page) est la propriété de l'association ML Racing Team ou de ses partenaires.</p>
+        <p style="margin-top:10px"><strong>Toute copie, reproduction ou diffusion</strong>, totale ou partielle, ainsi que <strong>toute utilisation à des fins publicitaires ou commerciales</strong>, sont interdites sans l'autorisation écrite préalable de l'association.</p>
+        <p style="margin-top:10px">Les noms et logos des partenaires restent la propriété de leurs détenteurs respectifs.</p>
+        <p style="margin-top:10px" class="hint">Pour toute demande d'autorisation : mlracingteam29@gmail.com</p>
+      </div>
+    </div>
+  </div>
+</section>
 </main>
 
 <div class="checker"></div>
 <footer>
   <div class="wrap">
-    <span>© <span id="year"></span> ML Racing Team — Association moto</span>
+    <span>© <span id="year"></span> ML Racing Team — RNA W291014847 · Tous droits réservés · <a href="#infos" data-go="infos">Informations légales</a></span>
     <span>mlracingteam29@gmail.com · <a href="https://www.facebook.com/profile.php?id=100063546707767" target="_blank" rel="noopener">Facebook</a></span>
   </div>
 </footer>
@@ -339,8 +371,8 @@ function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTi
 $("#year").textContent = new Date().getFullYear();
 
 /* Onglets */
-const TABS=["presentation","roulages","gazettes","multimedia","fichiers","echange","partenaires","contact","inscriptions"];
-const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",dates:"roulages",telechargements:"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
+const TABS=["infos","presentation","roulages","gazettes","multimedia","fichiers","echange","partenaires","contact","inscriptions"];
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",mentions:"infos",legal:"infos",dates:"roulages",telechargements:"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
 function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));

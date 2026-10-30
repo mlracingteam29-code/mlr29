@@ -238,3 +238,9 @@
 
   .valid-note{margin:22px 0 0;background:#211c10;border:1px solid #4a3d18;border-left:5px solid #e5c07b;border-radius:10px;padding:14px 16px;color:#f1e3bf;font-size:15px}
   .valid-note strong{color:#fff}
+
+  .facts{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;margin:0}
+  .facts dt{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+  .facts dd{margin:0;font-weight:600}
+  @media(max-width:520px){.facts{grid-template-columns:1fr;gap:2px}.facts dd{margin-bottom:10px}}
+  footer a{color:inherit}
