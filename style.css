@@ -192,10 +192,10 @@
   .fb-top{color:var(--muted);text-decoration:none;font-size:14px}
   .fb-top:hover{color:#fff}
   .tabbar{background:#141417;border-top:1px solid var(--line);border-bottom:3px solid var(--red)}
-  .tabbar .wrap{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-top:8px}
+  .tabbar .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-top:8px}
   .tabbar .wrap::-webkit-scrollbar{display:none}
   .tabbar button{flex:1 1 auto;text-align:center;background:#1e1e23;border:1px solid var(--line);border-bottom:0;color:#d4d4da;cursor:pointer;
-     font:800 15px "Saira Condensed";text-transform:uppercase;letter-spacing:.03em;padding:12px 8px;border-radius:10px 10px 0 0;white-space:nowrap;transition:background .15s,color .15s}
+     font:800 14px "Saira Condensed";text-transform:uppercase;letter-spacing:.02em;padding:12px 6px;border-radius:10px 10px 0 0;white-space:nowrap;transition:background .15s,color .15s}
   .tabbar button:hover{background:#2a2a30;color:#fff}
   .tabbar button.active{background:var(--red);border-color:var(--red);color:#fff}
   @media(max-width:1000px){.tabbar button{flex:0 0 auto;font-size:15px;padding:11px 14px}}

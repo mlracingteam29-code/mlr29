@@ -24,6 +24,7 @@
       <button data-go="gazettes">Gazettes</button>
       <button data-go="multimedia">Multimédia</button>
       <button data-go="fichiers">Fichiers</button>
+      <button data-go="inscriptions">Adhésion</button>
       <button data-go="echange">Messagerie directe</button>
       <button data-go="partenaires">Nos partenaires</button>
       <button data-go="contact">Nous contacter</button>
@@ -142,7 +143,7 @@
 <section class="tab" data-tab="inscriptions">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Inscriptions</h2>
+      <h2>Adhésion</h2>
       <p data-txt="inscriptions.intro">Rejoindre la ML Racing Team pour la prochaine saison.</p>
     </div>
     <div class="soon">
@@ -339,7 +340,7 @@ $("#year").textContent = new Date().getFullYear();
 
 /* Onglets */
 const TABS=["presentation","roulages","gazettes","multimedia","fichiers","echange","partenaires","contact","inscriptions"];
-const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",dates:"roulages",telechargements:"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",dates:"roulages",telechargements:"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
 function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
