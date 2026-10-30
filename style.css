@@ -244,3 +244,5 @@
   .facts dd{margin:0;font-weight:600}
   @media(max-width:520px){.facts{grid-template-columns:1fr;gap:2px}.facts dd{margin-bottom:10px}}
   footer a{color:inherit}
+
+  .top-links{display:flex;gap:18px;align-items:center}
