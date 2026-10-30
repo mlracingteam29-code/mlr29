@@ -7,7 +7,7 @@
 E.Leclerc Lannilis
 Scoot Xtreme
 Yamaha Brest
-Ludovic Garnier
+SARL Ludovic Garnier
 Aria Energies
 Matt Racing
 Maxxess Brest
@@ -23,5 +23,5 @@ Circuit de Guillac
 Printfloor
 Tournay Distribution
 BMD Performance
-Box ACO
 Moto West
+
