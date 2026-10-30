@@ -76,6 +76,8 @@
   .gz{display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
   .gz .tag{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
   .gz h3{font-size:24px}
+  .gz .cover{display:block;width:100%;aspect-ratio:595/841;object-fit:cover;object-position:top;border-radius:10px;border:1px solid var(--line)}
+  .gz{padding-top:26px}
   .gz .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
   .gz::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--red)}
   .empty{border:1px dashed #3a3a42;border-radius:var(--radius);padding:30px;text-align:center;color:var(--muted)}
@@ -117,7 +119,7 @@
 
   /* PARTNERS */
   .partners{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
-  .partner{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center;font-family:"Saira Condensed";font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
+  .partner{display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center;font-family:"Saira Condensed";font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
   .partner.first{grid-column:1/-1;font-size:26px;border-color:var(--red);background:linear-gradient(90deg,#2a0f0e,var(--card))}
 
   /* CONTACT */
@@ -270,17 +272,25 @@
     </div>
     <div class="partners">
       <div class="partner first">E.Leclerc Lannilis</div>
-      <div class="partner">Printfloor</div>
-      <div class="partner">Matt Racing</div>
+      <div class="partner">Scoot Xtreme</div>
+      <div class="partner">Yamaha Brest</div>
+      <div class="partner">Ludovic Garnier</div>
       <div class="partner">Aria Energies</div>
-      <div class="partner">Imprimerie Cerid</div>
-      <div class="partner">S2 Concept</div>
-      <div class="partner">SKdesign</div>
-      <div class="partner">D-Photos</div>
-      <div class="partner">PCB Publicité</div>
-      <div class="partner">ARP Exhaust</div>
+      <div class="partner">Matt Racing</div>
+      <div class="partner">Maxxess Brest</div>
       <div class="partner">Carrosserie Le Frout</div>
-      <div class="partner">SARL Ludovic Garnier</div>
+      <div class="partner">ARP Exhaust</div>
+      <div class="partner">PCB Publicité</div>
+      <div class="partner">SL Moto</div>
+      <div class="partner">D-Photos</div>
+      <div class="partner">SKdesign</div>
+      <div class="partner">S2 Concept</div>
+      <div class="partner">Imprimerie Cerid</div>
+      <div class="partner">Circuit de Guillac</div>
+      <div class="partner">Printfloor</div>
+      <div class="partner">Tournay Distribution</div>
+      <div class="partner">BMD Performance</div>
+      <div class="partner">Moto West</div>
     </div>
   </div>
 </section>
@@ -338,6 +348,9 @@ const REGLAGES = {
   // Gazettes déposées directement dans le dossier "gazettes" du site (facultatif)
   // { titre: "Gazette n°1 — Bilan de saison", mois: "2026-11", fichier: "gazettes/gazette-1.pdf" },
   gazettes: [
+    { titre: "La Gazette du Paddock n°1 — Édition spéciale partenaires", mois: "2026-10",
+      fichier: "gazettes/gazette-01-octobre-2026.pdf", couverture: "gazettes/gazette-01-couverture.jpg",
+      resume: "Retour sur la saison 2026 : Le Mans en 25 Power, premier week-end en R7 Cup, arrivée de l'enduro, et cap sur 2027." },
   ]
 };
 
@@ -367,7 +380,12 @@ function fmtMonth(m){ if(!m) return ""; const [y,mo]=String(m).split("-"); retur
     const h=document.createElement("h3"); h.textContent=g.titre||"Gazette";
     const row=document.createElement("div"); row.className="row";
     const a=document.createElement("a"); a.className="btn red small"; a.textContent="Lire la gazette"; a.href=g.fichier; a.target="_blank"; a.rel="noopener";
-    row.appendChild(a); c.append(tag,h,row); list.appendChild(c);
+    row.appendChild(a);
+    if(g.couverture){ const im=document.createElement("img"); im.src=g.couverture; im.alt="Couverture — "+(g.titre||"Gazette"); im.loading="lazy"; im.className="cover";
+      const l=document.createElement("a"); l.href=g.fichier; l.target="_blank"; l.rel="noopener"; l.appendChild(im); c.appendChild(l); }
+    c.append(tag,h);
+    if(g.resume){ const r=document.createElement("p"); r.textContent=g.resume; c.appendChild(r); }
+    c.appendChild(row); list.appendChild(c);
   });
   const id=REGLAGES.dossierGazettesDrive.trim();
   if(id){
