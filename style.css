@@ -221,3 +221,17 @@
   .lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:0;color:#fff;font-size:44px;width:56px;height:80px;border-radius:10px;cursor:pointer}
   .lb-nav:hover{background:var(--red)}
   .lb-prev{left:12px}.lb-next{right:12px}
+
+  /* Encart Facebook */
+  .story-wrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:36px;align-items:start}
+  @media(max-width:960px){.story-wrap{grid-template-columns:1fr}}
+  .fbbox{position:sticky;top:130px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px}
+  .fbhead{display:flex;align-items:center;gap:10px}
+  .fblogo{width:34px;height:34px;border-radius:50%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font:800 22px Arial,sans-serif}
+  .fbhead b{display:block;font-family:"Saira Condensed";text-transform:uppercase;font-size:18px;letter-spacing:.03em}
+  .fbhead small{color:var(--muted);font-size:12px}
+  .fbframe.on{background:#fff;border-radius:10px;overflow:hidden;display:flex;justify-content:center}
+  .fbframe iframe{display:block;max-width:100%}
+  .fbfallback p{margin:0;color:#cfcfd6;font-size:15px}
+  .fbbtn{justify-content:center}
+  @media(max-width:960px){.fbbox{position:static}}

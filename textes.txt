@@ -63,6 +63,12 @@ Véhicules — mini moto, moto de vitesse et remorque à tarif membre
 Roulages — dates en avance, avance de fonds pour réserver (sous réserve)
 Accompagnement — aides mécaniques et techniques, découverte des disciplines
 
+=== FACEBOOK ===
+
+[facebook.page]
+# Collez ici l'adresse de votre PAGE Facebook (ex. https://www.facebook.com/mlracingteam)
+# pour afficher la dernière publication sur la page d'accueil.
+
 === PHRASES D'INTRODUCTION DES ONGLETS ===
 
 [gazettes.intro]

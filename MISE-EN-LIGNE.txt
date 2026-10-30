@@ -91,6 +91,13 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
        Titre | lien YouTube
    - Les albums les plus récents (nom le plus "grand", ex. 2027 avant 2026) s'affichent en premier.
 
+11. DERNIÈRE PUBLICATION FACEBOOK (page Présentation)
+   - Ouvrez https://github.com/mlracingteam29-code/mlr29/edit/main/textes.txt
+   - Sous [facebook.page], collez l'adresse de votre PAGE Facebook
+     (ex. https://www.facebook.com/mlracingteam), puis "Commit changes".
+   - L'encart affiche alors automatiquement vos dernières publications.
+   - Fonctionne avec une Page Facebook publique (pas un profil personnel ni un groupe privé).
+
 APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
    (Inutile pour les gazettes ajoutées dans Drive : elles s'affichent toutes seules.)

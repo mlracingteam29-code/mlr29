@@ -47,6 +47,7 @@
 
 <section>
   <div class="wrap">
+    <div class="story-wrap">
     <article class="story" data-txt="accueil.texte" data-mode="paras">
       <p>Notre association a pour objectif de faire vivre et de promouvoir le sport mécanique, aussi bien dans le cadre du loisir que de la compétition.</p>
       <p>Nous souhaitons réunir autour de nous des personnes qui partagent la même passion : pilotes, passionnés de mécanique, bénévoles, partenaires et amateurs de sports mécaniques.</p>
@@ -57,6 +58,15 @@
       <p>ML RACING TEAM, c'est une association indépendante, portée par la passion, l'envie d'avancer et le plaisir de partager le sport mécanique.</p>
       <p>Parce que derrière chaque projet, chaque course et chaque réussite, il y a avant tout des personnes qui s'investissent et une passion qui nous rassemble.</p>
     </article>
+    <aside class="fbbox" id="fbbox">
+      <div class="fbhead"><span class="fblogo">f</span><div><b>Dernière publication</b><small>Facebook · ML Racing Team</small></div></div>
+      <div class="fbframe" id="fbframe"></div>
+      <div class="fbfallback" id="fbfallback">
+        <p>Retrouvez toutes nos actus, photos et résultats sur notre page Facebook.</p>
+      </div>
+      <a class="btn red small fbbtn" id="fbbtn" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Voir la page Facebook ↗</a>
+    </aside>
+    </div>
     <div class="grid two duo">
       <div class="card">
         <div class="num">NOS BUTS</div>
@@ -366,7 +376,22 @@ fetch("textes.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).t
     else if(mode==="tags"){ el.innerHTML=""; lines(key).join(",").split(",").map(x=>x.trim()).filter(Boolean).forEach(x=>{ const sp=document.createElement("span"); sp.textContent=x; el.appendChild(sp); }); }
     else el.textContent=raw.replace(/\s*\n\s*/g," ");
   });
-}).catch(()=>{});
+  setupFB(lines("facebook.page")[0]||"");
+}).catch(()=>setupFB(""));
+
+/* Encart Facebook : dernière publication (plugin de page Facebook) */
+function setupFB(url){
+  url=(url||"").trim();
+  if(!/^https?:\/\/(www\.|m\.)?facebook\.com\/(?!search)/i.test(url)) return; // pas d'adresse de page : on garde le bouton
+  $("#fbbtn").href=url;
+  const box=$("#fbframe"); const w=Math.min(500,Math.max(280,Math.round(box.clientWidth||340)));
+  const f=document.createElement("iframe");
+  f.src="https://www.facebook.com/plugins/page.php?href="+encodeURIComponent(url)+"&tabs=timeline&width="+w+"&height=520&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false&locale=fr_FR";
+  f.width=w; f.height=520; f.title="Dernière publication Facebook ML Racing Team"; f.loading="lazy"; f.style.border="0"; f.setAttribute("scrolling","no");
+  f.allow="encrypted-media; clipboard-write; picture-in-picture; web-share";
+  box.appendChild(f); $("#fbfallback").hidden=true; box.classList.add("on");
+}
+
 
 /* Partenaires : lus depuis partenaires.txt (modifiable sur GitHub) */
 fetch("partenaires.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
