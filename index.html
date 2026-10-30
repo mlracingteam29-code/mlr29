@@ -38,6 +38,7 @@
       <button class="btn red" data-go="gazettes">Lire les gazettes</button>
       <button class="btn ghost" data-go="roulages">Dates roulages</button>
       <button class="btn ghost" data-go="inscriptions">Adhérer</button>
+      <a class="btn ghost" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Facebook ↗</a>
     </div>
   </div>
 </div>
@@ -224,7 +225,13 @@
       <button class="btn red" data-copy>Copier l'adresse</button>
       <a class="btn ghost" href="mailto:mlracingteam29@gmail.com">Écrire un e-mail</a>
     </div>
-    <p class="hint" style="margin-top:14px">Retrouvez aussi l'association sur Facebook : <strong>ML Racing Team</strong>.</p>
+    <div class="mailbox" style="margin-top:14px">
+      <div style="flex:1;min-width:240px">
+        <label>Facebook</label>
+        <div class="addr" style="font-size:clamp(20px,3.4vw,28px)">ML Racing Team</div>
+      </div>
+      <a class="btn red fb" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Suivre sur Facebook ↗</a>
+    </div>
   </div>
 </section>
 </main>
@@ -233,7 +240,7 @@
 <footer>
   <div class="wrap">
     <span>© <span id="year"></span> ML Racing Team — Association moto</span>
-    <span>mlracingteam29@gmail.com</span>
+    <span>mlracingteam29@gmail.com · <a href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Facebook</a></span>
   </div>
 </footer>
 <div class="toast" id="toast"></div>
@@ -254,7 +261,7 @@ const REGLAGES = {
 
   // 3) Groupe des membres (facultatif) : liens d'invitation
   groupeWhatsApp: "",   // ex. "https://chat.whatsapp.com/..."
-  pageFacebook: "",     // ex. "https://www.facebook.com/..."
+  pageFacebook: "https://www.facebook.com/search/top?q=ml%20racing%20team",
 
 
   // Gazettes déposées directement dans le dossier "gazettes" du site (facultatif)
