@@ -1,0 +1,90 @@
+# TEXTES DU SITE ML RACING TEAM
+# ----------------------------------------------------------------------
+# Modifiez librement le texte SOUS chaque titre [ ... ], puis "Commit changes".
+# Ne modifiez pas les titres entre crochets.
+# - Paragraphes : séparez-les par une ligne vide.
+# - Listes : une ligne par élément, sous la forme  Titre — texte
+# - Les lignes qui commencent par # ne s'affichent pas.
+# ----------------------------------------------------------------------
+
+=== PAGE PRÉSENTATION ===
+
+[accueil.surtitre]
+🏁 Qui sommes-nous ?
+
+[accueil.accroche]
+ML RACING TEAM, c'est avant tout une histoire de passion pour les sports mécaniques !
+
+[accueil.texte]
+Notre association a pour objectif de faire vivre et de promouvoir le sport mécanique, aussi bien dans le cadre du loisir que de la compétition.
+
+Nous souhaitons réunir autour de nous des personnes qui partagent la même passion : pilotes, passionnés de mécanique, bénévoles, partenaires et amateurs de sports mécaniques.
+
+À travers ML RACING TEAM, nous voulons soutenir et développer des projets sportifs, permettre à cette passion de s'exprimer et faire découvrir notre univers au plus grand nombre.
+
+Mais une association comme la nôtre, ce n'est pas uniquement des moteurs, des machines et de la compétition. C'est aussi une équipe, de l'investissement, du temps, de la préparation, de l'entraide et beaucoup de motivation.
+
+Notre ambition est de faire grandir ML RACING TEAM, de concrétiser de nouveaux projets et de créer des opportunités pour développer notre passion.
+
+C'est pourquoi nous souhaitons également nous entourer de partenaires et de sponsors qui partagent nos valeurs et qui veulent prendre part à cette aventure. Leur soutien nous permet de faire avancer nos projets et de donner vie à nos ambitions.
+
+ML RACING TEAM, c'est une association indépendante, portée par la passion, l'envie d'avancer et le plaisir de partager le sport mécanique.
+
+Parce que derrière chaque projet, chaque course et chaque réussite, il y a avant tout des personnes qui s'investissent et une passion qui nous rassemble.
+
+[accueil.devise]
+# Ce qui est avant les deux-points s'affiche en blanc, la suite en rouge.
+🏁 ML RACING TEAM : la passion nous rassemble, l'engagement nous fait avancer !
+
+[buts.titre]
+Ce qui nous anime
+
+[buts.liste]
+Découvrir — De nouvelles disciplines, de nouveaux circuits, de nouvelles sensations.
+Progresser — Rouler encadré, apprendre, gagner en confiance et en technique.
+S'amuser — Le plaisir avant tout, en loisir comme en compétition.
+Partager — L'entraide, la mécanique et les week-ends en équipe.
+
+[buts.disciplines]
+Moto vitesse
+Mini moto
+Supermotard
+Enduro
+Motocross
+
+[membre.titre]
+Vos avantages
+
+[membre.avantages]
+Partenaires — avantages négociés, pneumatiques et préparateurs
+Matériel — accès au matériel de l'association
+Atelier — pont professionnel et démonte-pneu
+Véhicules — mini moto, moto de vitesse et remorque à tarif membre
+Roulages — dates en avance, avance de fonds pour réserver (sous réserve)
+Accompagnement — aides mécaniques et techniques, découverte des disciplines
+
+[membre.cotisation]
+100 €
+
+[membre.cotisation_detail]
+saison octobre à octobre
+
+=== PHRASES D'INTRODUCTION DES ONGLETS ===
+
+[gazettes.intro]
+Toutes les nouvelles de l'association : comptes-rendus de roulages, résultats, prochaines dates.
+
+[echange.intro]
+Une question sur un roulage, une adhésion, un partenariat ? Discutez en direct avec le bureau ou rejoignez le groupe des membres.
+
+[inscriptions.intro]
+Rejoindre la ML Racing Team pour la prochaine saison.
+
+[roulages.intro]
+Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.
+
+[partenaires.intro]
+Merci à celles et ceux qui soutiennent l'association tout au long de la saison.
+
+[contact.intro]
+Questions, dossiers d'inscription, partenariats : une seule adresse.

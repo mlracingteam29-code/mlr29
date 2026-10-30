@@ -53,6 +53,13 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    - Les dates sont triées automatiquement ; les dates passées s'affichent en grisé.
    - "Commit changes..." puis "Commit changes".
 
+7. MODIFIER LES TEXTES DU SITE
+   - Ouvrez : https://github.com/mlracingteam29-code/mlr29/edit/main/textes.txt
+   - Changez le texte SOUS chaque titre entre crochets, ex. [accueil.texte]
+     (ne touchez pas aux titres entre crochets).
+   - Paragraphes : séparés par une ligne vide. Listes : "Titre — texte", une ligne par élément.
+   - "Commit changes..." puis "Commit changes".
+
 APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
    (Inutile pour les gazettes ajoutées dans Drive : elles s'affichent toutes seules.)

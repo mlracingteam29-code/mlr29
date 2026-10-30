@@ -31,16 +31,16 @@
 <div class="tab" data-tab="presentation">
 <div class="hero">
   <div class="wrap">
-    <div class="kicker">🏁 Qui sommes-nous ?</div>
+    <div class="kicker" data-txt="accueil.surtitre">🏁 Qui sommes-nous ?</div>
     <h1>ML <em>Racing</em><br>Team</h1>
-    <p class="lead"><strong>ML RACING TEAM, c'est avant tout une histoire de passion pour les sports mécaniques !</strong></p>
+    <p class="lead"><strong data-txt="accueil.accroche">ML RACING TEAM, c'est avant tout une histoire de passion pour les sports mécaniques !</strong></p>
   </div>
 </div>
 <div class="checker"></div>
 
 <section>
   <div class="wrap">
-    <article class="story">
+    <article class="story" data-txt="accueil.texte" data-mode="paras">
       <p>Notre association a pour objectif de faire vivre et de promouvoir le sport mécanique, aussi bien dans le cadre du loisir que de la compétition.</p>
       <p>Nous souhaitons réunir autour de nous des personnes qui partagent la même passion : pilotes, passionnés de mécanique, bénévoles, partenaires et amateurs de sports mécaniques.</p>
       <p>À travers ML RACING TEAM, nous voulons soutenir et développer des projets sportifs, permettre à cette passion de s'exprimer et faire découvrir notre univers au plus grand nombre.</p>
@@ -53,20 +53,20 @@
     <div class="grid two duo">
       <div class="card">
         <div class="num">NOS BUTS</div>
-        <h3>Ce qui nous anime</h3>
-        <div class="goals">
+        <h3 data-txt="buts.titre">Ce qui nous anime</h3>
+        <div class="goals" data-txt="buts.liste" data-mode="goals">
           <div><b>Découvrir</b><span>De nouvelles disciplines, de nouveaux circuits, de nouvelles sensations.</span></div>
           <div><b>Progresser</b><span>Rouler encadré, apprendre, gagner en confiance et en technique.</span></div>
           <div><b>S'amuser</b><span>Le plaisir avant tout, en loisir comme en compétition.</span></div>
           <div><b>Partager</b><span>L'entraide, la mécanique et les week-ends en équipe.</span></div>
         </div>
         <div class="group-label">Nos disciplines</div>
-        <div class="tags"><span>Moto vitesse</span><span>Mini moto</span><span>Supermotard</span><span>Enduro</span><span>Motocross</span></div>
+        <div class="tags" data-txt="buts.disciplines" data-mode="tags"><span>Moto vitesse</span><span>Mini moto</span><span>Supermotard</span><span>Enduro</span><span>Motocross</span></div>
       </div>
       <div class="card">
         <div class="num">ÊTRE MEMBRE</div>
-        <h3>Vos avantages</h3>
-        <ul class="perks">
+        <h3 data-txt="membre.titre">Vos avantages</h3>
+        <ul class="perks" data-txt="membre.avantages" data-mode="perks">
           <li><b>Partenaires</b> — avantages négociés, pneumatiques et préparateurs</li>
           <li><b>Matériel</b> — accès au matériel de l'association</li>
           <li><b>Atelier</b> — pont professionnel et démonte-pneu</li>
@@ -75,12 +75,12 @@
           <li><b>Accompagnement</b> — aides mécaniques et techniques, découverte des disciplines</li>
         </ul>
         <div class="join">
-          <div><span>Cotisation annuelle</span><strong>100 €</strong><small>saison octobre à octobre</small></div>
+          <div><span>Cotisation annuelle</span><strong data-txt="membre.cotisation">100 €</strong><small data-txt="membre.cotisation_detail">saison octobre à octobre</small></div>
           <button class="btn red" data-go="inscriptions">Adhérer</button>
         </div>
       </div>
     </div>
-    <div class="motto">🏁 ML RACING TEAM : <span>la passion nous rassemble, l'engagement nous fait avancer !</span></div>
+    <div class="motto" data-txt="accueil.devise" data-mode="motto">🏁 ML RACING TEAM : <span>la passion nous rassemble, l'engagement nous fait avancer !</span></div>
   </div>
 </section>
 </div>
@@ -90,7 +90,7 @@
   <div class="wrap">
     <div class="sec-head">
       <h2>Les gazettes</h2>
-      <p>Toutes les nouvelles de l'association : comptes-rendus de roulages, résultats, prochaines dates.</p>
+      <p data-txt="gazettes.intro">Toutes les nouvelles de l'association : comptes-rendus de roulages, résultats, prochaines dates.</p>
     </div>
     <div class="grid g3" id="gzList"></div>
     <div id="gzDrive" hidden>
@@ -106,7 +106,7 @@
   <div class="wrap">
     <div class="sec-head">
       <h2>Échanger en direct</h2>
-      <p>Une question sur un roulage, une adhésion, un partenariat ? Discutez en direct avec le bureau ou rejoignez le groupe des membres.</p>
+      <p data-txt="echange.intro">Une question sur un roulage, une adhésion, un partenariat ? Discutez en direct avec le bureau ou rejoignez le groupe des membres.</p>
     </div>
     <div class="grid g3">
       <div class="card">
@@ -139,7 +139,7 @@
   <div class="wrap">
     <div class="sec-head">
       <h2>Inscriptions</h2>
-      <p>Rejoindre la ML Racing Team pour la prochaine saison.</p>
+      <p data-txt="inscriptions.intro">Rejoindre la ML Racing Team pour la prochaine saison.</p>
     </div>
     <div class="soon">
       <div class="card">
@@ -174,7 +174,7 @@
   <div class="wrap">
     <div class="sec-head">
       <h2>Dates roulages</h2>
-      <p>Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.</p>
+      <p data-txt="roulages.intro">Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.</p>
     </div>
     <div class="dates" id="dates"></div>
     <div class="empty" id="datesEmpty">Les dates de la saison 2027 arrivent très bientôt. Les membres les reçoivent en avance !</div>
@@ -190,7 +190,7 @@
   <div class="wrap">
     <div class="sec-head">
       <h2>Nos partenaires</h2>
-      <p>Merci à celles et ceux qui soutiennent l'association tout au long de la saison.</p>
+      <p data-txt="partenaires.intro">Merci à celles et ceux qui soutiennent l'association tout au long de la saison.</p>
     </div>
     <div class="partners" id="partners">
       <div class="partner">E.Leclerc Lannilis</div>
@@ -222,7 +222,7 @@
   <div class="wrap">
     <div class="sec-head">
       <h2>Contact</h2>
-      <p>Questions, dossiers d'inscription, partenariats : une seule adresse.</p>
+      <p data-txt="contact.intro">Questions, dossiers d'inscription, partenariats : une seule adresse.</p>
     </div>
     <div class="mailbox">
       <div style="flex:1;min-width:240px">
@@ -304,6 +304,31 @@ $("#burger").addEventListener("click",()=>$("#links").classList.toggle("open"));
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
   try{ await navigator.clipboard.writeText(CONTACT); toast("Adresse copiée ✓"); }catch(e){ toast(CONTACT); }
 }));
+
+/* Textes : lus depuis textes.txt (modifiable sur GitHub) */
+fetch("textes.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+  const T={}; let k=null;
+  t.split(/\r?\n/).forEach(line=>{
+    const m=line.match(/^\s*\[([a-z0-9_.]+)\]\s*$/i);
+    if(m){ k=m[1]; T[k]=[]; return; }
+    if(/^\s*#/.test(line) || /^\s*===.*===\s*$/.test(line)) return;
+    if(k) T[k].push(line);
+  });
+  const lines=k=>(T[k]||[]).map(l=>l.trim()).filter(Boolean);
+  const split=l=>{ const i=l.search(/\s[—–-]\s/); return i<0?[l,""]:[l.slice(0,i).trim(),l.slice(i).replace(/^\s[—–-]\s/,"").trim()]; };
+  document.querySelectorAll("[data-txt]").forEach(el=>{
+    const key=el.dataset.txt; if(!(key in T)) return;
+    const raw=T[key].join("\n").trim(); if(!raw) return;
+    const mode=el.dataset.mode;
+    if(mode==="paras"){ el.innerHTML=""; raw.split(/\n\s*\n/).forEach(p=>{ const e=document.createElement("p"); e.textContent=p.replace(/\s*\n\s*/g," ").trim(); el.appendChild(e); }); }
+    else if(mode==="motto"){ const one=raw.replace(/\s*\n\s*/g," "); const i=one.indexOf(":"); el.innerHTML="";
+      el.append(document.createTextNode(i<0?"":one.slice(0,i+1)+" ")); const sp=document.createElement("span"); sp.textContent=i<0?one:one.slice(i+1).trim(); el.appendChild(sp); }
+    else if(mode==="goals"){ el.innerHTML=""; lines(key).forEach(l=>{ const [a,b]=split(l); const d=document.createElement("div"),x=document.createElement("b"),y=document.createElement("span"); x.textContent=a; y.textContent=b; d.append(x,y); el.appendChild(d); }); }
+    else if(mode==="perks"){ el.innerHTML=""; lines(key).forEach(l=>{ const [a,b]=split(l); const li=document.createElement("li"),x=document.createElement("b"); x.textContent=a; li.appendChild(x); if(b) li.append(document.createTextNode(" — "+b)); el.appendChild(li); }); }
+    else if(mode==="tags"){ el.innerHTML=""; lines(key).join(",").split(",").map(x=>x.trim()).filter(Boolean).forEach(x=>{ const sp=document.createElement("span"); sp.textContent=x; el.appendChild(sp); }); }
+    else el.textContent=raw.replace(/\s*\n\s*/g," ");
+  });
+}).catch(()=>{});
 
 /* Partenaires : lus depuis partenaires.txt (modifiable sur GitHub) */
 fetch("partenaires.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
