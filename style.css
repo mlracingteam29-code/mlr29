@@ -108,9 +108,9 @@
   ul.steps li{margin:4px 0}
 
   /* PARTNERS */
-  .partners{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
-  .partner{display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center;font-family:"Saira Condensed";font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
-  .partner.first{grid-column:1/-1;font-size:26px;border-color:var(--red);background:linear-gradient(90deg,#2a0f0e,var(--card))}
+  .partners{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .partner{display:flex;align-items:center;justify-content:center;min-height:54px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:center;font-family:"Saira Condensed";font-weight:600;font-size:15px;line-height:1.15;text-transform:uppercase;letter-spacing:.03em}
+  .partner.first{border-color:var(--red);background:#2a0f0e}
 
   /* CONTACT */
   .mailbox{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
