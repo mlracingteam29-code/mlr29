@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML Racing Team — Association moto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0d0f; --bg2:#151518; --card:#1b1b1f; --line:#2a2a30;
+    --txt:#f2f2f2; --muted:#a3a3ad; --red:#e10600; --red2:#ff2a1f; --ok:#2fbf71;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:"Saira",system-ui,sans-serif;line-height:1.55}
+  h1,h2,h3{font-family:"Saira Condensed",sans-serif;text-transform:uppercase;letter-spacing:.02em;line-height:1.05;margin:0}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  .checker{height:14px;background:
+      conic-gradient(#fff 25%,#111 0 50%,#fff 0 75%,#111 0) 0 0/14px 14px;opacity:.9}
+
+  /* NAV */
+  header.nav{position:sticky;top:0;z-index:20;background:rgba(13,13,15,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:"Saira Condensed";font-weight:800;font-size:22px;text-transform:uppercase;cursor:pointer}
+  .logo .badge{background:var(--red);color:#fff;padding:2px 8px;border-radius:6px;transform:skewX(-12deg);display:inline-block}
+  .logo .badge span{display:inline-block;transform:skewX(12deg)}
+  nav.links{display:flex;gap:4px;flex-wrap:wrap}
+  nav.links button{background:none;border:0;color:var(--muted);font:500 14px "Saira";padding:8px 10px;border-radius:8px;cursor:pointer}
+  nav.links button:hover{color:#fff;background:var(--bg2)}
+  .burger{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:6px 10px;font-size:18px;cursor:pointer}
+  @media(max-width:860px){
+    .burger{display:block}
+    nav.links{display:none;position:absolute;top:62px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);flex-direction:column;padding:10px 20px}
+    nav.links.open{display:flex}
+    nav.links button{text-align:left;font-size:16px}
+  }
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;padding:90px 0 70px;background:
+     radial-gradient(900px 400px at 85% 10%,rgba(225,6,0,.35),transparent 60%),
+     linear-gradient(180deg,#111114,#0d0d0f)}
+  .hero::after{content:"";position:absolute;right:-120px;top:40px;width:520px;height:520px;
+     background:repeating-linear-gradient(115deg,transparent 0 26px,rgba(255,255,255,.04) 26px 30px);pointer-events:none}
+  .kicker{color:var(--red2);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:13px}
+  .hero h1{font-size:clamp(48px,9vw,104px);font-weight:800;margin:10px 0 16px}
+  .hero h1 em{font-style:normal;color:var(--red)}
+  .hero p.lead{max-width:600px;color:#d6d6dc;font-size:18px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:600 15px "Saira";padding:12px 20px;border-radius:10px;text-decoration:none}
+  .btn.red{background:var(--red);color:#fff}
+  .btn.red:hover{background:var(--red2)}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid #444}
+  .btn.ghost:hover{border-color:#fff}
+  .btn.small{padding:8px 12px;font-size:13px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  section{padding:72px 0;border-top:1px solid var(--line)}
+  section:nth-of-type(even){background:var(--bg2)}
+  .sec-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:28px;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(34px,5vw,52px);font-weight:800}
+  .sec-head h2::before{content:"";display:inline-block;width:10px;height:.8em;background:var(--red);margin-right:12px;transform:skewX(-14deg)}
+  .sec-head p{color:var(--muted);max-width:520px;margin:0}
+
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .card h3{font-size:22px;margin-bottom:8px}
+  .card p{margin:0;color:#cfcfd6}
+  .num{font-family:"Saira Condensed";font-weight:800;color:var(--red);font-size:15px;letter-spacing:.1em}
+
+  /* GAZETTES */
+  .gz{display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+  .gz .tag{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+  .gz h3{font-size:24px}
+  .gz .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+  .gz::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--red)}
+  .empty{border:1px dashed #3a3a42;border-radius:var(--radius);padding:30px;text-align:center;color:var(--muted)}
+  .admin{margin-top:22px;border:1px solid #4a1a18;background:#1a1110}
+  .admin h3{font-size:18px;color:var(--red2)}
+  form .fields{display:grid;grid-template-columns:2fr 1fr 2fr auto;gap:10px;margin-top:12px;align-items:end}
+  @media(max-width:760px){form .fields{grid-template-columns:1fr}}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+  input,textarea{width:100%;background:#0f0f12;border:1px solid var(--line);color:#fff;border-radius:9px;padding:10px 12px;font:15px "Saira"}
+  input:focus,textarea:focus{outline:2px solid var(--red);border-color:transparent}
+  .hint{font-size:13px;color:var(--muted);margin-top:8px}
+
+  /* CHAT */
+  .chat{display:grid;grid-template-columns:1fr 280px;gap:16px}
+  @media(max-width:860px){.chat{grid-template-columns:1fr}}
+  .feed{height:440px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#0f0f12;border:1px solid var(--line);border-radius:var(--radius)}
+  .msg{max-width:80%;background:var(--card);border:1px solid var(--line);border-radius:12px 12px 12px 4px;padding:8px 12px}
+  .msg.me{align-self:flex-end;background:#2a0f0e;border-color:#5a1a17;border-radius:12px 12px 4px 12px}
+  .msg .who{font-size:12px;color:var(--red2);font-weight:600;display:flex;gap:8px;align-items:center}
+  .msg .who time{color:var(--muted);font-weight:400}
+  .msg .t{white-space:pre-wrap;word-wrap:break-word}
+  .msg .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:12px;margin-left:auto;padding:0}
+  .msg .del:hover{color:var(--red2)}
+  .composer{display:flex;gap:8px;margin-top:10px}
+  .composer textarea{resize:none;height:48px}
+  .status{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .dot{width:9px;height:9px;border-radius:50%;background:#666}
+  .dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(47,191,113,.15)}
+  .side .card{padding:18px}
+  .side .card + .card{margin-top:12px}
+  .notice{font-size:14px;color:#e5c07b;background:#211c10;border:1px solid #4a3d18;border-radius:10px;padding:10px 12px;margin-top:10px}
+
+  /* INSCRIPTION */
+  .soon{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+  @media(max-width:860px){.soon{grid-template-columns:1fr}}
+  .pill{display:inline-block;background:var(--red);color:#fff;font:600 12px "Saira";text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:99px;margin-bottom:12px}
+  ul.steps{margin:12px 0 0;padding-left:18px;color:#cfcfd6}
+  ul.steps li{margin:4px 0}
+
+  /* PARTNERS */
+  .partners{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .partner{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center;font-family:"Saira Condensed";font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
+  .partner.first{grid-column:1/-1;font-size:26px;border-color:var(--red);background:linear-gradient(90deg,#2a0f0e,var(--card))}
+
+  /* CONTACT */
+  .mailbox{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .mailbox .addr{font-family:"Saira Condensed";font-weight:800;font-size:clamp(22px,4vw,34px);letter-spacing:.01em;user-select:all;word-break:break-all}
+  footer{padding:30px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:#fff;color:#111;padding:10px 16px;border-radius:10px;font-weight:600;transition:transform .25s,opacity .25s;z-index:50;opacity:0;pointer-events:none}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  [hidden]{display:none!important}
+  .drive{background:#fff;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+  .drive iframe{display:block;width:100%;height:520px;border:0}
+  .drive.tall iframe{height:1100px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="logo" data-go="accueil"><span class="badge"><span>ML</span></span> Racing Team</div>
+    <button class="burger" id="burger" aria-label="Menu">☰</button>
+    <nav class="links" id="links">
+      <button data-go="association">L'association</button>
+      <button data-go="gazettes">Gazettes</button>
+      <button data-go="discussion">Échanger</button>
+      <button data-go="inscription">Inscription</button>
+      <button data-go="partenaires">Partenaires</button>
+      <button data-go="contact">Contact</button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="accueil">
+  <div class="wrap">
+    <div class="kicker">Association moto · Circuit · Mini moto · Enduro</div>
+    <h1>ML <em>Racing</em><br>Team</h1>
+    <p class="lead">Rouler ensemble, progresser en sécurité et vivre la piste en équipe. Retrouvez ici nos gazettes, échangez avec les membres et contactez-nous.</p>
+    <div class="cta">
+      <button class="btn red" data-go="gazettes">Lire les gazettes</button>
+      <button class="btn ghost" data-go="discussion">Échanger en direct</button>
+      <button class="btn ghost" data-go="contact">Nous contacter</button>
+    </div>
+  </div>
+</div>
+<div class="checker"></div>
+
+<!-- ASSOCIATION -->
+<section id="association">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>L'association</h2>
+      <p>De la mini moto à la grosse cylindrée, de la piste à l'enduro : une saison 2026 bien remplie.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card"><div class="num">01 · MINI MOTO</div><h3>Roulages au Mans</h3><p>Des sessions en mini moto pour apprendre, s'amuser et travailler sa trajectoire.</p></div>
+      <div class="card"><div class="num">02 · CIRCUIT</div><h3>Le Mans en grosse moto</h3><p>Découverte du circuit du Mans et entraînements réguliers en R7.</p></div>
+      <div class="card"><div class="num">03 · COURSE</div><h3>Ultimate 700</h3><p>Participation à l'Ultimate 700 au Vigeant, et accompagnement des membres vers leur première course officielle.</p></div>
+      <div class="card"><div class="num">04 · ENDURO</div><h3>Développer l'enduro</h3><p>Recherche de terrains privés, journée d'essai Stark et ouverture de la pratique aux plus jeunes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAZETTES -->
+<section id="gazettes">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Les gazettes</h2>
+      <p>Toutes les nouvelles de l'association : comptes-rendus de roulages, résultats, prochaines dates.</p>
+    </div>
+    <div class="grid g3" id="gzList"></div>
+    <div id="gzDrive" hidden>
+      <div class="drive"><iframe id="gzFrame" title="Gazettes ML Racing Team" loading="lazy"></iframe></div>
+      <div class="cta" style="margin-top:14px"><a class="btn ghost small" id="gzOpen" target="_blank" rel="noopener">Ouvrir le dossier des gazettes ↗</a></div>
+    </div>
+    <div class="empty" id="gzEmpty">Aucune gazette publiée pour le moment. La première arrive bientôt !</div>
+  </div>
+</section>
+
+<!-- DISCUSSION -->
+<section id="discussion">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Échanger en direct</h2>
+      <p>Une question sur un roulage, une adhésion, un partenariat ? Discutez en direct avec le bureau ou rejoignez le groupe des membres.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="num">CHAT EN DIRECT</div>
+        <h3>Parler au bureau</h3>
+        <p id="chatTxt">Cliquez sur la bulle en bas à droite de l'écran : un membre du bureau vous répond dès qu'il est disponible. Sinon, laissez votre message et votre e-mail.</p>
+        <div class="cta" style="margin-top:14px"><button class="btn red small" id="chatBtn">Ouvrir le chat</button></div>
+      </div>
+      <div class="card" id="groupCard">
+        <div class="num">GROUPE DES MEMBRES</div>
+        <h3>Entre motards</h3>
+        <p>Covoiturage, chronos, sorties : échangez avec les autres membres de l'association.</p>
+        <div class="cta" style="margin-top:14px" id="groupBtns"></div>
+      </div>
+      <div class="card">
+        <div class="num">PAR E-MAIL</div>
+        <h3>Écrire à l'association</h3>
+        <p style="font-weight:600;word-break:break-all;user-select:all">mlracingteam29@gmail.com</p>
+        <div class="cta" style="margin-top:14px">
+          <button class="btn red small" data-copy>Copier l'adresse</button>
+          <a class="btn ghost small" href="mailto:mlracingteam29@gmail.com">Écrire</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSCRIPTION -->
+<section id="inscription">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Inscription</h2>
+      <p>Rejoindre la ML Racing Team pour la prochaine saison.</p>
+    </div>
+    <div id="formBox" hidden><div class="drive tall"><iframe id="formFrame" title="Formulaire d'inscription" loading="lazy"></iframe></div></div>
+    <div class="soon" id="soonBox">
+      <div class="card">
+        <span class="pill">Bientôt en ligne</span>
+        <h3>Formulaire d'inscription</h3>
+        <p>Le formulaire d'adhésion en ligne arrive prochainement sur cette page.</p>
+        <ul class="steps">
+          <li>Remplir le formulaire d'adhésion</li>
+          <li>Joindre les pièces du dossier</li>
+          <li>Régler la cotisation</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>En attendant</h3>
+        <p>Envoyez votre dossier ou vos questions par e-mail :</p>
+        <p style="margin-top:10px;font-weight:600;font-size:18px;user-select:all;word-break:break-all">mlracingteam29@gmail.com</p>
+        <div class="cta" style="margin-top:14px">
+          <button class="btn red small" data-copy>Copier l'adresse</button>
+          <a class="btn ghost small" href="mailto:mlracingteam29@gmail.com?subject=Dossier%20d'inscription%20ML%20Racing%20Team">Ouvrir ma messagerie</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTENAIRES -->
+<section id="partenaires">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Nos partenaires</h2>
+      <p>Merci à celles et ceux qui soutiennent l'association tout au long de la saison.</p>
+    </div>
+    <div class="partners">
+      <div class="partner first">E.Leclerc Lannilis</div>
+      <div class="partner">Printfloor</div>
+      <div class="partner">Matt Racing</div>
+      <div class="partner">Aria Energies</div>
+      <div class="partner">Imprimerie Cerid</div>
+      <div class="partner">S2 Concept</div>
+      <div class="partner">SKdesign</div>
+      <div class="partner">D-Photos</div>
+      <div class="partner">PCB Publicité</div>
+      <div class="partner">ARP Exhaust</div>
+      <div class="partner">Carrosserie Le Frout</div>
+      <div class="partner">SARL Ludovic Garnier</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Contact</h2>
+      <p>Questions, dossiers d'inscription, partenariats : une seule adresse.</p>
+    </div>
+    <div class="mailbox">
+      <div style="flex:1;min-width:240px">
+        <label>E-mail de l'association</label>
+        <div class="addr">mlracingteam29@gmail.com</div>
+      </div>
+      <button class="btn red" data-copy>Copier l'adresse</button>
+      <a class="btn ghost" href="mailto:mlracingteam29@gmail.com">Écrire un e-mail</a>
+    </div>
+    <p class="hint" style="margin-top:14px">Retrouvez aussi l'association sur Facebook : <strong>ML Racing Team</strong>.</p>
+  </div>
+</section>
+
+<div class="checker"></div>
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> ML Racing Team — Association moto</span>
+    <span>mlracingteam29@gmail.com</span>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
+   (voir le fichier MISE-EN-LIGNE.txt)
+   ===================================================================== */
+const REGLAGES = {
+  // 1) Gazettes : identifiant du dossier Google Drive partagé
+  //    ("Tous les utilisateurs disposant du lien"). Ex. "1AbCdEfGh..."
+  dossierGazettesDrive: "",
+
+  // 2) Chat en direct : lien du widget tawk.to (Administration > Widget de chat)
+  //    Ex. "https://embed.tawk.to/65xxxxxxxxxxxx/1hxxxxxxx"
+  tawkTo: "",
+
+  // 3) Groupe des membres (facultatif) : liens d'invitation
+  groupeWhatsApp: "",   // ex. "https://chat.whatsapp.com/..."
+  pageFacebook: "",     // ex. "https://www.facebook.com/..."
+
+  // 4) Inscription : lien du Google Form (Envoyer > <> Intégrer > lien src)
+  //    Ex. "https://docs.google.com/forms/d/e/XXXX/viewform?embedded=true"
+  formulaireInscription: "",
+
+  // Gazettes déposées directement dans le dossier "gazettes" du site (facultatif)
+  // { titre: "Gazette n°1 — Bilan de saison", mois: "2026-11", fichier: "gazettes/gazette-1.pdf" },
+  gazettes: [
+  ]
+};
+
+const CONTACT = "mlracingteam29@gmail.com";
+const $ = s => document.querySelector(s);
+const toastEl = $("#toast");
+function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove("show"),2200); }
+$("#year").textContent = new Date().getFullYear();
+
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{
+  const el=document.getElementById(b.dataset.go); if(el) el.scrollIntoView({behavior:"smooth"});
+  $("#links").classList.remove("open");
+}));
+$("#burger").addEventListener("click",()=>$("#links").classList.toggle("open"));
+document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
+  try{ await navigator.clipboard.writeText(CONTACT); toast("Adresse copiée ✓"); }catch(e){ toast(CONTACT); }
+}));
+
+/* Gazettes */
+const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+function fmtMonth(m){ if(!m) return ""; const [y,mo]=String(m).split("-"); return (MOIS[parseInt(mo,10)-1]||"")+" "+(y||""); }
+(function(){
+  const list=$("#gzList"); const items=[...REGLAGES.gazettes].sort((a,b)=>String(b.mois||"").localeCompare(String(a.mois||"")));
+  items.forEach(g=>{
+    const c=document.createElement("article"); c.className="card gz";
+    const tag=document.createElement("div"); tag.className="tag"; tag.textContent="Gazette · "+fmtMonth(g.mois);
+    const h=document.createElement("h3"); h.textContent=g.titre||"Gazette";
+    const row=document.createElement("div"); row.className="row";
+    const a=document.createElement("a"); a.className="btn red small"; a.textContent="Lire la gazette"; a.href=g.fichier; a.target="_blank"; a.rel="noopener";
+    row.appendChild(a); c.append(tag,h,row); list.appendChild(c);
+  });
+  const id=REGLAGES.dossierGazettesDrive.trim();
+  if(id){
+    $("#gzFrame").src="https://drive.google.com/embeddedfolderview?id="+encodeURIComponent(id)+"#grid";
+    $("#gzOpen").href="https://drive.google.com/drive/folders/"+encodeURIComponent(id);
+    $("#gzDrive").hidden=false;
+  }
+  $("#gzEmpty").hidden = items.length>0 || !!id;
+})();
+
+/* Chat tawk.to */
+(function(){
+  const src=REGLAGES.tawkTo.trim();
+  if(src){
+    window.Tawk_API=window.Tawk_API||{}; window.Tawk_LoadStart=new Date();
+    const s=document.createElement("script"); s.async=true; s.src=src; s.charset="UTF-8"; s.setAttribute("crossorigin","*");
+    document.body.appendChild(s);
+    $("#chatBtn").onclick=()=>{ if(window.Tawk_API && typeof Tawk_API.maximize==="function") Tawk_API.maximize(); else toast("Le chat se charge…"); };
+  } else {
+    $("#chatTxt").textContent="Le chat en direct arrive très bientôt. En attendant, écrivez-nous par e-mail : nous répondons rapidement.";
+    $("#chatBtn").textContent="Nous écrire"; $("#chatBtn").onclick=()=>{ location.href="mailto:"+CONTACT; };
+  }
+  const g=$("#groupBtns");
+  if(REGLAGES.groupeWhatsApp){ const a=document.createElement("a"); a.className="btn red small"; a.textContent="Rejoindre le groupe WhatsApp"; a.href=REGLAGES.groupeWhatsApp; a.target="_blank"; a.rel="noopener"; g.appendChild(a); }
+  if(REGLAGES.pageFacebook){ const a=document.createElement("a"); a.className="btn ghost small"; a.textContent="Page Facebook"; a.href=REGLAGES.pageFacebook; a.target="_blank"; a.rel="noopener"; g.appendChild(a); }
+  if(!g.children.length){ const p=document.createElement("p"); p.className="hint"; p.textContent="Demandez le lien du groupe au bureau : "+CONTACT; g.appendChild(p); }
+})();
+
+/* Formulaire d'inscription */
+(function(){
+  const f=REGLAGES.formulaireInscription.trim();
+  if(f){ $("#formFrame").src=f; $("#formBox").hidden=false; $("#soonBox").hidden=true; }
+})();
+</script>
+</body>
+</html>

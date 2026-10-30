@@ -1,0 +1,42 @@
+SITE ML RACING TEAM — MISE EN LIGNE (gratuit, ouvert à tous)
+==============================================================
+
+Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
+
+1. METTRE LE SITE EN LIGNE (5 minutes)
+   - Décompressez le fichier zip : vous obtenez un dossier "site-ml-racing-team".
+   - Allez sur https://app.netlify.com/drop
+   - Créez un compte gratuit (bouton "Sign up" > Google > mlracingteam29@gmail.com).
+   - Glissez le dossier "site-ml-racing-team" dans la zone de dépôt.
+   - Le site est en ligne avec une adresse du type https://xxxx.netlify.app
+   - Pour une adresse plus jolie : Site configuration > Change site name > "mlracingteam"
+     (=> https://mlracingteam.netlify.app si le nom est libre).
+
+2. LES GAZETTES (Google Drive)
+   - Dans Google Drive, créez un dossier "Gazettes ML Racing Team".
+   - Clic droit > Partager > Accès général : "Tous les utilisateurs disposant du lien" (Lecteur).
+   - Copiez le lien. L'identifiant, c'est la suite de lettres après /folders/
+     ex. https://drive.google.com/drive/folders/1AbCdEf123  =>  1AbCdEf123
+   - Ouvrez index.html avec le Bloc-notes, cherchez  dossierGazettesDrive: ""
+     et collez l'identifiant entre les guillemets.
+   - Ensuite, pour publier une gazette : déposez simplement le PDF dans ce dossier Drive.
+     Elle apparaît automatiquement sur le site, sans rien modifier.
+
+3. LE CHAT EN DIRECT (tawk.to, gratuit)
+   - Créez un compte sur https://www.tawk.to avec mlracingteam29@gmail.com.
+   - Administration > Canaux > Widget de chat : copiez l'adresse qui commence par
+     https://embed.tawk.to/...  (dans le code fourni, c'est la ligne "s1.src=").
+   - Collez-la dans index.html :  tawkTo: "https://embed.tawk.to/....",
+   - Installez l'appli tawk.to sur votre téléphone pour répondre aux visiteurs.
+   - Facultatif : collez le lien d'invitation d'un groupe WhatsApp dans  groupeWhatsApp: ""
+     et le lien de la page Facebook dans  pageFacebook: ""
+
+4. LE FORMULAIRE D'INSCRIPTION (plus tard, Google Forms)
+   - Créez le formulaire sur https://forms.google.com
+   - Envoyer > onglet < > (Intégrer) : copiez l'adresse entre les guillemets de src="..."
+   - Collez-la dans  formulaireInscription: ""
+   - Les réponses arrivent dans Google Forms (activez la notification par e-mail).
+
+APRÈS CHAQUE MODIFICATION DE index.html
+   - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
+   (Inutile pour les gazettes ajoutées dans Drive : elles s'affichent toutes seules.)
