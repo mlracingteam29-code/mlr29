@@ -146,3 +146,20 @@
   .motto{margin-top:34px;padding:26px 28px;border-left:6px solid var(--red);background:var(--card);border-radius:0 var(--radius) var(--radius) 0;
      font-family:"Saira Condensed";font-weight:800;text-transform:uppercase;font-size:clamp(22px,3.4vw,34px);line-height:1.15}
   .motto span{color:var(--red2)}
+
+  .duo{margin-top:34px}
+  .duo .card h3{margin:6px 0 14px}
+  .goals{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .goals div{background:#0f0f12;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;padding:12px 14px}
+  .goals b{display:block;font-family:"Saira Condensed";text-transform:uppercase;font-size:19px;letter-spacing:.03em}
+  .goals span{font-size:14px;color:#bdbdc6;line-height:1.4;display:block;margin-top:2px}
+  @media(max-width:480px){.goals{grid-template-columns:1fr}}
+  .group-label{margin-top:16px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .perks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .perks li{position:relative;padding-left:22px;color:#cfcfd6;font-size:15px;line-height:1.45}
+  .perks li::before{content:"";position:absolute;left:0;top:.45em;width:10px;height:10px;background:var(--red);transform:skewX(-14deg)}
+  .perks b{color:#fff}
+  .join{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+  .join span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .join strong{font-family:"Saira Condensed";font-size:32px;line-height:1}
+  .join small{display:block;color:var(--muted);font-size:12px}
