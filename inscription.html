@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inscription saison 2027 — ML Racing Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .page{padding:48px 0 80px}
+  .page h1{font-size:clamp(38px,7vw,64px);font-weight:800;margin:8px 0 10px}
+  .page h1 em{font-style:normal;color:var(--red)}
+  .intro{color:#d6d6dc;max-width:720px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+  .meta span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:14px}
+  fieldset{border:1px solid var(--line);background:var(--card);border-radius:var(--radius);padding:24px;margin:22px 0 0}
+  legend{font-family:"Saira Condensed";font-weight:800;text-transform:uppercase;font-size:22px;padding:0 10px;letter-spacing:.02em}
+  legend b{color:var(--red);margin-right:6px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.row2{grid-template-columns:1fr}}
+  .f{margin-top:14px}
+  .row2{margin-top:14px}
+  fieldset > .row2:first-of-type{margin-top:0}
+  .row2 .f{margin-top:0}
+  .req{color:var(--red2)}
+  textarea{min-height:84px;resize:vertical}
+  .checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .checks label,.radio label{display:inline-flex;align-items:center;gap:8px;margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--txt);
+     background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer}
+  .checks label:has(input:checked),.radio label:has(input:checked){border-color:var(--red);background:#2a0f0e}
+  .checks input,.radio input{width:auto;accent-color:var(--red);margin:0}
+  .group-title{font-weight:600;margin-top:18px;font-size:15px}
+  .sub{font-size:13px;color:var(--muted);margin-top:2px}
+  details{background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:12px}
+  details summary{cursor:pointer;font-weight:600}
+  details h4{font-family:"Saira Condensed";text-transform:uppercase;font-size:17px;margin:16px 0 4px;color:var(--red2)}
+  details p{font-size:14px;color:#cfcfd6;margin:6px 0}
+  .agree{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:15px;text-transform:none;letter-spacing:0;color:var(--txt)}
+  .agree input{width:20px;height:20px;accent-color:var(--red);flex:none;margin-top:2px}
+  .total{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:6px}
+  .total strong{font-family:"Saira Condensed";font-size:28px;color:#fff}
+  .submitbar{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .err{color:#ff8a80;font-size:14px}
+  .hp{position:absolute;left:-5000px}
+  .back{color:var(--muted);text-decoration:none;font-size:14px}
+  .back:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="index.html" style="text-decoration:none"><span class="badge"><span>ML</span></span> Racing Team</a>
+    <a class="back" href="index.html">← Retour au site</a>
+  </div>
+</header>
+<div class="checker"></div>
+
+<main class="page">
+  <div class="wrap">
+    <div class="kicker">Bulletin d'inscription</div>
+    <h1>Saison <em>2027</em></h1>
+    <p class="intro">Association sportive dans le domaine du sport mécanique, pour découvrir, progresser, s'amuser et partager. Disciplines : moto vitesse, mini moto, supermotard, enduro, motocross.</p>
+    <div class="meta"><span>Validité : octobre 2026 – octobre 2027</span><span>Cotisation : 100,00 €</span><span>Copie envoyée par e-mail</span></div>
+
+    <form id="form" action="https://formsubmit.co/mlracingteam29@gmail.com" method="POST" novalidate>
+      <!-- Réglages d'envoi (FormSubmit) -->
+      <input type="hidden" name="_subject" id="_subject" value="Nouvelle inscription ML Racing Team">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" id="_next" value="">
+      <input type="hidden" name="_autoresponse" value="Bonjour, merci pour votre inscription à l'association ML Racing Team pour la saison 2027 (octobre 2026 – octobre 2027). Votre dossier a bien été transmis au bureau, qui reviendra vers vous rapidement. Rappel : la cotisation annuelle est de 100,00 € (chèque à l'ordre de l'association, virement ou espèces), à régler au plus tard le 30 octobre. Vous trouverez ci-dessous une copie de votre dossier. Sportivement, l'équipe ML Racing Team — mlracingteam29@gmail.com">
+      <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off">
+      <input type="hidden" name="Saison" value="2027 (octobre 2026 – octobre 2027)">
+
+      <fieldset>
+        <legend><b>01</b>Coordonnées de l'adhérent</legend>
+        <div class="row2">
+          <div class="f"><label for="nom">Nom <span class="req">*</span></label><input id="nom" name="Nom" required autocomplete="family-name"></div>
+          <div class="f"><label for="prenom">Prénom <span class="req">*</span></label><input id="prenom" name="Prénom" required autocomplete="given-name"></div>
+        </div>
+        <div class="row2">
+          <div class="f"><label for="tel">N° de téléphone <span class="req">*</span></label><input id="tel" name="Téléphone" type="tel" required autocomplete="tel" placeholder="06 12 34 56 78"></div>
+          <div class="f"><label for="email">Adresse mail <span class="req">*</span></label><input id="email" name="email" type="email" required autocomplete="email" placeholder="vous@exemple.fr"></div>
+        </div>
+        <div class="f"><label for="adresse">Adresse de domicile <span class="req">*</span></label><textarea id="adresse" name="Adresse" required autocomplete="street-address" placeholder="N°, rue, code postal, ville"></textarea></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><b>02</b>Fiche pilote</legend>
+        <div class="row2">
+          <div class="f"><label for="num">Numéro de course</label><input id="num" name="Numéro de course" placeholder="Ex. 29"></div>
+          <div class="f"><label for="motos">Moto(s)</label><input id="motos" name="Moto(s)" placeholder="Ex. Yamaha R7, YCF 125…"></div>
+        </div>
+
+        <div class="group-title">Discipline(s) souhaitée(s)</div>
+        <div class="checks" data-group="Disciplines souhaitées">
+          <label><input type="checkbox" value="Vitesse">Vitesse</label>
+          <label><input type="checkbox" value="Enduro">Enduro</label>
+          <label><input type="checkbox" value="Mini Moto">Mini Moto</label>
+          <label><input type="checkbox" value="Motocross">Motocross</label>
+          <label><input type="checkbox" value="Supermotard">Supermotard</label>
+        </div>
+
+        <div class="f" style="margin-top:16px"><label for="souhaits">Souhaits divers</label><textarea id="souhaits" name="Souhaits divers"></textarea></div>
+
+        <div class="group-title">Intérêt pour</div>
+        <div class="checks" data-group="Intérêt pour">
+          <label><input type="checkbox" value="Courses – vitesse">Courses – vitesse</label>
+          <label><input type="checkbox" value="Courses – endurance twin">Courses – endurance twin</label>
+          <label><input type="checkbox" value="Roulage moto vitesse gros cube">Roulage vitesse gros cube</label>
+          <label><input type="checkbox" value="Roulage moto enduro">Roulage enduro</label>
+          <label><input type="checkbox" value="Roulage mini moto">Roulage mini moto</label>
+        </div>
+
+        <div class="group-title">Sport complémentaire avec la team</div>
+        <div class="checks" data-group="Sport complémentaire">
+          <label><input type="checkbox" value="VTT">VTT</label>
+          <label><input type="checkbox" value="Sport en extérieur">Sport en extérieur</label>
+          <label><input type="checkbox" value="Randonnée Quad">Randonnée Quad</label>
+        </div>
+
+        <div class="group-title">Envie d'aller sur un event</div>
+        <div class="checks" data-group="Events souhaités">
+          <label><input type="checkbox" value="Bol d'or">Bol d'or</label>
+          <label><input type="checkbox" value="Course FSBK">Une course de FSBK</label>
+          <label><input type="checkbox" value="Course WSBK France">Une course de WSBK France</label>
+          <label><input type="checkbox" value="GP à l'étranger">Un GP à l'étranger</label>
+          <label><input type="checkbox" value="Salon de la moto en Espagne">Salon de la moto en Espagne</label>
+        </div>
+        <div class="f" style="margin-top:10px"><label for="autreEvent">Autre event</label><input id="autreEvent" name="Autre event"></div>
+
+        <div class="f"><label for="divers">Divers</label><textarea id="divers" name="Divers"></textarea></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><b>03</b>Engagement et règlement</legend>
+        <p style="margin:0;color:#cfcfd6">J'atteste adhérer à l'association ML Racing Team et reconnais avoir pris connaissance du règlement intérieur de l'association.</p>
+
+        <details>
+          <summary>Lire le règlement intérieur</summary>
+          <p>Les modalités d'organisation de l'assemblée générale, du conseil d'administration et des autres organes de direction ne sont pas fixées ; il en convient au Président de fixer ou non la ou les dates.</p>
+          <h4>Les règles d'adhésion et d'exclusion</h4>
+          <p>L'association peut à tout moment accueillir de nouveaux membres. Ceux-ci devront respecter la procédure d'admission suivante. Dans le but de valider si le candidat répond aux valeurs de l'association, les conditions d'acceptation de nouveau membre sont une demande écrite ou un entretien préalable avec le président.</p>
+          <p>Les membres adhérents doivent s'acquitter d'une cotisation annuelle. Celle-ci est dite « de saison moto », d'octobre à octobre de l'année suivante. Le versement de la cotisation doit être établi par virement sur le compte bancaire de l'association, par chèque à l'ordre de l'association, ou en liquidité, et effectué au plus tard le 30 octobre (hors cas exceptionnel).</p>
+          <p>Toute cotisation versée à l'association est définitivement acquise. Aucun remboursement de cotisation ne peut être exigé en cas de démission ou d'exclusion.</p>
+          <h4>Procédure d'exclusion</h4>
+          <p>Dans le cadre où il n'y a plus d'entente, un constat ou une mauvaise cohésion pouvant nuire à l'ambiance ou à l'image de l'association, sans justificatif, la décision seule appartiendra au président pour rompre l'adhésion du membre. Cette rupture ne donnera ni suite ni remboursement de la cotisation. Elle sera prononcée par mail ou courrier.</p>
+          <h4>Matériel</h4>
+          <p>Les conditions d'utilisation du matériel de l'organisme associatif sont classiques : prendre soin du matériel et signaler toute détérioration.</p>
+          <p>Les modalités de modification du règlement intérieur : les modifications peuvent être établies tout au long de l'année ; les membres en seront informés par mail ou de vive voix.</p>
+          <h4>Responsabilité</h4>
+          <p>L'Association décline toute responsabilité pour tout dommage, perte ou préjudice, quelle qu'en soit la nature, découlant de la participation à ses activités ou de l'utilisation des informations et services fournis. En aucun cas l'Association ne pourra être tenue responsable des actes, omissions ou erreurs de ses membres, bénévoles ou partenaires. De plus, l'Association ne peut être assignée en justice pour des raisons liées directement ou indirectement à son fonctionnement ou à ses initiatives. En adhérant à l'Association, les membres acceptent de renoncer à toute revendication ou action en justice contre elle, ses dirigeants et ses représentants.</p>
+          <h4>Accès aux partenaires</h4>
+          <p>L'accès aux partenaires est à titre uniquement pour vous ou votre moto. Toute condition se fait sous présentation de la carte membre. Pour les accès à distance, il est obligatoire de passer par le président.</p>
+        </details>
+
+        <div class="group-title">Cotisation</div>
+        <div class="total"><span>Montant de la cotisation annuelle</span><strong>100,00 €</strong></div>
+
+        <div class="group-title">Mode de règlement <span class="req">*</span></div>
+        <div class="checks radio">
+          <label><input type="radio" name="Règlement" value="Chèque" required>Chèque</label>
+          <label><input type="radio" name="Règlement" value="Virement">Virement</label>
+          <label><input type="radio" name="Règlement" value="Espèces">Espèces</label>
+        </div>
+        <p class="sub" style="margin-top:8px">Chèque à l'ordre de l'association. Pour un virement, le bureau vous transmet les coordonnées bancaires.</p>
+
+        <label class="agree"><input type="checkbox" id="accept" required><span>J'atteste adhérer à l'association ML Racing Team et reconnais avoir pris connaissance du règlement intérieur. <span class="req">*</span></span></label>
+
+        <div class="row2" style="margin-top:14px">
+          <div class="f"><label for="signature">Signature — tapez vos nom et prénom <span class="req">*</span></label><input id="signature" name="Signature (nom tapé)" required></div>
+          <div class="f"><label>Date</label><input id="dateAff" disabled></div>
+        </div>
+        <input type="hidden" name="Date de l'inscription" id="dateSig">
+        <input type="hidden" name="Acceptation du règlement intérieur" id="acceptVal" value="">
+      </fieldset>
+
+      <div class="submitbar">
+        <button class="btn red" type="submit" id="submitBtn">Envoyer mon inscription</button>
+        <span class="err" id="err" role="alert"></span>
+      </div>
+      <p class="hint">Votre dossier est envoyé à l'association (mlracingteam29@gmail.com), et une copie vous est adressée par e-mail. Une vérification anti-robot peut vous être demandée après l'envoi.</p>
+    </form>
+  </div>
+</main>
+
+<div class="checker"></div>
+<footer><div class="wrap"><span>© <span id="year"></span> ML Racing Team — Association moto</span><span>mlracingteam29@gmail.com</span></div></footer>
+
+<script>
+const $=s=>document.querySelector(s);
+$("#year").textContent=new Date().getFullYear();
+const now=new Date();
+$("#dateAff").value=now.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+$("#_next").value=new URL("merci.html",location.href).href;
+
+const form=$("#form");
+form.addEventListener("submit",e=>{
+  const err=$("#err"); err.textContent="";
+  // Champs obligatoires
+  const bad=[...form.querySelectorAll("[required]")].filter(el=>{
+    if(el.type==="radio") return !form.querySelector(`input[name="${el.name}"]:checked`);
+    if(el.type==="checkbox") return !el.checked;
+    return !el.value.trim() || (el.type==="email" && !el.checkValidity());
+  });
+  if(bad.length){
+    e.preventDefault();
+    err.textContent="Merci de compléter les champs obligatoires (*).";
+    const first=bad[0]; first.scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>first.focus(),300);
+    return;
+  }
+  // Cases à cocher -> champs texte lisibles dans l'e-mail
+  form.querySelectorAll("input[data-gen]").forEach(x=>x.remove());
+  document.querySelectorAll(".checks[data-group]").forEach(g=>{
+    const vals=[...g.querySelectorAll("input:checked")].map(i=>i.value);
+    const h=document.createElement("input"); h.type="hidden"; h.dataset.gen="1";
+    h.name=g.dataset.group; h.value=vals.length?vals.join(", "):"—"; form.appendChild(h);
+  });
+  $("#dateSig").value=new Date().toLocaleString("fr-FR");
+  $("#acceptVal").value="Oui — accepté en ligne";
+  $("#_subject").value="Nouvelle inscription ML Racing Team — "+$("#prenom").value.trim()+" "+$("#nom").value.trim().toUpperCase();
+  $("#submitBtn").disabled=true; $("#submitBtn").textContent="Envoi en cours…";
+});
+</script>
+</body>
+</html>

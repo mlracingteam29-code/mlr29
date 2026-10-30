@@ -31,11 +31,13 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    - Facultatif : collez le lien d'invitation d'un groupe WhatsApp dans  groupeWhatsApp: ""
      et le lien de la page Facebook dans  pageFacebook: ""
 
-4. LE FORMULAIRE D'INSCRIPTION (plus tard, Google Forms)
-   - Créez le formulaire sur https://forms.google.com
-   - Envoyer > onglet < > (Intégrer) : copiez l'adresse entre les guillemets de src="..."
-   - Collez-la dans  formulaireInscription: ""
-   - Les réponses arrivent dans Google Forms (activez la notification par e-mail).
+4. LE FORMULAIRE D'INSCRIPTION (déjà en place : page inscription.html)
+   - Les dossiers remplis sont envoyés à mlracingteam29@gmail.com par le service gratuit
+     FormSubmit (formsubmit.co), et l'adhérent reçoit automatiquement une copie.
+   - À FAIRE UNE SEULE FOIS, après la mise en ligne : remplissez le formulaire vous-même.
+     FormSubmit envoie alors un e-mail "Activate Form" à mlracingteam29@gmail.com :
+     cliquez sur le bouton d'activation. Les inscriptions arrivent ensuite normalement.
+   - Pensez à vérifier le dossier "Spam" la première fois.
 
 APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
