@@ -68,6 +68,7 @@ Accompagnement — aides mécaniques et techniques, découverte des disciplines
 [facebook.page]
 # Collez ici l'adresse de votre PAGE Facebook (ex. https://www.facebook.com/mlracingteam)
 # pour afficher la dernière publication sur la page d'accueil.
+https://www.facebook.com/profile.php?id=100063546707767
 
 === PHRASES D'INTRODUCTION DES ONGLETS ===
 
