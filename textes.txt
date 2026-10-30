@@ -75,7 +75,7 @@ saison octobre à octobre
 Toutes les nouvelles de l'association : comptes-rendus de roulages, résultats, prochaines dates.
 
 [echange.intro]
-Une question sur un roulage, une adhésion, un partenariat ? Discutez en direct avec le bureau ou rejoignez le groupe des membres.
+Bientôt, vous pourrez discuter en direct avec le bureau et les membres de l'association, directement depuis le site.
 
 [inscriptions.intro]
 Rejoindre la ML Racing Team pour la prochaine saison.
@@ -83,8 +83,11 @@ Rejoindre la ML Racing Team pour la prochaine saison.
 [roulages.intro]
 Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.
 
+[fichiers.intro]
+Documents de l'association : dossiers, règlements, plannings… Cliquez pour télécharger.
+
 [partenaires.intro]
 Merci à celles et ceux qui soutiennent l'association tout au long de la saison.
 
 [contact.intro]
-Questions, dossiers d'inscription, partenariats : une seule adresse.
+Une question, un roulage, une adhésion, un partenariat ? Écrivez-nous, nous répondons rapidement.

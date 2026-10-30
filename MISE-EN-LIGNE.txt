@@ -46,10 +46,12 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    - Cliquez sur "Commit changes..." puis de nouveau "Commit changes".
    - Une fois le site lancé, la modification apparaît en 1 à 2 minutes.
 
-6. AJOUTER LES DATES DE ROULAGE (onglet "Dates roulages")
+6. AJOUTER LES DATES DE ROULAGE (onglet "Dates de roulages")
    - Ouvrez : https://github.com/mlracingteam29-code/mlr29/edit/main/roulages.txt
-   - Une date par ligne :  JJ/MM/AAAA | Lieu | Type de roulage | Infos (facultatif)
-     ex.  15/03/2027 | Circuit de Guillac | Roulage vitesse | Inscription auprès du bureau
+   - Une ligne par circuit :  Circuit | dates | type (facultatif) | infos (facultatif)
+       Circuit de Guillac | 15/03/2027 | Roulage vitesse
+       Circuit du Mans | 10/04/2027 au 11/04/2027 | Gros cube
+       Terrain enduro | 02/05/2027, 06/06/2027 | Enduro
    - Les dates sont triées automatiquement ; les dates passées s'affichent en grisé.
    - "Commit changes..." puis "Commit changes".
 
@@ -59,6 +61,21 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
      (ne touchez pas aux titres entre crochets).
    - Paragraphes : séparés par une ligne vide. Listes : "Titre — texte", une ligne par élément.
    - "Commit changes..." puis "Commit changes".
+
+8. AJOUTER DES FICHIERS À TÉLÉCHARGER (onglet "Fichiers")
+   - Ouvrez : https://github.com/mlracingteam29-code/mlr29/upload/main/fichiers
+   - Glissez vos fichiers (PDF, Word, Excel, images…, 25 Mo max par fichier)
+     puis cliquez sur "Commit changes".
+   - Le nom du fichier devient le titre affiché : Dossier_inscription_2027.pdf
+     s'affiche "Dossier inscription 2027".
+   - Pour retirer un fichier : ouvrez-le dans le dossier "fichiers" sur GitHub,
+     menu "..." > "Delete file", puis "Commit changes".
+   - Attention : ces fichiers sont publics une fois le site lancé.
+
+9. FORMULAIRE DE CONTACT (onglet "Nous contacter")
+   - Les messages arrivent sur mlracingteam29@gmail.com (via FormSubmit).
+   - Comme pour l'inscription : au premier message, cliquez le lien d'activation
+     reçu par e-mail ("Activate Form"). Pensez aux spams.
 
 APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.

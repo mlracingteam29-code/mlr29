@@ -132,8 +132,8 @@
   .tags span{background:#0f0f12;border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
   .dates{display:grid;gap:10px}
   .date{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px}
-  .date .cal{flex:none;width:78px;text-align:center;border-right:1px solid var(--line);padding-right:14px}
-  .date .cal b{display:block;font-family:"Saira Condensed";font-size:34px;line-height:1;color:var(--red)}
+  .date .cal{flex:none;width:96px;text-align:center;border-right:1px solid var(--line);padding-right:14px}
+  .date .cal b{display:block;white-space:nowrap;font-family:"Saira Condensed";font-size:30px;line-height:1;color:var(--red)}
   .date .cal span{font-size:12px;color:var(--muted);letter-spacing:.06em}
   .date h3{font-size:22px}
   .date .type{color:var(--red2);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
@@ -171,3 +171,30 @@
   .intro-band .accroche{margin:10px 0 0;font-family:"Saira Condensed";font-weight:800;text-transform:uppercase;font-size:clamp(26px,4.2vw,44px);line-height:1.08;max-width:900px}
   .intro-band + section{padding-top:36px}
   @media(max-width:600px){.banner img{min-height:150px}}
+
+  .wip{background:var(--card);border:1px dashed #4a4a55;border-radius:var(--radius);padding:30px;max-width:760px}
+  .wip h3{font-size:28px;margin-bottom:8px}
+  .wip p{color:#cfcfd6;margin:0}
+  .files{display:grid;gap:10px}
+  .file{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;transition:border-color .15s}
+  .file:hover{border-color:var(--red)}
+  .file .ext{flex:none;width:52px;height:52px;border-radius:10px;background:#2a0f0e;color:var(--red2);display:flex;align-items:center;justify-content:center;font:800 15px "Saira Condensed";letter-spacing:.04em}
+  .file .ftxt{flex:1;min-width:0}
+  .file .ftxt b{display:block;font-size:17px;overflow:hidden;text-overflow:ellipsis}
+  .file .ftxt small{color:var(--muted);font-size:13px}
+  .file .dl{flex:none;font-weight:600;font-size:14px;color:var(--red2)}
+  @media(max-width:560px){.file .dl{display:none}}
+  .contact-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+  @media(max-width:860px){.contact-grid{grid-template-columns:1fr}}
+  .cform{display:grid;gap:14px}
+  .cform .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:600px){.cform .row2{grid-template-columns:1fr}}
+  select{width:100%;background:#0f0f12;border:1px solid var(--line);color:#fff;border-radius:9px;padding:10px 12px;font:15px "Saira"}
+  textarea{resize:vertical}
+  .req{color:var(--red2)}
+  .hp{position:absolute;left:-5000px}
+  .cstatus{font-size:14px}
+  .cstatus.ok{color:var(--ok)}
+  .cstatus.ko{color:#ff8a80}
+  .side-contact{display:grid;gap:12px}
+  .addr-s{font-family:"Saira Condensed";font-weight:800;font-size:22px;word-break:break-all}

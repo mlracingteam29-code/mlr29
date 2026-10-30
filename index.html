@@ -16,13 +16,12 @@
     <div class="logo" data-go="presentation"><span class="badge"><span>ML</span></span> Racing Team</div>
     <button class="burger" id="burger" aria-label="Menu">☰</button>
     <nav class="links" id="links">
-      <button data-go="presentation">Présentation</button>
+      <button data-go="roulages">Dates de roulages</button>
       <button data-go="gazettes">Gazettes</button>
-      <button data-go="echange">Échange en direct</button>
-      <button data-go="inscriptions">Inscriptions</button>
-      <button data-go="roulages">Dates roulages</button>
-      <button data-go="partenaires">Partenaires</button>
-      <button data-go="contact">Contact</button>
+      <button data-go="fichiers">Fichiers</button>
+      <button data-go="echange">Messagerie directe</button>
+      <button data-go="partenaires">Nos partenaires</button>
+      <button data-go="contact">Nous contacter</button>
     </nav>
   </div>
 </header>
@@ -104,34 +103,21 @@
   </div>
 </section>
 
-<!-- ECHANGE -->
+<!-- MESSAGERIE -->
 <section class="tab" data-tab="echange">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Échanger en direct</h2>
-      <p data-txt="echange.intro">Une question sur un roulage, une adhésion, un partenariat ? Discutez en direct avec le bureau ou rejoignez le groupe des membres.</p>
+      <h2>Messagerie directe</h2>
+      <p data-txt="echange.intro">Bientôt, vous pourrez discuter en direct avec le bureau et les membres de l'association, directement depuis le site.</p>
     </div>
-    <div class="grid g3">
-      <div class="card">
-        <div class="num">CHAT EN DIRECT</div>
-        <h3>Parler au bureau</h3>
-        <p id="chatTxt">Cliquez sur la bulle en bas à droite de l'écran : un membre du bureau vous répond dès qu'il est disponible. Sinon, laissez votre message et votre e-mail.</p>
-        <div class="cta" style="margin-top:14px"><button class="btn red small" id="chatBtn">Ouvrir le chat</button></div>
-      </div>
-      <div class="card" id="groupCard">
-        <div class="num">GROUPE DES MEMBRES</div>
-        <h3>Entre motards</h3>
-        <p>Covoiturage, chronos, sorties : échangez avec les autres membres de l'association.</p>
-        <div class="cta" style="margin-top:14px" id="groupBtns"></div>
-      </div>
-      <div class="card">
-        <div class="num">PAR E-MAIL</div>
-        <h3>Écrire à l'association</h3>
-        <p style="font-weight:600;word-break:break-all;user-select:all">mlracingteam29@gmail.com</p>
-        <div class="cta" style="margin-top:14px">
-          <button class="btn red small" data-copy>Copier l'adresse</button>
-          <a class="btn ghost small" href="mailto:mlracingteam29@gmail.com">Écrire</a>
-        </div>
+    <div class="wip">
+      <span class="pill">🛠️ En cours de création</span>
+      <h3>La messagerie arrive bientôt</h3>
+      <p>Nous préparons un espace pour échanger en direct. En attendant, voici comment nous joindre :</p>
+      <div class="cta" style="margin-top:16px">
+        <button class="btn red" data-go="contact">Formulaire de contact</button>
+        <a class="btn ghost" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Facebook ↗</a>
+        <button class="btn ghost" data-copy>Copier l'adresse mail</button>
       </div>
     </div>
   </div>
@@ -176,15 +162,26 @@
 <section class="tab" data-tab="roulages">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Dates roulages</h2>
+      <h2>Dates de roulages</h2>
       <p data-txt="roulages.intro">Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.</p>
     </div>
     <div class="dates" id="dates"></div>
     <div class="empty" id="datesEmpty">Les dates de la saison 2027 arrivent très bientôt. Les membres les reçoivent en avance !</div>
     <div class="cta" style="margin-top:20px">
-      <a class="btn red small" href="mailto:mlracingteam29@gmail.com?subject=R%C3%A9servation%20roulage">Réserver un roulage</a>
-      <button class="btn ghost small" data-copy>Copier l'adresse mail</button>
+      <button class="btn red small" data-go="contact" data-sujet="Roulages">Réserver un roulage</button>
     </div>
+  </div>
+</section>
+
+<!-- FICHIERS -->
+<section class="tab" data-tab="fichiers">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Fichiers à télécharger</h2>
+      <p data-txt="fichiers.intro">Documents de l'association : dossiers, règlements, plannings… Cliquez pour télécharger.</p>
+    </div>
+    <div class="files" id="files"></div>
+    <div class="empty" id="filesEmpty">Aucun fichier disponible pour le moment.</div>
   </div>
 </section>
 
@@ -224,23 +221,39 @@
 <section class="tab" data-tab="contact">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Contact</h2>
-      <p data-txt="contact.intro">Questions, dossiers d'inscription, partenariats : une seule adresse.</p>
+      <h2>Nous contacter</h2>
+      <p data-txt="contact.intro">Une question, un roulage, une adhésion, un partenariat ? Écrivez-nous, nous répondons rapidement.</p>
     </div>
-    <div class="mailbox">
-      <div style="flex:1;min-width:240px">
-        <label>E-mail de l'association</label>
-        <div class="addr">mlracingteam29@gmail.com</div>
+    <div class="contact-grid">
+      <form class="card cform" id="contactForm" novalidate>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off">
+        <div class="row2">
+          <div><label for="cNom">Nom et prénom <span class="req">*</span></label><input id="cNom" required autocomplete="name"></div>
+          <div><label for="cMail">E-mail <span class="req">*</span></label><input id="cMail" type="email" required autocomplete="email"></div>
+        </div>
+        <div class="row2">
+          <div><label for="cTel">Téléphone (facultatif)</label><input id="cTel" type="tel" autocomplete="tel"></div>
+          <div><label for="cSujet">Sujet</label>
+            <select id="cSujet"><option>Question générale</option><option>Roulages</option><option>Adhésion</option><option>Partenariat / sponsoring</option><option>Autre</option></select></div>
+        </div>
+        <div><label for="cMsg">Message <span class="req">*</span></label><textarea id="cMsg" required rows="6"></textarea></div>
+        <div class="cta" style="margin-top:4px;align-items:center">
+          <button class="btn red" type="submit" id="cBtn">Envoyer le message</button>
+          <span class="cstatus" id="cStatus" role="status"></span>
+        </div>
+      </form>
+      <div class="side-contact">
+        <div class="card">
+          <label>E-mail de l'association</label>
+          <div class="addr-s">mlracingteam29@gmail.com</div>
+          <div class="cta" style="margin-top:12px"><button class="btn ghost small" data-copy>Copier l'adresse</button></div>
+        </div>
+        <div class="card">
+          <label>Facebook</label>
+          <div class="addr-s">ML Racing Team</div>
+          <div class="cta" style="margin-top:12px"><a class="btn ghost small" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Suivre sur Facebook ↗</a></div>
+        </div>
       </div>
-      <button class="btn red" data-copy>Copier l'adresse</button>
-      <a class="btn ghost" href="mailto:mlracingteam29@gmail.com">Écrire un e-mail</a>
-    </div>
-    <div class="mailbox" style="margin-top:14px">
-      <div style="flex:1;min-width:240px">
-        <label>Facebook</label>
-        <div class="addr" style="font-size:clamp(20px,3.4vw,28px)">ML Racing Team</div>
-      </div>
-      <a class="btn red fb" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Suivre sur Facebook ↗</a>
     </div>
   </div>
 </section>
@@ -290,8 +303,8 @@ function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTi
 $("#year").textContent = new Date().getFullYear();
 
 /* Onglets */
-const TABS=["presentation","gazettes","echange","inscriptions","roulages","partenaires","contact"];
-const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",inscription:"inscriptions"};
+const TABS=["presentation","roulages","gazettes","fichiers","echange","partenaires","contact","inscriptions"];
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",dates:"roulages",telechargements:"fichiers"};
 function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
@@ -300,7 +313,7 @@ function showTab(name,push){
   if(push){ try{ history.replaceState(null,"","#"+name); }catch(e){ location.hash=name; } }
   window.scrollTo({top:0,behavior:"instant"});
 }
-document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.go,true)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.sujet){ const o=[...document.querySelectorAll("#cSujet option")].find(x=>x.textContent===b.dataset.sujet); if(o) o.selected=true; } showTab(b.dataset.go,true); }));
 window.addEventListener("hashchange",()=>showTab(location.hash.slice(1),false));
 showTab(location.hash.slice(1),false);
 $("#burger").addEventListener("click",()=>$("#links").classList.toggle("open"));
@@ -344,29 +357,81 @@ fetch("partenaires.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject
 /* Dates roulages : lues depuis roulages.txt (modifiable sur GitHub) */
 fetch("roulages.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
   const today=new Date(); today.setHours(0,0,0,0);
-  const rows=t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith("#")).map(l=>{
-    const [d,lieu,type,infos]=l.split("|").map(x=>(x||"").trim());
-    const m=d.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    return {d, date:m?new Date(+m[3],+m[2]-1,+m[1]):null, lieu, type, infos};
-  }).filter(r=>r.date).sort((a,b)=>a.date-b.date);
+  const D=/(\d{1,2})\/(\d{1,2})\/(\d{4})/g;
+  const rows=[];
+  t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith("#")).forEach(l=>{
+    const parts=l.split("|").map(x=>x.trim());
+    const di=parts.findIndex(p=>/\d{1,2}\/\d{1,2}\/\d{4}/.test(p)); if(di<0) return;
+    const rest=parts.filter((_,k)=>k!==di);
+    const [lieu,type,infos]=[rest[0]||"",rest[1]||"",rest.slice(2).join(" · ")];
+    // plusieurs dates séparées par "," ou ";" ; une période avec "au" ou "-"
+    parts[di].split(/[,;]/).forEach(chunk=>{
+      const ds=[...chunk.matchAll(D)].map(m=>new Date(+m[3],+m[2]-1,+m[1]));
+      if(!ds.length) return;
+      rows.push({start:ds[0], end:ds[ds.length-1], lieu, type, infos});
+    });
+  });
+  rows.sort((a,b)=>a.start-b.start);
   if(!rows.length) return;
   const box=$("#dates"); $("#datesEmpty").hidden=true;
   const MO=["JANV","FÉVR","MARS","AVR","MAI","JUIN","JUIL","AOÛT","SEPT","OCT","NOV","DÉC"];
   rows.forEach(r=>{
-    const past=r.date<today;
+    const past=r.end<today, multi=r.end>r.start, sameM=r.start.getMonth()===r.end.getMonth();
     const el=document.createElement("div"); el.className="date"+(past?" past":"");
     const cal=document.createElement("div"); cal.className="cal";
-    const dd=document.createElement("b"); dd.textContent=r.date.getDate();
-    const mm=document.createElement("span"); mm.textContent=MO[r.date.getMonth()]+" "+r.date.getFullYear();
+    const dd=document.createElement("b"); dd.textContent=multi&&sameM? r.start.getDate()+"-"+r.end.getDate() : r.start.getDate();
+    const mm=document.createElement("span"); mm.textContent=(multi&&!sameM? MO[r.start.getMonth()]+" → "+r.end.getDate()+" "+MO[r.end.getMonth()] : MO[r.start.getMonth()])+" "+r.start.getFullYear();
     cal.append(dd,mm);
     const info=document.createElement("div"); info.className="info";
     const h=document.createElement("h3"); h.textContent=r.lieu||"Roulage";
-    const ty=document.createElement("div"); ty.className="type"; ty.textContent=(r.type||"")+(past?" · terminé":"");
+    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
     if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
     el.append(cal,info); box.appendChild(el);
   });
 }).catch(()=>{});
+
+/* Fichiers téléchargeables : tout fichier déposé dans le dossier "fichiers" du dépôt GitHub */
+const DEPOT="mlracingteam29-code/mlr29";
+fetch("https://api.github.com/repos/"+DEPOT+"/contents/fichiers",{headers:{Accept:"application/vnd.github+json"}})
+ .then(r=>r.ok?r.json():Promise.reject()).then(list=>{
+  const files=(Array.isArray(list)?list:[]).filter(f=>f.type==="file" && !f.name.startsWith(".") && !/^lisezmoi/i.test(f.name))
+    .sort((a,b)=>a.name.localeCompare(b.name,"fr",{numeric:true}));
+  if(!files.length) return;
+  const box=$("#files"); $("#filesEmpty").hidden=true;
+  const size=n=>n>1048576?(n/1048576).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(n/1024))+" Ko";
+  files.forEach(f=>{
+    const dot=f.name.lastIndexOf("."), ext=dot>0?f.name.slice(dot+1).toUpperCase():"FICHIER";
+    const title=(dot>0?f.name.slice(0,dot):f.name).replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+    const a=document.createElement("a"); a.className="file"; a.href="fichiers/"+encodeURIComponent(f.name); a.target="_blank"; a.rel="noopener"; a.setAttribute("download","");
+    const badge=document.createElement("span"); badge.className="ext"; badge.textContent=ext.slice(0,4);
+    const txt=document.createElement("span"); txt.className="ftxt";
+    const n=document.createElement("b"); n.textContent=title;
+    const m=document.createElement("small"); m.textContent=ext+" · "+size(f.size||0);
+    txt.append(n,m);
+    const dl=document.createElement("span"); dl.className="dl"; dl.textContent="Télécharger ↓";
+    a.append(badge,txt,dl); box.appendChild(a);
+  });
+}).catch(()=>{});
+
+/* Formulaire de contact (FormSubmit) */
+$("#contactForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const st=$("#cStatus"), btn=$("#cBtn"); st.className="cstatus"; st.textContent="";
+  const nom=$("#cNom").value.trim(), mail=$("#cMail").value.trim(), msg=$("#cMsg").value.trim();
+  if(!nom||!msg||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){ st.classList.add("ko"); st.textContent="Merci de remplir votre nom, un e-mail valide et votre message."; return; }
+  if(e.target._honey.value) return;
+  btn.disabled=true; btn.textContent="Envoi…";
+  try{
+    const r=await fetch("https://formsubmit.co/ajax/"+CONTACT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
+      body:JSON.stringify({_subject:"Contact site ML Racing Team — "+$("#cSujet").value+" — "+nom,_template:"table",_replyto:mail,
+        "Nom":nom,"email":mail,"Téléphone":$("#cTel").value.trim()||"—","Sujet":$("#cSujet").value,"Message":msg})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok || j.success===false || j.success==="false") throw 0;
+    e.target.reset(); st.classList.add("ok"); st.textContent="Merci ! Votre message a bien été envoyé.";
+  }catch(_){ st.classList.add("ko"); st.textContent="L'envoi n'a pas abouti. Écrivez-nous directement à "+CONTACT+"."; }
+  btn.disabled=false; btn.textContent="Envoyer le message";
+});
 
 /* Gazettes */
 const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
@@ -395,23 +460,7 @@ function fmtMonth(m){ if(!m) return ""; const [y,mo]=String(m).split("-"); retur
   $("#gzEmpty").hidden = items.length>0 || !!id;
 })();
 
-/* Chat tawk.to */
-(function(){
-  const src=REGLAGES.tawkTo.trim();
-  if(src){
-    window.Tawk_API=window.Tawk_API||{}; window.Tawk_LoadStart=new Date();
-    const s=document.createElement("script"); s.async=true; s.src=src; s.charset="UTF-8"; s.setAttribute("crossorigin","*");
-    document.body.appendChild(s);
-    $("#chatBtn").onclick=()=>{ if(window.Tawk_API && typeof Tawk_API.maximize==="function") Tawk_API.maximize(); else toast("Le chat se charge…"); };
-  } else {
-    $("#chatTxt").textContent="Le chat en direct arrive très bientôt. En attendant, écrivez-nous par e-mail : nous répondons rapidement.";
-    $("#chatBtn").textContent="Nous écrire"; $("#chatBtn").onclick=()=>{ location.href="mailto:"+CONTACT; };
-  }
-  const g=$("#groupBtns");
-  if(REGLAGES.groupeWhatsApp){ const a=document.createElement("a"); a.className="btn red small"; a.textContent="Rejoindre le groupe WhatsApp"; a.href=REGLAGES.groupeWhatsApp; a.target="_blank"; a.rel="noopener"; g.appendChild(a); }
-  if(REGLAGES.pageFacebook){ const a=document.createElement("a"); a.className="btn ghost small"; a.textContent="Page Facebook"; a.href=REGLAGES.pageFacebook; a.target="_blank"; a.rel="noopener"; g.appendChild(a); }
-  if(!g.children.length){ const p=document.createElement("p"); p.className="hint"; p.textContent="Demandez le lien du groupe au bureau : "+CONTACT; g.appendChild(p); }
-})();
+
 
 </script>
 </body>

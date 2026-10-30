@@ -1,6 +1,15 @@
-# DATES DE ROULAGE DU SITE ML RACING TEAM
-# Une date par ligne, sous la forme :
-#   JJ/MM/AAAA | Lieu | Type de roulage | Infos (facultatif)
-# Exemple (enlevez le # au début pour l'afficher) :
-# 15/03/2027 | Circuit de Guillac | Roulage vitesse | Inscription auprès du bureau
-# Les dates passées restent affichées en grisé. Les lignes qui commencent par # ne s'affichent pas.
+# DATES DE ROULAGE — onglet "Dates de roulages"
+# Une ligne par circuit :
+#   Circuit | dates | type de roulage (facultatif) | infos (facultatif)
+#
+# Les dates s'écrivent JJ/MM/AAAA :
+#   - une date :                 15/03/2027
+#   - un week-end / une période : 15/03/2027 au 16/03/2027
+#   - plusieurs dates :           15/03/2027, 12/04/2027, 10/05/2027
+#
+# Exemples (enlevez le # au début de la ligne pour l'afficher) :
+# Circuit de Guillac | 15/03/2027 | Roulage vitesse | Inscription auprès du bureau
+# Circuit du Mans (Bugatti) | 10/04/2027 au 11/04/2027 | Roulage gros cube
+# Terrain privé enduro | 02/05/2027, 06/06/2027 | Enduro
+#
+# Les dates sont triées toutes seules ; les dates passées s'affichent en grisé.
