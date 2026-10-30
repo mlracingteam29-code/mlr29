@@ -12,18 +12,22 @@
 <body>
 
 <header class="nav">
-  <div class="wrap">
-    <div class="logo" data-go="presentation"><span class="badge"><span>ML</span></span> Racing Team</div>
-    <button class="burger" id="burger" aria-label="Menu">☰</button>
-    <nav class="links" id="links">
+  <div class="topbar">
+    <div class="wrap">
+      <div class="logo" data-go="presentation"><span class="badge"><span>ML</span></span> Racing Team</div>
+      <a class="fb-top" href="https://www.facebook.com/search/top?q=ml%20racing%20team" target="_blank" rel="noopener">Facebook ↗</a>
+    </div>
+  </div>
+  <nav class="tabbar" id="links" aria-label="Onglets du site">
+    <div class="wrap">
       <button data-go="roulages">Dates de roulages</button>
       <button data-go="gazettes">Gazettes</button>
       <button data-go="fichiers">Fichiers</button>
       <button data-go="echange">Messagerie directe</button>
       <button data-go="partenaires">Nos partenaires</button>
       <button data-go="contact">Nous contacter</button>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </header>
 
 <main id="tabs">
@@ -309,14 +313,12 @@ function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
   document.querySelectorAll("#links [data-go]").forEach(b=>b.classList.toggle("active",b.dataset.go===name));
-  $("#links").classList.remove("open");
   if(push){ try{ history.replaceState(null,"","#"+name); }catch(e){ location.hash=name; } }
   window.scrollTo({top:0,behavior:"instant"});
 }
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.sujet){ const o=[...document.querySelectorAll("#cSujet option")].find(x=>x.textContent===b.dataset.sujet); if(o) o.selected=true; } showTab(b.dataset.go,true); }));
 window.addEventListener("hashchange",()=>showTab(location.hash.slice(1),false));
 showTab(location.hash.slice(1),false);
-$("#burger").addEventListener("click",()=>$("#links").classList.toggle("open"));
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
   try{ await navigator.clipboard.writeText(CONTACT); toast("Adresse copiée ✓"); }catch(e){ toast(CONTACT); }
 }));

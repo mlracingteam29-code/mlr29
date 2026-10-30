@@ -14,20 +14,9 @@
 
   /* NAV */
   header.nav{position:sticky;top:0;z-index:20;background:rgba(13,13,15,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
   .logo{display:flex;align-items:center;gap:10px;font-family:"Saira Condensed";font-weight:800;font-size:22px;text-transform:uppercase;cursor:pointer}
   .logo .badge{background:var(--red);color:#fff;padding:2px 8px;border-radius:6px;transform:skewX(-12deg);display:inline-block}
   .logo .badge span{display:inline-block;transform:skewX(12deg)}
-  nav.links{display:flex;gap:4px;flex-wrap:wrap}
-  nav.links button{background:none;border:0;color:var(--muted);font:500 14px "Saira";padding:8px 10px;border-radius:8px;cursor:pointer}
-  nav.links button:hover{color:#fff;background:var(--bg2)}
-  .burger{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:6px 10px;font-size:18px;cursor:pointer}
-  @media(max-width:860px){
-    .burger{display:block}
-    nav.links{display:none;position:absolute;top:62px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);flex-direction:column;padding:10px 20px}
-    nav.links.open{display:flex}
-    nav.links button{text-align:left;font-size:16px}
-  }
 
   /* HERO */
   .hero{position:relative;overflow:hidden;padding:90px 0 70px;background:
@@ -126,7 +115,6 @@
   .drive iframe{display:block;width:100%;height:520px;border:0}
   .drive.tall iframe{height:1100px}
 
-  nav.links button.active{color:#fff;background:var(--bg2);box-shadow:inset 0 -2px 0 var(--red)}
   .grid.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
   .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
   .tags span{background:#0f0f12;border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
@@ -139,7 +127,6 @@
   .date .type{color:var(--red2);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
   .date p{margin:4px 0 0;color:#cfcfd6;font-size:14px}
   .date.past{opacity:.45}
-  @media(max-width:1060px){nav.links button{padding:8px 7px;font-size:13px}}
 
   .story{max-width:780px}
   .story p{font-size:18px;color:#dcdce2;margin:0 0 18px;line-height:1.7}
@@ -198,3 +185,17 @@
   .cstatus.ko{color:#ff8a80}
   .side-contact{display:grid;gap:12px}
   .addr-s{font-family:"Saira Condensed";font-weight:800;font-size:22px;word-break:break-all}
+
+  /* Barre d'onglets */
+  header.nav{background:#0b0b0d}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:16px}
+  .fb-top{color:var(--muted);text-decoration:none;font-size:14px}
+  .fb-top:hover{color:#fff}
+  .tabbar{background:#141417;border-top:1px solid var(--line);border-bottom:3px solid var(--red)}
+  .tabbar .wrap{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-top:8px}
+  .tabbar .wrap::-webkit-scrollbar{display:none}
+  .tabbar button{flex:1 1 auto;text-align:center;background:#1e1e23;border:1px solid var(--line);border-bottom:0;color:#d4d4da;cursor:pointer;
+     font:800 15px "Saira Condensed";text-transform:uppercase;letter-spacing:.03em;padding:12px 8px;border-radius:10px 10px 0 0;white-space:nowrap;transition:background .15s,color .15s}
+  .tabbar button:hover{background:#2a2a30;color:#fff}
+  .tabbar button.active{background:var(--red);border-color:var(--red);color:#fff}
+  @media(max-width:1000px){.tabbar button{flex:0 0 auto;font-size:15px;padding:11px 14px}}
