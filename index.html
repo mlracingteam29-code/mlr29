@@ -496,8 +496,11 @@ fetch("roulages.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject())
     const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,past?"terminé":""].filter(Boolean).join(" · ");
     const full=/\bcomplet\b/i.test([r.type,r.infos].join(" "));
     if(full && !past){ const bd=document.createElement("span"); bd.className="badge-full"; bd.textContent="Complet"; h.appendChild(bd); el.classList.add("full"); }
+    const pm=[r.type,r.infos].join(" ").match(/(\d+)\s*places?(\s+(disponibles?|restantes?|libres?))?/i);
+    if(!full && pm && !past){ const bd=document.createElement("span"); bd.className="badge-places"; const n=+pm[1]; bd.textContent=n+(n>1?" places disponibles":" place disponible"); h.appendChild(bd); }
     info.append(h,ty);
-    const inf=full?r.infos.replace(/^\s*complet\s*[.·-]?\s*/i,""):r.infos;
+    let inf=full?r.infos.replace(/^\s*complet\s*[.·-]?\s*/i,""):r.infos;
+    if(!full&&pm) inf=inf.replace(pm[0],"").replace(/^\s*[.·,-]\s*|\s*[.·,-]\s*$/g,"").trim();
     if(inf){ const p=document.createElement("p"); p.textContent=inf; info.appendChild(p); }
     el.append(cal,info); box.appendChild(el);
   });

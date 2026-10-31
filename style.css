@@ -257,3 +257,5 @@
 
   .badge-full{display:inline-block;vertical-align:middle;margin-left:10px;background:#3a3a42;color:#fff;font:700 12px "Saira";letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
   .date.full .cal b{color:#8a8a94}
+
+  .badge-places{display:inline-block;vertical-align:middle;margin-left:10px;background:rgba(47,191,113,.15);border:1px solid rgba(47,191,113,.5);color:#5fe39a;font:700 12px "Saira";letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
