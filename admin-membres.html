@@ -77,6 +77,7 @@
       <h3>👥 Membres ayant accès</h3>
       <p>Créez un accès quand le bureau a validé une inscription. Le code n'est affiché qu'une seule fois : envoyez-le au membre.</p>
       <div class="row">
+        <div><label for="nname">Nom et prénom</label><input id="nname" placeholder="ex. DUPONT Jean"></div>
         <div><label for="nid">Identifiant du membre</label><input id="nid" placeholder="ex. jean.dupont" autocapitalize="none"></div>
         <div><label for="ncode">Code d'accès</label><input id="ncode" placeholder="cliquez sur Générer"></div>
         <div style="flex:0"><button class="btn ghost" id="gen" type="button">Générer</button></div>
@@ -89,6 +90,24 @@
         <button class="btn ghost small" id="copyMsg">Copier le message</button>
       </div>
       <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
+    </div>
+
+    <!-- Carte membre -->
+    <div class="card" id="cardSec">
+      <h3>🪪 Carte membre saison <span class="saison"></span></h3>
+      <p>Générée automatiquement à la création d'un accès. Vous pouvez aussi en refaire une ici (carte perdue, correction…).</p>
+      <div class="row">
+        <div><label for="cname">Nom et prénom</label><input id="cname" placeholder="ex. DUPONT Jean"></div>
+        <div><label for="cnum">N° d'adhérent</label><input id="cnum" placeholder="ex. 2027-001"></div>
+        <div><label for="ccourse">N° de course (facultatif)</label><input id="ccourse" placeholder="ex. 29"></div>
+        <div style="flex:0"><button class="btn red" id="cgen" type="button">Générer la carte</button></div>
+      </div>
+      <div class="status" id="cst"></div>
+      <div id="cardOut" hidden style="margin-top:14px">
+        <canvas id="cardCanvas" width="1012" height="638" style="width:100%;max-width:560px;border-radius:14px;display:block;box-shadow:0 10px 30px rgba(0,0,0,.5)"></canvas>
+        <div class="cta" style="margin-top:12px"><button class="btn red" id="cdl" type="button">Télécharger la carte (image)</button></div>
+        <p class="hint" style="margin-top:8px">Joignez l'image à l'e-mail envoyé au membre. Elle s'affiche aussi très bien sur un téléphone.</p>
+      </div>
     </div>
 
     <!-- Fichiers -->
@@ -123,6 +142,45 @@
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
+/* Saison affichée sur les cartes membres — à changer chaque année */
+const SAISON="2027", VALIDITE="Octobre 2026 – Octobre 2027";
+document.querySelectorAll(".saison").forEach(e=>e.textContent=SAISON);
+let CARD_NAME="carte-membre.png";
+const loadImg=src=>new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=src; });
+async function drawCard(nom,num,course){
+  try{ await Promise.all([document.fonts.load('800 60px "Saira Condensed"'),document.fonts.load('600 30px "Saira"')]); }catch(_){}
+  const cv=$("#cardCanvas"), g=cv.getContext("2d"), W=cv.width, H=cv.height, R=36;
+  g.clearRect(0,0,W,H); g.save();
+  g.beginPath(); g.moveTo(R,0); g.arcTo(W,0,W,H,R); g.arcTo(W,H,0,H,R); g.arcTo(0,H,0,0,R); g.arcTo(0,0,W,0,R); g.closePath(); g.clip();
+  // fond
+  const bg=g.createLinearGradient(0,0,W,H); bg.addColorStop(0,"#151518"); bg.addColorStop(1,"#0a0a0c"); g.fillStyle=bg; g.fillRect(0,0,W,H);
+  // bannière (haut)
+  try{ const im=await loadImg("images/banniere.jpg"); const bh=250, sw=im.width, sh=Math.min(im.height,sw*bh/W); g.drawImage(im,0,(im.height-sh)/2,sw,sh,0,0,W,bh);
+       const fade=g.createLinearGradient(0,150,0,250); fade.addColorStop(0,"rgba(10,10,12,0)"); fade.addColorStop(1,"rgba(10,10,12,1)"); g.fillStyle=fade; g.fillRect(0,150,W,100); }catch(_){}
+  // damier
+  const sq=14; for(let x=0;x<W;x+=sq) for(let y=0;y<2;y++){ g.fillStyle=((x/sq+y)%2)?"#111":"#fff"; g.fillRect(x,250+y*sq,sq,sq); }
+  // bande rouge oblique
+  g.fillStyle="#e10600"; g.beginPath(); g.moveTo(W-250,H); g.lineTo(W-150,278); g.lineTo(W-118,278); g.lineTo(W-218,H); g.fill();
+  g.fillStyle="rgba(225,6,0,.35)"; g.beginPath(); g.moveTo(W-190,H); g.lineTo(W-90,278); g.lineTo(W-74,278); g.lineTo(W-174,H); g.fill();
+  // textes
+  g.fillStyle="#ff2a1f"; g.font='600 24px "Saira", sans-serif'; g.fillText("CARTE MEMBRE",56,334);
+  g.fillStyle="#fff"; g.font='800 64px "Saira Condensed", sans-serif'; g.fillText("SAISON "+SAISON,56,398);
+  g.fillStyle="#a3a3ad"; g.font='500 22px "Saira", sans-serif'; g.fillText("Valable : "+VALIDITE,56,432);
+  g.fillStyle="#fff"; let fs=54; g.font='800 '+fs+'px "Saira Condensed", sans-serif';
+  const N=(nom||"").toUpperCase(); while(g.measureText(N).width>W-330 && fs>30){ fs-=2; g.font='800 '+fs+'px "Saira Condensed", sans-serif'; }
+  g.fillText(N,56,510);
+  g.fillStyle="#a3a3ad"; g.font='500 20px "Saira", sans-serif';
+  const meta=["N° adhérent : "+(num||"—")]; if(course) meta.push("N° de course : "+course);
+  g.fillText(meta.join("     "),56,552);
+  g.fillStyle="#6f6f78"; g.font='400 17px "Saira", sans-serif';
+  g.fillText("Délivrée le "+new Date().toLocaleDateString("fr-FR")+" · À présenter chez nos partenaires · RNA W291014847",56,598);
+  g.restore();
+  CARD_NAME="carte-membre-"+SAISON+"-"+(nom||"membre").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()+".png";
+  $("#cardOut").hidden=false;
+}
+function nextNum(){ const n=ACCES.comptes.filter(c=>c.role!=="bureau").length; return SAISON+"-"+String(n).padStart(3,"0"); }
+$("#cgen").onclick=async()=>{ const n=$("#cname").value.trim(); if(!n){ setSt($("#cst"),"ko","Indiquez le nom et prénom."); return; } setSt($("#cst"),"",""); await drawCard(n,$("#cnum").value.trim(),$("#ccourse").value.trim()); };
+$("#cdl").onclick=()=>{ $("#cardCanvas").toBlob(b=>download(CARD_NAME,b),"image/png"); };
 let RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={};
 const PENDING=new Map(); // nom de fichier -> Blob
 const size=n=>n>1048576?(n/1048576).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(n/1024))+" Ko";
@@ -195,16 +253,18 @@ $("#lf").addEventListener("submit",async e=>{
 $("#gen").onclick=()=>{ $("#ncode").value=MLRT.genCode(); };
 $("#bgen").onclick=()=>{ $("#bcode").value=MLRT.genCode(); };
 $("#add").onclick=async()=>{
-  const st=$("#ast"); const id=$("#nid").value.trim(), code=$("#ncode").value.trim();
+  const st=$("#ast"); const id=$("#nid").value.trim(), code=$("#ncode").value.trim(), fullname=$("#nname").value.trim();
+  if(!fullname){ setSt(st,"ko","Indiquez le nom et prénom du membre (pour sa carte)."); return; }
   if(!/^[\w.@-]{3,60}$/.test(id)){ setSt(st,"ko","Identifiant : 3 caractères minimum, lettres, chiffres, point, tiret."); return; }
   if(code.length<8){ setSt(st,"ko","Code trop court (8 caractères minimum) — utilisez Générer."); return; }
   const h=await MLRT.idHash(id); if(ACCES.comptes.some(c=>c.h===h)){ setSt(st,"ko","Cet identifiant existe déjà."); return; }
   setSt(st,"","Création…");
   const c=await MLRT.makeCompte(id,code,RAW,KEY,"membre",ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=id;
   stageAcces(); await renderMembers();
-  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
-  $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value="";
-  setSt(st,"ok","Accès créé. Pensez à envoyer les fichiers sur GitHub (encadré jaune en haut).");
+  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE.toLowerCase()+"), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
+  $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value=""; $("#nname").value="";
+  $("#cname").value=fullname; $("#cnum").value=nextNum(); $("#ccourse").value=""; await drawCard(fullname,$("#cnum").value,"");
+  setSt(st,"ok","Accès créé et carte membre générée (plus bas). Pensez à envoyer les fichiers sur GitHub (encadré jaune en haut).");
 };
 $("#copyMsg").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#msg").textContent); $("#copyMsg").textContent="Copié ✓"; }catch(_){ $("#copyMsg").textContent="Sélectionnez le texte"; } };
 
