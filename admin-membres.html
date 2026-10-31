@@ -29,6 +29,15 @@
   .pending li{margin:4px 0}
   .dlist{display:grid;gap:6px;margin:10px 0}
   .dlist div{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#0f0f12;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px}
+  .tlist{display:grid;gap:8px;margin-top:10px}
+  .titem{display:flex;align-items:center;gap:12px;background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .titem .th{width:48px;height:60px;border-radius:7px;background:#1b1b1f center/cover no-repeat;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:800 18px "Saira Condensed";color:#55555f}
+  .titem .tx{flex:1;min-width:0}.titem .tx b{display:block}.titem .tx small{color:var(--muted)}
+  .titem .ta{display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-end}
+  .teditor{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:14px;background:#121215}
+  .teditor h4{margin:0 0 10px;font-family:"Saira Condensed";text-transform:uppercase;font-size:20px}
+  .tprev img{margin-top:10px;max-height:180px;border-radius:10px;border:1px solid var(--line)}
+  .tpub{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 14px;border-radius:10px;background:rgba(225,6,0,.12);border:1px solid rgba(225,6,0,.45)}
   .msgbox{white-space:pre-wrap;background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;margin:10px 0}
   .status{font-size:14px;margin-left:6px}
   .ok{color:var(--ok)} .ko{color:#ff8a80}
@@ -69,7 +78,9 @@
         <li>Glissez <strong>tous</strong> les fichiers téléchargés, puis cliquez sur <strong>Commit changes</strong>.</li>
       </ol>
       <div class="dlist" id="dlist"></div>
-      <button class="btn red" id="dlAll">Tout télécharger</button>
+      <div class="cta"><button class="btn red" id="ghPubPending" type="button" hidden>🚀 Publier directement sur le site</button>
+      <button class="btn ghost" id="dlAll">Tout télécharger</button></div>
+      <div class="status" id="pendst"></div>
     </div>
 
     <!-- Membres -->
@@ -112,6 +123,57 @@
         <div style="flex:0"><button class="btn red" id="padd" type="button">Créer l'accès partenaire</button></div>
       </div>
       <div class="status" id="pst"></div>
+    </div>
+
+    <!-- Nos membres (présentation publique) -->
+    <div class="card" id="teamSec">
+      <h3>🏍️ Nos membres — présentation sur le site</h3>
+      <p>Les fiches de l'onglet public « Nos membres » : photo, moto, numéro, disciplines et petit texte. Modifiez ici puis cliquez sur <strong>Publier sur le site</strong>. Pensez à demander l'accord de chaque membre avant de publier sa photo.</p>
+      <div class="tlist" id="tlist"></div>
+      <div class="cta" style="margin-top:12px"><button class="btn ghost" id="tnew" type="button">＋ Ajouter un membre</button></div>
+      <div class="teditor" id="teditor" hidden>
+        <h4 id="tedTitle">Nouvelle fiche</h4>
+        <div class="row">
+          <div><label for="tnom">Nom affiché *</label><input id="tnom" placeholder="ex. Clément Merroux"></div>
+          <div><label for="tmoto">Moto</label><input id="tmoto" placeholder="ex. Yamaha R6"></div>
+          <div style="flex:0 0 120px"><label for="tnum">N° de course</label><input id="tnum" placeholder="ex. 29"></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div><label for="tdisc">Disciplines (séparées par des virgules)</label><input id="tdisc" placeholder="ex. Vitesse, Mini moto"></div>
+          <div><label for="tphoto">Photo (portrait de préférence)</label><input id="tphoto" type="file" accept="image/*"></div>
+        </div>
+        <div style="margin-top:10px"><label for="ttexte">Petit texte de présentation</label><textarea id="ttexte" rows="4" placeholder="Quelques mots sur le pilote, son parcours, ses circuits préférés…"></textarea></div>
+        <div class="tprev" id="tprev"></div>
+        <div class="cta" style="margin-top:12px"><button class="btn red" id="tsave" type="button">Enregistrer la fiche</button>
+          <button class="btn ghost" id="tcancel" type="button">Annuler</button>
+          <button class="btn ghost" id="trmphoto" type="button" hidden>Retirer la photo</button></div>
+        <div class="status" id="tst"></div>
+      </div>
+      <div class="tpub" id="tpub" hidden>
+        <span>✏️ Modifications non publiées</span>
+        <button class="btn red" id="tpublish" type="button">Publier sur le site</button>
+      </div>
+      <div class="status" id="tpubst"></div>
+    </div>
+
+    <!-- Réglages : publication directe -->
+    <div class="card" id="ghSec">
+      <h3>🔗 Publication directe sur le site</h3>
+      <p>Pour publier en un clic (fiches « Nos membres », fichiers membres, accès), enregistrez une fois sur cet appareil une clé d'accès GitHub. Elle reste uniquement dans ce navigateur, jamais sur le site.</p>
+      <details style="margin:6px 0 12px"><summary style="cursor:pointer;color:var(--txt)">Comment créer la clé (2 minutes, une seule fois)</summary>
+        <ol style="margin-top:8px">
+          <li>Connecté au compte GitHub <strong>mlracingteam29-code</strong>, ouvrez <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">la page de création de clé ↗</a>.</li>
+          <li>Nom : « Site ML Racing Team » · Expiration : 1 an.</li>
+          <li>Repository access : <strong>Only select repositories</strong> → <strong>mlr29</strong>.</li>
+          <li>Permissions → Repository permissions → <strong>Contents : Read and write</strong>.</li>
+          <li>Cliquez sur <strong>Generate token</strong>, copiez la clé (elle commence par github_pat_) et collez-la ci-dessous.</li>
+        </ol></details>
+      <div class="row">
+        <div><label for="ghTok">Clé GitHub</label><input id="ghTok" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+        <div style="flex:0"><button class="btn red" id="ghSave" type="button">Enregistrer et tester</button></div>
+        <div style="flex:0"><button class="btn ghost" id="ghForget" type="button">Oublier la clé</button></div>
+      </div>
+      <div class="status" id="ghst"></div>
     </div>
 
     <!-- Carte membre -->
@@ -263,15 +325,19 @@ function renderFiles(){
 $("#lf").addEventListener("submit",async e=>{
   e.preventDefault(); const st=$("#lst"); setSt(st,"","Vérification…"); $("#lbtn").disabled=true;
   try{
-    ACCES=await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
+    /* Avec la publication directe, on lit la version la plus récente directement sur GitHub (évite le cache du site) */
+    const ghBytes=async p=>{ if(!GH.token) return null; try{ const i=await GH.info(p); return i?Uint8Array.from(atob(i.content.replace(/\n/g,"")),c=>c.charCodeAt(0)):null; }catch(_){ return null; } };
+    const accB=await ghBytes("membres/acces.json");
+    ACCES=accB?JSON.parse(new TextDecoder().decode(accB)):await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
     const s=await MLRT.login(ACCES,$("#lid").value,$("#lcode").value);
     if(!s){ setSt(st,"ko","Identifiant ou code incorrect."); }
     else if(s.role!=="bureau"){ setSt(st,"ko","Ce compte n'a pas les droits du bureau."); }
     else{
       RAW=s.raw; KEY=s.key; ME=s;
-      try{ const r=await fetch("membres/index.bin",{cache:"no-cache"}); INDEX=r.ok?JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,await r.arrayBuffer()))):[]; }catch(_){ INDEX=[]; }
+      try{ const ib=await ghBytes("membres/index.bin"); const buf=ib?ib.buffer:await (async()=>{ const r=await fetch("membres/index.bin",{cache:"no-cache"}); return r.ok?await r.arrayBuffer():null; })();
+        INDEX=buf?JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,buf))):[]; }catch(_){ INDEX=[]; }
       $("#login").hidden=true; $("#app").hidden=false; $("#lcode").value="";
-      await renderMembers(); renderFiles();
+      await renderMembers(); renderFiles(); ghUI(); loadTeam();
     }
   }catch(err){ setSt(st,"ko","Impossible de charger l'espace membres."); }
   $("#lbtn").disabled=false;
@@ -311,6 +377,96 @@ $("#padd").onclick=async()=>{
   const ok=await createAccess("partenaire",{name:$("#pname").value.trim(),contact:$("#pcontact").value.trim(),id:$("#pid").value.trim(),code:$("#pcode").value.trim(),email:$("#pmail").value.trim()},$("#pst"));
   if(ok){ ["#pname","#pcontact","#pid","#pcode","#pmail"].forEach(x=>$(x).value=""); }
 };
+/* ===== Publication directe via l'API GitHub (clé stockée uniquement dans ce navigateur) ===== */
+const GH={owner:"mlracingteam29-code",repo:"mlr29",branch:"main",K:"mlrt_gh_token",
+  get token(){ try{ return localStorage.getItem(this.K)||""; }catch(_){ return ""; } },
+  set token(v){ try{ v?localStorage.setItem(this.K,v):localStorage.removeItem(this.K); }catch(_){} },
+  enc:p=>p.split("/").map(encodeURIComponent).join("/"),
+  async api(path,opt={}){ return fetch("https://api.github.com/repos/"+this.owner+"/"+this.repo+"/"+path,{...opt,cache:"no-store",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+this.token,"X-GitHub-Api-Version":"2022-11-28",...(opt.headers||{})}}); },
+  async info(p){ const r=await this.api("contents/"+this.enc(p)+"?ref="+this.branch); if(r.status===404) return null; if(!r.ok) throw new Error("GitHub "+r.status); return r.json(); },
+  async text(p){ const i=await this.info(p); if(!i) return null; const bin=atob(i.content.replace(/\n/g,"")); return new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))); },
+  async put(p,blob,msg){ const b64=await new Promise((ok,ko)=>{ const fr=new FileReader(); fr.onload=()=>ok(String(fr.result).split(",")[1]); fr.onerror=ko; fr.readAsDataURL(blob); });
+    const i=await this.info(p); const body={message:msg,content:b64,branch:this.branch}; if(i) body.sha=i.sha;
+    const r=await this.api("contents/"+this.enc(p),{method:"PUT",body:JSON.stringify(body)}); if(!r.ok) throw new Error("GitHub "+r.status+" sur "+p); },
+  async del(p,msg){ const i=await this.info(p); if(!i) return; const r=await this.api("contents/"+this.enc(p),{method:"DELETE",body:JSON.stringify({message:msg,sha:i.sha,branch:this.branch})}); if(!r.ok) throw new Error("GitHub "+r.status+" sur "+p); },
+  async test(){ const r=await this.api(""); if(!r.ok) return false; const j=await r.json(); return !!(j.permissions&&j.permissions.push); }
+};
+function ghUI(){ const on=!!GH.token; $("#ghPubPending").hidden=!on; $("#ghTok").value=""; $("#ghTok").placeholder=on?"Clé enregistrée sur cet appareil ✓":"github_pat_…"; }
+$("#ghSave").onclick=async()=>{ const v=$("#ghTok").value.trim(), st=$("#ghst"); if(!v){ setSt(st,"ko","Collez la clé GitHub."); return; }
+  const old=GH.token; GH.token=v; setSt(st,"","Test de la clé…");
+  try{ if(await GH.test()){ setSt(st,"ok","Clé valide : la publication directe est activée sur cet appareil."); ghUI(); return; } }catch(_){}
+  GH.token=old; setSt(st,"ko","Clé refusée ou sans droit d'écriture sur mlr29 (vérifiez « Contents : Read and write »)."); ghUI(); };
+$("#ghForget").onclick=()=>{ GH.token=""; ghUI(); setSt($("#ghst"),"","Clé supprimée de cet appareil."); };
+$("#ghPubPending").onclick=async()=>{ const st=$("#pendst"), btn=$("#ghPubPending"); btn.disabled=true;
+  try{ let n=0; for(const [name,blob] of [...PENDING]){ setSt(st,"","Publication "+(++n)+"/"+PENDING.size+"…"); await GH.put("membres/"+name,blob,"Espace membres : "+name+" (page de gestion)"); PENDING.delete(name); }
+    renderPending(); setSt(st,"ok","Publié ! Le site est à jour d'ici une à deux minutes."); setSt($("#ast"),"ok","Modifications publiées sur le site."); }
+  catch(e){ renderPending(); setSt(st,"ko","Échec de la publication ("+e.message+"). Réessayez, ou utilisez « Tout télécharger »."); }
+  btn.disabled=false; };
+
+/* ===== Éditeur « Nos membres » (equipe.txt + photos du dossier equipe) ===== */
+let TEAM=[], TEAM_ORIG_PHOTOS=new Set(), TEAM_PHOTOS=new Map(), TEAM_DIRTY=false, TEDIT=-1, TPHOTO=null;
+const TKEYS={nom:"nom",photo:"photo",moto:"moto",motos:"moto",numero:"numero","n°":"numero",discipline:"discipline",disciplines:"discipline",texte:"texte",presentation:"texte"};
+function parseTeam(t){ const norm=k=>k.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim(); const out=[]; let cur=null,last=null;
+  (t||"").split(/\r?\n/).forEach(line=>{ if(/^\s*#/.test(line)) return; if(!line.trim()){ cur=null; last=null; return; }
+    const m=line.match(/^\s*([^:]{1,20}?)\s*:\s*(.*)$/); const k=m&&TKEYS[norm(m[1])];
+    if(k){ if(!cur||(k==="nom"&&cur.nom)){ cur={}; out.push(cur); } cur[k]=(cur[k]?cur[k]+" ":"")+m[2].trim(); last=k; }
+    else if(cur&&last==="texte") cur.texte+=" "+line.trim(); });
+  return out.filter(f=>f.nom); }
+const TEAM_HEAD="# =====================================================================\n# NOS MEMBRES — onglet « Nos membres » du site\n# Modifiable depuis la page de gestion (rubrique « Nos membres ») ou ici.\n# Une fiche par membre, séparées par une ligne vide. Seul « Nom » est obligatoire.\n#   Nom : / Photo : (fichier du dossier equipe) / Moto : / Numéro : / Discipline : / Texte :\n# Pensez à demander l'accord de chaque membre avant de publier sa photo.\n# =====================================================================\n\n";
+function serializeTeam(){ return TEAM_HEAD+TEAM.map(f=>["Nom : "+f.nom,f.photo&&"Photo : "+f.photo,f.moto&&"Moto : "+f.moto,f.numero&&"Numéro : "+f.numero,f.discipline&&"Discipline : "+f.discipline,f.texte&&"Texte : "+f.texte.replace(/\s*\n\s*/g," ")].filter(Boolean).join("\n")).join("\n\n")+"\n"; }
+const initials=n=>n.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase();
+function photoURL(f){ if(!f.photo) return ""; const b=TEAM_PHOTOS.get(f.photo); return b?URL.createObjectURL(b):"equipe/"+f.photo.split("/").map(encodeURIComponent).join("/"); }
+function teamDirty(v){ TEAM_DIRTY=v; $("#tpub").hidden=!v; }
+function renderTeam(){ const box=$("#tlist"); box.innerHTML="";
+  if(!TEAM.length){ const e=document.createElement("p"); e.className="hint"; e.textContent="Aucune fiche pour le moment."; box.appendChild(e); }
+  TEAM.forEach((f,i)=>{ const it=document.createElement("div"); it.className="titem";
+    const th=document.createElement("div"); th.className="th"; const u=photoURL(f); if(u) th.style.backgroundImage="url('"+u+"')"; else th.textContent=initials(f.nom);
+    const tx=document.createElement("div"); tx.className="tx"; const b=document.createElement("b"); b.textContent=f.nom+(f.numero?"  #"+f.numero:""); const sm=document.createElement("small"); sm.textContent=[f.moto,f.discipline].filter(Boolean).join(" · ")||"—"; tx.append(b,sm);
+    const ta=document.createElement("div"); ta.className="ta";
+    const mk=(t,fn)=>{ const x=document.createElement("button"); x.className="linkbtn"; x.type="button"; x.textContent=t; x.onclick=fn; ta.appendChild(x); };
+    mk("Modifier",()=>openTeamEditor(i));
+    if(i>0) mk("↑",()=>{ [TEAM[i-1],TEAM[i]]=[TEAM[i],TEAM[i-1]]; teamDirty(true); renderTeam(); });
+    if(i<TEAM.length-1) mk("↓",()=>{ [TEAM[i+1],TEAM[i]]=[TEAM[i],TEAM[i+1]]; teamDirty(true); renderTeam(); });
+    mk("Supprimer",function(){ if(this.dataset.c!=="1"){ this.dataset.c="1"; this.textContent="Confirmer ?"; setTimeout(()=>{ this.dataset.c=""; this.textContent="Supprimer"; },3000); return; } TEAM.splice(i,1); teamDirty(true); renderTeam(); });
+    it.append(th,tx,ta); box.appendChild(it); }); }
+function openTeamEditor(i){ TEDIT=i; TPHOTO=null; const f=i>=0?TEAM[i]:{};
+  $("#tedTitle").textContent=i>=0?"Modifier la fiche":"Nouvelle fiche"; $("#tnom").value=f.nom||""; $("#tmoto").value=f.moto||""; $("#tnum").value=f.numero||""; $("#tdisc").value=f.discipline||""; $("#ttexte").value=f.texte||""; $("#tphoto").value="";
+  TPHOTO=f.photo?{keep:f.photo}:null; showTPrev(); setSt($("#tst"),"",""); $("#teditor").hidden=false; $("#teditor").scrollIntoView({behavior:"smooth",block:"center"}); $("#tnom").focus(); }
+function showTPrev(){ const p=$("#tprev"); p.innerHTML=""; $("#trmphoto").hidden=!TPHOTO; if(!TPHOTO) return; const im=document.createElement("img");
+  im.src=TPHOTO.blob?URL.createObjectURL(TPHOTO.blob):photoURL({photo:TPHOTO.keep}); p.appendChild(im); }
+async function shrinkPhoto(file){ const img=await new Promise((ok,ko)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=ko; im.src=URL.createObjectURL(file); });
+  const M=1100, r=Math.min(1,M/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=Math.round(img.width*r); c.height=Math.round(img.height*r);
+  c.getContext("2d").drawImage(img,0,0,c.width,c.height); return new Promise(ok=>c.toBlob(ok,"image/jpeg",0.85)); }
+$("#tnew").onclick=()=>openTeamEditor(-1);
+$("#tcancel").onclick=()=>{ $("#teditor").hidden=true; };
+$("#tphoto").onchange=async()=>{ const f=$("#tphoto").files[0]; if(!f) return; try{ TPHOTO={blob:await shrinkPhoto(f)}; showTPrev(); }catch(_){ setSt($("#tst"),"ko","Image illisible, essayez un JPG ou un PNG."); } };
+$("#trmphoto").onclick=()=>{ TPHOTO=null; $("#tphoto").value=""; showTPrev(); };
+$("#tsave").onclick=()=>{ const nom=$("#tnom").value.trim(); if(!nom){ setSt($("#tst"),"ko","Le nom est obligatoire."); return; }
+  const f={nom,moto:$("#tmoto").value.trim(),numero:$("#tnum").value.trim().replace(/^#/,""),discipline:$("#tdisc").value.trim(),texte:$("#ttexte").value.trim()};
+  if(TPHOTO&&TPHOTO.blob){ const slug=nom.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"membre";
+    const fn=slug+"-"+Math.random().toString(36).slice(2,6)+".jpg"; TEAM_PHOTOS.set(fn,TPHOTO.blob); f.photo=fn; }
+  else if(TPHOTO&&TPHOTO.keep) f.photo=TPHOTO.keep;
+  if(TEDIT>=0) TEAM[TEDIT]=f; else TEAM.push(f);
+  $("#teditor").hidden=true; teamDirty(true); renderTeam(); setSt($("#tpubst"),"","Fiche enregistrée. Cliquez sur « Publier sur le site » quand vous avez terminé."); };
+$("#tpublish").onclick=async()=>{ const st=$("#tpubst"), btn=$("#tpublish");
+  const used=new Set(TEAM.map(f=>f.photo).filter(Boolean)); const txt=new Blob([serializeTeam()],{type:"text/plain"});
+  if(!GH.token){
+    download("equipe.txt",txt); for(const [n,b] of TEAM_PHOTOS) if(used.has(n)){ await new Promise(r=>setTimeout(r,600)); download(n,b); }
+    setSt(st,"ko","Publication directe non activée (rubrique « Publication directe » plus bas). Fichiers téléchargés : déposez equipe.txt sur github.com/mlracingteam29-code/mlr29/upload/main et les photos sur …/upload/main/equipe.");
+    return; }
+  btn.disabled=true;
+  try{ for(const [n,b] of TEAM_PHOTOS){ if(!used.has(n)) continue; setSt(st,"","Envoi de la photo "+n+"…"); await GH.put("equipe/"+n,b,"Nos membres : photo "+n); }
+    setSt(st,"","Envoi des fiches…"); await GH.put("equipe.txt",txt,"Nos membres : mise à jour des fiches (page de gestion)");
+    for(const n of TEAM_ORIG_PHOTOS){ if(!used.has(n)){ setSt(st,"","Suppression de l'ancienne photo "+n+"…"); try{ await GH.del("equipe/"+n,"Nos membres : suppression de "+n); }catch(_){} } }
+    TEAM_ORIG_PHOTOS=used; TEAM_PHOTOS=new Map([...TEAM_PHOTOS].filter(([n])=>used.has(n))); teamDirty(false);
+    setSt(st,"ok","Publié ! L'onglet « Nos membres » est à jour d'ici une à deux minutes."); }
+  catch(e){ setSt(st,"ko","Échec de la publication ("+e.message+"). Vérifiez la clé GitHub et réessayez."); }
+  btn.disabled=false; };
+async function loadTeam(){ let t=null; try{ if(GH.token) t=await GH.text("equipe.txt"); }catch(_){}
+  if(t===null){ try{ const r=await fetch("equipe.txt?t="+Date.now(),{cache:"no-store"}); t=r.ok?await r.text():""; }catch(_){ t=""; } }
+  TEAM=parseTeam(t); TEAM_ORIG_PHOTOS=new Set(TEAM.map(f=>f.photo).filter(Boolean)); TEAM_PHOTOS=new Map(); teamDirty(false); renderTeam(); }
+window.addEventListener("beforeunload",e=>{ if(TEAM_DIRTY){ e.preventDefault(); e.returnValue=""; } });
+
 /* E-mail de bienvenue automatique (FormSubmit : membre en copie, carte en pièce jointe) */
 const FS_MAIL="mlracingteam29@gmail.com";
 async function sendWelcome(){

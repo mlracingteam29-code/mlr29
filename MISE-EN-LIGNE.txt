@@ -116,17 +116,17 @@ APRÈS CHAQUE MODIFICATION DE index.html
    - Netlify > votre site > Deploys > glissez de nouveau le dossier complet.
    (Inutile pour les gazettes ajoutées dans Drive : elles s'affichent toutes seules.)
 
-11. NOS MEMBRES (onglet « Nos membres »)
-   - Photos : ouvrez https://github.com/mlracingteam29-code/mlr29/upload/main/equipe
-     glissez les photos (JPG, format portrait de préférence, 1 à 2 Mo max), "Commit changes".
-     Donnez des noms simples aux fichiers, sans espaces ni accents (ex. clement.jpg).
-   - Fiches : ouvrez https://github.com/mlracingteam29-code/mlr29/edit/main/equipe.txt
-     Une fiche par membre, séparée par une ligne vide :
-       Nom : Clément Merroux
-       Photo : clement.jpg
-       Moto : Yamaha R6
-       Numéro : 29
-       Discipline : Vitesse, Mini moto
-       Texte : votre petit texte de présentation
-     puis "Commit changes". Seul « Nom » est obligatoire.
-   - Demandez l'accord de chaque membre avant de publier sa photo.
+11. NOS MEMBRES (onglet « Nos membres ») — DIRECTEMENT DEPUIS LA PAGE DE GESTION
+   - Page de gestion > rubrique « Nos membres » : Ajouter / Modifier / ↑ ↓ / Supprimer,
+     avec la photo (redimensionnée automatiquement), la moto, le numéro, les disciplines, le texte.
+   - Puis « Publier sur le site ». Demandez l'accord de chaque membre avant de publier sa photo.
+
+12. PUBLICATION DIRECTE (une seule fois par appareil)
+   - Rubrique « Publication directe » de la page de gestion : collez une clé GitHub
+     (créée sur https://github.com/settings/personal-access-tokens/new, compte mlracingteam29-code,
+     Only select repositories > mlr29, Permissions > Contents : Read and write, expiration 1 an).
+   - Ensuite tout se publie en un clic : fiches « Nos membres », accès membres/partenaires,
+     fichiers membres (bouton « Publier directement sur le site » dans l'encadré jaune).
+   - La clé reste dans le navigateur de l'appareil (jamais sur le site). « Oublier la clé »
+     pour l'effacer ; à refaire après expiration ou sur un nouvel appareil.
+   - Sans clé, l'ancienne méthode fonctionne toujours (Tout télécharger + glisser sur GitHub).
