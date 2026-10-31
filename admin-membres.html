@@ -75,7 +75,7 @@
     <!-- Membres -->
     <div class="card">
       <h3>👥 Membres ayant accès</h3>
-      <p>Créez un accès quand le bureau a validé une inscription. Si vous indiquez son e-mail, le membre reçoit automatiquement ses accès et sa carte membre en pièce jointe (copie sur la boîte de l'association).</p>
+      <p>Créez un accès quand le bureau a validé une inscription. Indiquez son e-mail : après avoir contrôlé le message et la carte, cliquez sur « Expédier » pour lui envoyer ses accès et sa carte en pièce jointe (copie sur la boîte de l'association).</p>
       <div class="row">
         <div><label for="nname">Nom et prénom</label><input id="nname" placeholder="ex. DUPONT Jean"></div>
         <div><label for="nmail">E-mail du membre</label><input id="nmail" type="email" placeholder="ex. jean.dupont@gmail.com" autocapitalize="none"></div>
@@ -86,11 +86,12 @@
       </div>
       <div class="status" id="ast"></div>
       <div id="newmsg" hidden>
-        <p style="margin-top:12px"><strong>Message à envoyer au membre :</strong></p>
-        <div class="msgbox" id="msg"></div>
+        <p style="margin-top:12px"><strong>E-mail à envoyer au membre</strong> — vérifiez l'adresse, le message (modifiable) et la carte plus bas avant d'expédier :</p>
+        <div class="row" style="margin-top:6px"><div><label for="mto">Destinataire</label><input id="mto" type="email" placeholder="e-mail du membre" autocapitalize="none"></div></div>
+        <div class="msgbox" id="msg" contenteditable="true" spellcheck="true"></div>
         <div class="status" id="mailst"></div>
-        <div class="cta" style="margin-top:8px"><button class="btn ghost small" id="copyMsg">Copier le message</button>
-        <button class="btn ghost small" id="resend" type="button" hidden>Renvoyer l'e-mail avec la carte</button></div>
+        <div class="cta" style="margin-top:8px"><button class="btn red" id="send" type="button">📧 Expédier l'e-mail avec la carte</button>
+        <button class="btn ghost small" id="copyMsg">Copier le message</button></div>
       </div>
       <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
     </div>
@@ -269,14 +270,19 @@ $("#add").onclick=async()=>{
   $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value=""; $("#nname").value=""; $("#nmail").value="";
   $("#cname").value=fullname; $("#cnum").value=nextNum(); $("#ccourse").value=""; await drawCard(fullname,$("#cnum").value,"");
   setSt(st,"ok","Accès créé et carte membre générée (plus bas). Envoyez tout de suite les fichiers sur GitHub (encadré jaune en haut) pour activer l'accès.");
-  if(email){ LAST_MAIL={email,msg:$("#msg").textContent}; $("#resend").hidden=false; await sendWelcome(); }
-  else{ LAST_MAIL=null; $("#resend").hidden=true; setSt($("#mailst"),"","Pas d'e-mail indiqué : téléchargez la carte (plus bas) et envoyez le message au membre vous-même."); }
+  $("#mto").value=email; $("#send").disabled=false; $("#send").textContent="📧 Expédier l'e-mail avec la carte";
+  setSt($("#mailst"),"",email?"Contrôlez l'adresse, le message et la carte (plus bas), puis cliquez sur « Expédier ».":"Indiquez l'e-mail du membre ci-dessus pour lui envoyer ses accès et sa carte, ou téléchargez la carte et envoyez le message vous-même.");
+  $("#newmsg").scrollIntoView({behavior:"smooth",block:"start"});
 };
 /* E-mail de bienvenue automatique (FormSubmit : membre en copie, carte en pièce jointe) */
-const FS_MAIL="mlracingteam29@gmail.com"; let LAST_MAIL=null;
+const FS_MAIL="mlracingteam29@gmail.com";
 async function sendWelcome(){
-  if(!LAST_MAIL) return;
-  const st=$("#mailst"); setSt(st,"","Envoi de l'e-mail à "+LAST_MAIL.email+"…");
+  const st=$("#mailst"), to=$("#mto").value.trim(), msg=$("#msg").innerText.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ setSt(st,"ko","Indiquez une adresse e-mail valide pour le membre."); $("#mto").focus(); return; }
+  if(!msg){ setSt(st,"ko","Le message est vide."); return; }
+  if($("#cardOut").hidden){ setSt(st,"ko","Générez d'abord la carte membre (rubrique Carte membre)."); return; }
+  const LAST_MAIL={email:to,msg}; $("#send").disabled=true;
+  setSt(st,"","Envoi de l'e-mail à "+to+"…");
   const blob=await new Promise(r=>$("#cardCanvas").toBlob(r,"image/png"));
   let fr=document.getElementById("fsFrame");
   if(!fr){ fr=document.createElement("iframe"); fr.name="fsFrame"; fr.id="fsFrame"; fr.hidden=true; document.body.appendChild(fr); await new Promise(r=>setTimeout(r,150)); }
@@ -289,11 +295,12 @@ async function sendWelcome(){
   const dt=new DataTransfer(); dt.items.add(new File([blob],CARD_NAME,{type:"image/png"})); fi.files=dt.files; f.appendChild(fi);
   document.body.appendChild(f);
   let done=false;
-  fr.onload=()=>{ done=true; f.remove(); setSt(st,"ok","E-mail envoyé à "+LAST_MAIL.email+" avec sa carte membre (copie sur "+FS_MAIL+")."); };
+  fr.onload=()=>{ done=true; f.remove(); $("#send").disabled=false; $("#send").textContent="📧 Renvoyer l'e-mail";
+    setSt(st,"ok","E-mail expédié à "+LAST_MAIL.email+" avec sa carte membre (copie sur "+FS_MAIL+")."); };
   f.submit();
-  setTimeout(()=>{ if(!done) setSt(st,"ko","Pas de confirmation d'envoi. Vérifiez la copie sur "+FS_MAIL+" ; sinon cliquez sur « Renvoyer », ou téléchargez la carte et envoyez le message vous-même."); },25000);
+  setTimeout(()=>{ if(!done){ $("#send").disabled=false; setSt(st,"ko","Pas de confirmation d'envoi. Vérifiez la copie sur "+FS_MAIL+" ; sinon réessayez, ou téléchargez la carte et envoyez le message vous-même."); } },25000);
 }
-$("#resend").onclick=()=>sendWelcome();
+$("#send").onclick=()=>sendWelcome();
 $("#copyMsg").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#msg").textContent); $("#copyMsg").textContent="Copié ✓"; }catch(_){ $("#copyMsg").textContent="Sélectionnez le texte"; } };
 
 $("#fadd").onclick=async()=>{
