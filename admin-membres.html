@@ -143,7 +143,7 @@
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
 /* Saison affichée sur les cartes membres — à changer chaque année */
-const SAISON="2027", VALIDITE="Octobre 2026 – Octobre 2027";
+const SAISON="2027", VALIDITE="d'octobre 2026 à octobre 2027";
 document.querySelectorAll(".saison").forEach(e=>e.textContent=SAISON);
 let CARD_NAME="carte-membre.png";
 const loadImg=src=>new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=src; });
@@ -165,7 +165,7 @@ async function drawCard(nom,num,course){
   // textes
   g.fillStyle="#ff2a1f"; g.font='600 24px "Saira", sans-serif'; g.fillText("CARTE MEMBRE",56,334);
   g.fillStyle="#fff"; g.font='800 64px "Saira Condensed", sans-serif'; g.fillText("SAISON "+SAISON,56,398);
-  g.fillStyle="#a3a3ad"; g.font='500 22px "Saira", sans-serif'; g.fillText("Valable : "+VALIDITE,56,432);
+  g.fillStyle="#a3a3ad"; g.font='500 22px "Saira", sans-serif'; g.fillText("Valable "+VALIDITE+" (saison d'octobre à octobre)",56,432);
   g.fillStyle="#fff"; let fs=54; g.font='800 '+fs+'px "Saira Condensed", sans-serif';
   const N=(nom||"").toUpperCase(); while(g.measureText(N).width>W-330 && fs>30){ fs-=2; g.font='800 '+fs+'px "Saira Condensed", sans-serif'; }
   g.fillText(N,56,510);
@@ -261,7 +261,7 @@ $("#add").onclick=async()=>{
   setSt(st,"","Création…");
   const c=await MLRT.makeCompte(id,code,RAW,KEY,"membre",ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=id;
   stageAcces(); await renderMembers();
-  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE.toLowerCase()+"), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
+  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
   $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value=""; $("#nname").value="";
   $("#cname").value=fullname; $("#cnum").value=nextNum(); $("#ccourse").value=""; await drawCard(fullname,$("#cnum").value,"");
   setSt(st,"ok","Accès créé et carte membre générée (plus bas). Pensez à envoyer les fichiers sur GitHub (encadré jaune en haut).");

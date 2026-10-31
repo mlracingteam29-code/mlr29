@@ -72,7 +72,7 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
      "Télécharger la carte (image)", puis envoyez le message + la carte au membre par e-mail.
    - Refaire une carte (perte, correction) : rubrique "Carte membre" de la page de gestion.
    - Chaque année : changer la saison en haut du script de admin-membres.html
-     (const SAISON="2027", VALIDITE="Octobre 2026 – Octobre 2027") — ou demandez à Claude.
+     (const SAISON="2027", VALIDITE="d'octobre 2026 à octobre 2027") — ou demandez à Claude.
    - Ajouter un fichier : bouton "Ajouter" dans la page de gestion.
    - IMPORTANT : chaque modification produit des fichiers à envoyer sur GitHub
      (encadré jaune) : "Tout télécharger", puis glissez-les tous sur
