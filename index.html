@@ -494,8 +494,11 @@ fetch("roulages.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject())
     const info=document.createElement("div"); info.className="info";
     const h=document.createElement("h3"); h.textContent=r.lieu||"Roulage";
     const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,past?"terminé":""].filter(Boolean).join(" · ");
+    const full=/\bcomplet\b/i.test([r.type,r.infos].join(" "));
+    if(full && !past){ const bd=document.createElement("span"); bd.className="badge-full"; bd.textContent="Complet"; h.appendChild(bd); el.classList.add("full"); }
     info.append(h,ty);
-    if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
+    const inf=full?r.infos.replace(/^\s*complet\s*[.·-]?\s*/i,""):r.infos;
+    if(inf){ const p=document.createElement("p"); p.textContent=inf; info.appendChild(p); }
     el.append(cal,info); box.appendChild(el);
   });
 }).catch(()=>{});
