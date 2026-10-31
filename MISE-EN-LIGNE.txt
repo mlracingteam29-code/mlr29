@@ -62,15 +62,20 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    - Paragraphes : séparés par une ligne vide. Listes : "Titre — texte", une ligne par élément.
    - "Commit changes..." puis "Commit changes".
 
-8. AJOUTER DES FICHIERS À TÉLÉCHARGER (onglet "Fichiers")
-   - Ouvrez : https://github.com/mlracingteam29-code/mlr29/upload/main/fichiers
-   - Glissez vos fichiers (PDF, Word, Excel, images…, 25 Mo max par fichier)
-     puis cliquez sur "Commit changes".
-   - Le nom du fichier devient le titre affiché : Dossier_inscription_2027.pdf
-     s'affiche "Dossier inscription 2027".
-   - Pour retirer un fichier : ouvrez-le dans le dossier "fichiers" sur GitHub,
-     menu "..." > "Delete file", puis "Commit changes".
-   - Attention : ces fichiers sont publics une fois le site lancé.
+8. ESPACE "FICHIERS MEMBRES" (réservé aux membres, avec identifiant + code)
+   Page de gestion du bureau : https://mlracingteam29-code.github.io/mlr29/admin-membres.html
+   (identifiant : bureau — code : celui donné par Claude, à changer dans cette page)
+   - Les fichiers membres sont CHIFFRÉS : même si le dépôt est public, personne ne peut
+     les ouvrir sans un identifiant et un code valides.
+   - Après validation d'une inscription : "Créer l'accès" (identifiant + bouton Générer),
+     puis copiez le message et envoyez-le au membre par e-mail.
+   - Ajouter un fichier : bouton "Ajouter" dans la page de gestion.
+   - IMPORTANT : chaque modification produit des fichiers à envoyer sur GitHub
+     (encadré jaune) : "Tout télécharger", puis glissez-les tous sur
+     https://github.com/mlracingteam29-code/mlr29/upload/main/membres et "Commit changes".
+   - Ne déposez JAMAIS de document réservé aux membres directement dans le dépôt :
+     il serait public. Passez toujours par la page de gestion.
+   - Retirer un membre : "Retirer l'accès" puis envoyez acces.json comme ci-dessus.
 
 9. FORMULAIRE DE CONTACT (onglet "Nous contacter")
    - Les messages arrivent sur mlracingteam29@gmail.com (via FormSubmit).

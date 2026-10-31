@@ -88,7 +88,7 @@ Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver vot
 Photos et vidéos de la team : roulages, courses, enduro, vie du paddock.
 
 [fichiers.intro]
-Documents de l'association : dossiers, règlements, plannings… Cliquez pour télécharger.
+Espace réservé aux membres de l'association : documents, plannings, règlements…
 
 [partenaires.intro]
 Merci à celles et ceux qui soutiennent l'association tout au long de la saison.

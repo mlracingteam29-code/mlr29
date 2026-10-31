@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestion de l'espace membres — ML Racing Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .page{padding:40px 0 80px}
+  .page h1{font-size:clamp(34px,6vw,54px);font-weight:800;margin:6px 0 10px}
+  .page h1 em{font-style:normal;color:var(--red)}
+  .adm{display:grid;gap:16px;margin-top:20px}
+  .card h3{font-size:22px;margin-bottom:10px}
+  .card p{color:#cfcfd6;margin:0 0 10px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+  .row > div{flex:1;min-width:180px}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+  th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:500}
+  td .tag{font-size:11px;background:#2a0f0e;color:var(--red2);border-radius:99px;padding:2px 8px;margin-left:6px;text-transform:uppercase}
+  .linkbtn{background:none;border:0;color:var(--red2);cursor:pointer;font:600 14px "Saira";padding:0}
+  .pending{border:2px solid #e5c07b;background:#1e1a10}
+  .pending h3{color:#f1d58a}
+  .pending ol{margin:8px 0 12px;padding-left:20px;color:#efe3c2}
+  .pending li{margin:4px 0}
+  .dlist{display:grid;gap:6px;margin:10px 0}
+  .dlist div{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#0f0f12;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px}
+  .msgbox{white-space:pre-wrap;background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;margin:10px 0}
+  .status{font-size:14px;margin-left:6px}
+  .ok{color:var(--ok)} .ko{color:#ff8a80}
+  .back{color:var(--muted);text-decoration:none;font-size:14px}
+</style>
+</head>
+<body>
+<header class="nav"><div class="topbar"><div class="wrap">
+  <a class="logo" href="index.html" style="text-decoration:none"><span class="badge"><span>ML</span></span> Racing Team</a>
+  <a class="back" href="index.html#fichiers">← Retour au site</a>
+</div></div></header>
+<div class="checker"></div>
+
+<main class="page"><div class="wrap">
+  <div class="kicker">Réservé au bureau</div>
+  <h1>Gestion de l'<em>espace membres</em></h1>
+
+  <!-- Connexion bureau -->
+  <div class="card mlogin" id="login" style="margin-top:20px">
+    <h3>Connexion bureau</h3>
+    <p>Identifiant et code du bureau.</p>
+    <form id="lf" class="adm" style="margin-top:6px" novalidate>
+      <div><label for="lid">Identifiant</label><input id="lid" autocomplete="username" autocapitalize="none" value="bureau"></div>
+      <div><label for="lcode">Code</label><input id="lcode" type="password" autocomplete="current-password"></div>
+      <div><button class="btn red" id="lbtn">Se connecter</button><span class="status" id="lst"></span></div>
+    </form>
+  </div>
+
+  <div id="app" hidden class="adm">
+
+    <!-- À envoyer -->
+    <div class="card pending" id="pending" hidden>
+      <h3>⚠️ Modifications à envoyer sur GitHub</h3>
+      <p>Vos changements ne sont pas encore en ligne. Pour les publier :</p>
+      <ol>
+        <li>Cliquez sur <strong>Tout télécharger</strong> (autorisez les téléchargements multiples si le navigateur le demande).</li>
+        <li>Ouvrez <a href="https://github.com/mlracingteam29-code/mlr29/upload/main/membres" target="_blank" rel="noopener">la page d'envoi du dossier « membres » sur GitHub ↗</a>.</li>
+        <li>Glissez <strong>tous</strong> les fichiers téléchargés, puis cliquez sur <strong>Commit changes</strong>.</li>
+      </ol>
+      <div class="dlist" id="dlist"></div>
+      <button class="btn red" id="dlAll">Tout télécharger</button>
+    </div>
+
+    <!-- Membres -->
+    <div class="card">
+      <h3>👥 Membres ayant accès</h3>
+      <p>Créez un accès quand le bureau a validé une inscription. Le code n'est affiché qu'une seule fois : envoyez-le au membre.</p>
+      <div class="row">
+        <div><label for="nid">Identifiant du membre</label><input id="nid" placeholder="ex. jean.dupont" autocapitalize="none"></div>
+        <div><label for="ncode">Code d'accès</label><input id="ncode" placeholder="cliquez sur Générer"></div>
+        <div style="flex:0"><button class="btn ghost" id="gen" type="button">Générer</button></div>
+        <div style="flex:0"><button class="btn red" id="add" type="button">Créer l'accès</button></div>
+      </div>
+      <div class="status" id="ast"></div>
+      <div id="newmsg" hidden>
+        <p style="margin-top:12px"><strong>Message à envoyer au membre :</strong></p>
+        <div class="msgbox" id="msg"></div>
+        <button class="btn ghost small" id="copyMsg">Copier le message</button>
+      </div>
+      <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
+    </div>
+
+    <!-- Fichiers -->
+    <div class="card">
+      <h3>📁 Fichiers membres</h3>
+      <p>Les fichiers ajoutés ici sont chiffrés : seuls les membres connectés peuvent les ouvrir.</p>
+      <div class="row">
+        <div><label for="fin">Ajouter des fichiers (25 Mo max chacun)</label><input id="fin" type="file" multiple></div>
+        <div style="flex:0"><button class="btn red" id="fadd" type="button">Ajouter</button></div>
+      </div>
+      <div class="status" id="fst"></div>
+      <table><thead><tr><th>Fichier</th><th>Taille</th><th>Ajouté le</th><th></th></tr></thead><tbody id="flist"></tbody></table>
+    </div>
+
+    <!-- Code bureau -->
+    <div class="card">
+      <h3>🔑 Changer mon code bureau</h3>
+      <div class="row">
+        <div><label for="bcode">Nouveau code (12 caractères minimum)</label><input id="bcode" type="text"></div>
+        <div style="flex:0"><button class="btn ghost" id="bgen" type="button">Générer</button></div>
+        <div style="flex:0"><button class="btn red" id="bset" type="button">Changer</button></div>
+      </div>
+      <div class="status" id="bst"></div>
+    </div>
+  </div>
+</div></main>
+
+<div class="checker"></div>
+<footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
+
+<script src="membres/membres.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
+let RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={};
+const PENDING=new Map(); // nom de fichier -> Blob
+const size=n=>n>1048576?(n/1048576).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(n/1024))+" Ko";
+const fr=d=>d?d.split("-").reverse().join("/"):"";
+function setSt(el,cls,t){ el.className="status "+cls; el.textContent=t; }
+
+function stage(name,blob){ PENDING.set(name,blob); renderPending(); }
+function stageAcces(){ stage("acces.json",new Blob([JSON.stringify(ACCES,null,1)],{type:"application/json"})); }
+async function stageIndex(){ stage("index.bin",new Blob([await MLRT.encBytes(KEY,new TextEncoder().encode(JSON.stringify(INDEX)))])); }
+function download(name,blob){ const u=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),60000); }
+function renderPending(){
+  $("#pending").hidden=PENDING.size===0; const d=$("#dlist"); d.innerHTML="";
+  PENDING.forEach((b,n)=>{ const r=document.createElement("div"); const s=document.createElement("span"); s.textContent=n+" ("+size(b.size)+")";
+    const btn=document.createElement("button"); btn.className="linkbtn"; btn.textContent="Télécharger"; btn.onclick=()=>download(n,b); r.append(s,btn); d.appendChild(r); });
+}
+$("#dlAll").onclick=async()=>{ for(const [n,b] of PENDING){ download(n,b); await new Promise(r=>setTimeout(r,600)); } };
+window.addEventListener("beforeunload",e=>{ if(PENDING.size){ e.preventDefault(); e.returnValue=""; } });
+
+async function renderMembers(){
+  const tb=$("#mlist"); tb.innerHTML="";
+  for(const c of ACCES.comptes){
+    if(!(c.h in NAMES)){ try{ NAMES[c.h]=c.nom?await MLRT.decText(KEY,c.nom):"(inconnu)"; }catch(_){ NAMES[c.h]="(inconnu)"; } }
+  }
+  ACCES.comptes.slice().sort((a,b)=>(a.role==="bureau"?-1:1)-(b.role==="bureau"?-1:1)||NAMES[a.h].localeCompare(NAMES[b.h])).forEach(c=>{
+    const tr=document.createElement("tr");
+    const t1=document.createElement("td"); t1.textContent=NAMES[c.h]; if(c.role==="bureau"){ const g=document.createElement("span"); g.className="tag"; g.textContent="bureau"; t1.appendChild(g); }
+    const t2=document.createElement("td"); t2.textContent=fr(c.cree);
+    const t3=document.createElement("td"); t3.style.textAlign="right";
+    const isMe=c===ME.compte;
+    if(!isMe){ const b=document.createElement("button"); b.className="linkbtn"; b.textContent="Retirer l'accès";
+      b.onclick=()=>{ if(b.dataset.c!=="1"){ b.dataset.c="1"; b.textContent="Confirmer ?"; setTimeout(()=>{b.dataset.c="";b.textContent="Retirer l'accès";},3000); return; }
+        ACCES.comptes=ACCES.comptes.filter(x=>x!==c); stageAcces(); renderMembers(); };
+      t3.appendChild(b); } else { t3.textContent="(vous)"; t3.style.color="var(--muted)"; }
+    tr.append(t1,t2,t3); tb.appendChild(tr);
+  });
+}
+function renderFiles(){
+  const tb=$("#flist"); tb.innerHTML="";
+  if(!INDEX.length){ const tr=document.createElement("tr"); const td=document.createElement("td"); td.colSpan=4; td.textContent="Aucun fichier."; td.style.color="var(--muted)"; tr.appendChild(td); tb.appendChild(tr); }
+  INDEX.forEach(f=>{
+    const tr=document.createElement("tr");
+    const a=document.createElement("td"); a.textContent=f.nom;
+    const b=document.createElement("td"); b.textContent=size(f.taille||0);
+    const c=document.createElement("td"); c.textContent=fr(f.ajout);
+    const d=document.createElement("td"); d.style.textAlign="right";
+    const x=document.createElement("button"); x.className="linkbtn"; x.textContent="Retirer";
+    x.onclick=async()=>{ if(x.dataset.c!=="1"){ x.dataset.c="1"; x.textContent="Confirmer ?"; setTimeout(()=>{x.dataset.c="";x.textContent="Retirer";},3000); return; }
+      INDEX=INDEX.filter(y=>y!==f); PENDING.delete(f.fichier); await stageIndex(); renderFiles(); };
+    d.appendChild(x); tr.append(a,b,c,d); tb.appendChild(tr);
+  });
+}
+
+$("#lf").addEventListener("submit",async e=>{
+  e.preventDefault(); const st=$("#lst"); setSt(st,"","Vérification…"); $("#lbtn").disabled=true;
+  try{
+    ACCES=await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
+    const s=await MLRT.login(ACCES,$("#lid").value,$("#lcode").value);
+    if(!s){ setSt(st,"ko","Identifiant ou code incorrect."); }
+    else if(s.role!=="bureau"){ setSt(st,"ko","Ce compte n'a pas les droits du bureau."); }
+    else{
+      RAW=s.raw; KEY=s.key; ME=s;
+      try{ const r=await fetch("membres/index.bin",{cache:"no-cache"}); INDEX=r.ok?JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,await r.arrayBuffer()))):[]; }catch(_){ INDEX=[]; }
+      $("#login").hidden=true; $("#app").hidden=false; $("#lcode").value="";
+      await renderMembers(); renderFiles();
+    }
+  }catch(err){ setSt(st,"ko","Impossible de charger l'espace membres."); }
+  $("#lbtn").disabled=false;
+});
+
+$("#gen").onclick=()=>{ $("#ncode").value=MLRT.genCode(); };
+$("#bgen").onclick=()=>{ $("#bcode").value=MLRT.genCode(); };
+$("#add").onclick=async()=>{
+  const st=$("#ast"); const id=$("#nid").value.trim(), code=$("#ncode").value.trim();
+  if(!/^[\w.@-]{3,60}$/.test(id)){ setSt(st,"ko","Identifiant : 3 caractères minimum, lettres, chiffres, point, tiret."); return; }
+  if(code.length<8){ setSt(st,"ko","Code trop court (8 caractères minimum) — utilisez Générer."); return; }
+  const h=await MLRT.idHash(id); if(ACCES.comptes.some(c=>c.h===h)){ setSt(st,"ko","Cet identifiant existe déjà."); return; }
+  setSt(st,"","Création…");
+  const c=await MLRT.makeCompte(id,code,RAW,KEY,"membre",ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=id;
+  stageAcces(); await renderMembers();
+  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
+  $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value="";
+  setSt(st,"ok","Accès créé. Pensez à envoyer les fichiers sur GitHub (encadré jaune en haut).");
+};
+$("#copyMsg").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#msg").textContent); $("#copyMsg").textContent="Copié ✓"; }catch(_){ $("#copyMsg").textContent="Sélectionnez le texte"; } };
+
+$("#fadd").onclick=async()=>{
+  const st=$("#fst"); const files=[...$("#fin").files]; if(!files.length){ setSt(st,"ko","Choisissez un ou plusieurs fichiers."); return; }
+  for(const f of files){ if(f.size>25*1024*1024){ setSt(st,"ko",f.name+" dépasse 25 Mo."); return; } }
+  setSt(st,"","Chiffrement…");
+  for(const f of files){
+    const bin=await MLRT.encBytes(KEY,new Uint8Array(await f.arrayBuffer())); const fn=MLRT.randName();
+    stage(fn,new Blob([bin])); INDEX=INDEX.filter(x=>x.nom!==f.name);
+    INDEX.push({nom:f.name,fichier:fn,taille:f.size,type:f.type||"application/octet-stream",ajout:new Date().toISOString().slice(0,10)});
+  }
+  await stageIndex(); renderFiles(); $("#fin").value="";
+  setSt(st,"ok",files.length+" fichier(s) prêt(s). Envoyez-les sur GitHub (encadré jaune en haut).");
+};
+
+$("#bset").onclick=async()=>{
+  const st=$("#bst"); const code=$("#bcode").value.trim(); if(code.length<12){ setSt(st,"ko","12 caractères minimum."); return; }
+  const id=NAMES[ME.compte.h]; const c=await MLRT.makeCompte(id,code,RAW,KEY,"bureau",ACCES.iter);
+  ACCES.comptes=ACCES.comptes.map(x=>x===ME.compte?c:x); ME.compte=c; NAMES[c.h]=id; stageAcces(); await renderMembers();
+  setSt(st,"ok","Nouveau code enregistré : notez-le ! Il sera actif une fois acces.json envoyé sur GitHub.");
+};
+</script>
+</body>
+</html>

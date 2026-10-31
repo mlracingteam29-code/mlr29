@@ -246,3 +246,11 @@
   footer a{color:inherit}
 
   .top-links{display:flex;gap:18px;align-items:center}
+
+  /* Espace membres */
+  .mlogin{max-width:520px}
+  .mlogin .lock{font-size:34px;line-height:1}
+  .mlogin h3{font-size:26px;margin:8px 0 6px}
+  .mlogin form{display:grid;gap:12px;margin-top:16px}
+  .mbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:14px}
+  button.file{width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer}

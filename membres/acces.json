@@ -1,0 +1,15 @@
+{
+ "v": 1,
+ "iter": 250000,
+ "comptes": [
+  {
+   "h": "23Z/Aez78BSLfmRzTtYew9gjqntUhoiCKc+bEb02sOE=",
+   "role": "bureau",
+   "nom": "eE0Od45aXLJg3+dQnTS3tECzSJIe3tcVmgqfTfqitpUvXg==",
+   "salt": "P0ODFkWq2PyBNCs9+E9bBg==",
+   "iv": "9iabx3zcpFiRDdcZ",
+   "cle": "pFqZE5qEeqHtTsMbXvpVam6X9AWb+r2NGy3HpcLqx2JlmgGQeGxim0hdF4+voCNF",
+   "cree": "2026-10-31"
+  }
+ ]
+}

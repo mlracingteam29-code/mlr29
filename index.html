@@ -24,7 +24,7 @@
       <button data-go="roulages">Dates de roulages</button>
       <button data-go="gazettes">Gazettes</button>
       <button data-go="multimedia">Multimédia</button>
-      <button data-go="fichiers">Fichiers</button>
+      <button data-go="fichiers">🔒 Fichiers membres</button>
       <button data-go="inscriptions">Adhésion</button>
       <button data-go="echange">Messagerie directe</button>
       <button data-go="partenaires">Nos partenaires</button>
@@ -157,6 +157,7 @@
           <li>Acceptation du règlement intérieur</li>
           <li>Cotisation et règlement indiqués dans le formulaire</li>
           <li>Validation de l'inscription par le bureau</li>
+          <li>Réception de vos accès à l'espace 🔒 Fichiers membres</li>
         </ul>
         <div class="cta" style="margin-top:16px"><a class="btn red" href="inscription.html">Remplir le formulaire d'inscription</a></div>
       </div>
@@ -210,15 +211,40 @@
   <button class="lb-nav lb-next" id="lbNext" aria-label="Suivante">›</button>
 </div>
 
-<!-- FICHIERS -->
+<!-- FICHIERS MEMBRES -->
 <section class="tab" data-tab="fichiers">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Fichiers à télécharger</h2>
-      <p data-txt="fichiers.intro">Documents de l'association : dossiers, règlements, plannings… Cliquez pour télécharger.</p>
+      <h2>Fichiers membres</h2>
+      <p data-txt="fichiers.intro">Espace réservé aux membres de l'association : documents, plannings, règlements…</p>
     </div>
-    <div class="files" id="files"></div>
-    <div class="empty" id="filesEmpty">Aucun fichier disponible pour le moment.</div>
+
+    <div class="card mlogin" id="mLogin">
+      <div class="lock">🔒</div>
+      <h3>Espace réservé aux membres</h3>
+      <p>Connectez-vous avec l'<strong>identifiant</strong> et le <strong>code</strong> reçus après la validation de votre inscription par le bureau.</p>
+      <form id="mForm" autocomplete="on" novalidate>
+        <div><label for="mId">Identifiant</label><input id="mId" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+        <div><label for="mCode">Code d'accès</label><input id="mCode" type="password" autocomplete="current-password" required></div>
+        <div class="cta" style="align-items:center">
+          <button class="btn red" type="submit" id="mBtn">Se connecter</button>
+          <span class="cstatus" id="mStatus" role="status"></span>
+        </div>
+      </form>
+      <p class="hint" style="margin-top:14px">Pas encore membre ? <a href="#adhesion" data-go="inscriptions">Adhérer à l'association</a> · Identifiant ou code perdu ? <a href="#contact" data-go="contact">Contactez le bureau</a></p>
+    </div>
+
+    <div id="mSpace" hidden>
+      <div class="mbar">
+        <span>Connecté : <b id="mWho"></b></span>
+        <span class="cta" style="margin:0">
+          <a class="btn ghost small" id="mAdmin" href="admin-membres.html" hidden>⚙️ Gérer l'espace membres</a>
+          <button class="btn ghost small" id="mOut">Se déconnecter</button>
+        </span>
+      </div>
+      <div class="files" id="files"></div>
+      <div class="empty" id="filesEmpty" hidden>Aucun fichier pour le moment.</div>
+    </div>
   </div>
 </section>
 
@@ -337,6 +363,7 @@
 </footer>
 <div class="toast" id="toast"></div>
 
+<script src="membres/membres.js"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -373,7 +400,7 @@ $("#year").textContent = new Date().getFullYear();
 
 /* Onglets */
 const TABS=["infos","presentation","roulages","gazettes","multimedia","fichiers","echange","partenaires","contact","inscriptions"];
-const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",mentions:"infos",legal:"infos",dates:"roulages",telechargements:"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",mentions:"infos",legal:"infos",dates:"roulages",telechargements:"fichiers",membres:"fichiers","espace-membres":"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
 function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
@@ -473,28 +500,70 @@ fetch("roulages.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject())
   });
 }).catch(()=>{});
 
-/* Fichiers téléchargeables : tout fichier déposé dans le dossier "fichiers" du dépôt GitHub */
 const DEPOT="mlracingteam29-code/mlr29";
-fetch("https://api.github.com/repos/"+DEPOT+"/contents/fichiers",{headers:{Accept:"application/vnd.github+json"}})
- .then(r=>r.ok?r.json():Promise.reject()).then(list=>{
-  const files=(Array.isArray(list)?list:[]).filter(f=>f.type==="file" && !f.name.startsWith(".") && !/^lisezmoi/i.test(f.name))
-    .sort((a,b)=>a.name.localeCompare(b.name,"fr",{numeric:true}));
-  if(!files.length) return;
-  const box=$("#files"); $("#filesEmpty").hidden=true;
+
+/* Fichiers membres : contenu chiffré, ouvert avec identifiant + code */
+(function(){
+  if(typeof MLRT==="undefined" || !(window.crypto&&crypto.subtle)){ $("#mStatus").textContent="Votre navigateur ne permet pas d'ouvrir l'espace membres."; return; }
+  let KEY=null, INDEX=[];
   const size=n=>n>1048576?(n/1048576).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(n/1024))+" Ko";
-  files.forEach(f=>{
-    const dot=f.name.lastIndexOf("."), ext=dot>0?f.name.slice(dot+1).toUpperCase():"FICHIER";
-    const title=(dot>0?f.name.slice(0,dot):f.name).replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
-    const a=document.createElement("a"); a.className="file"; a.href="fichiers/"+encodeURIComponent(f.name); a.target="_blank"; a.rel="noopener"; a.setAttribute("download","");
-    const badge=document.createElement("span"); badge.className="ext"; badge.textContent=ext.slice(0,4);
-    const txt=document.createElement("span"); txt.className="ftxt";
-    const n=document.createElement("b"); n.textContent=title;
-    const m=document.createElement("small"); m.textContent=ext+" · "+size(f.size||0);
-    txt.append(n,m);
-    const dl=document.createElement("span"); dl.className="dl"; dl.textContent="Télécharger ↓";
-    a.append(badge,txt,dl); box.appendChild(a);
+  const nice=n=>n.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+  async function loadIndex(){
+    const r=await fetch("membres/index.bin",{cache:"no-cache"}); if(!r.ok) return [];
+    return JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,await r.arrayBuffer())));
+  }
+  function render(){
+    const box=$("#files"); box.innerHTML="";
+    $("#filesEmpty").hidden=INDEX.length>0;
+    INDEX.slice().sort((a,b)=>a.nom.localeCompare(b.nom,"fr",{numeric:true})).forEach(f=>{
+      const dot=f.nom.lastIndexOf("."), ext=dot>0?f.nom.slice(dot+1).toUpperCase():"FICHIER";
+      const a=document.createElement("button"); a.className="file"; a.type="button";
+      const badge=document.createElement("span"); badge.className="ext"; badge.textContent=ext.slice(0,4);
+      const txt=document.createElement("span"); txt.className="ftxt";
+      const n=document.createElement("b"); n.textContent=nice(f.nom);
+      const m=document.createElement("small"); m.textContent=ext+" · "+size(f.taille||0)+(f.ajout?" · ajouté le "+f.ajout.split("-").reverse().join("/"):"");
+      txt.append(n,m);
+      const dl=document.createElement("span"); dl.className="dl"; dl.textContent="Télécharger ↓";
+      a.append(badge,txt,dl);
+      a.onclick=async()=>{
+        dl.textContent="Ouverture…";
+        try{
+          const r=await fetch("membres/"+f.fichier,{cache:"no-cache"}); if(!r.ok) throw 0;
+          const bytes=await MLRT.decBytes(KEY,await r.arrayBuffer());
+          const url=URL.createObjectURL(new Blob([bytes],{type:f.type||"application/octet-stream"}));
+          const l=document.createElement("a"); l.href=url; l.download=f.nom; document.body.appendChild(l); l.click(); l.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),60000); dl.textContent="Télécharger ↓";
+        }catch(e){ dl.textContent="Erreur, réessayez"; }
+      };
+      box.appendChild(a);
+    });
+  }
+  async function enter(raw,who,role){
+    KEY=await MLRT.importMaster(raw);
+    try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
+    $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";
+    $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
+  }
+  $("#mForm").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const st=$("#mStatus"), btn=$("#mBtn"); st.className="cstatus"; st.textContent="";
+    const id=$("#mId").value.trim(), code=$("#mCode").value.trim();
+    if(!id||!code){ st.classList.add("ko"); st.textContent="Saisissez votre identifiant et votre code."; return; }
+    btn.disabled=true; btn.textContent="Vérification…";
+    try{
+      const acces=await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
+      const s=await MLRT.login(acces,id,code);
+      if(!s){ st.classList.add("ko"); st.textContent="Identifiant ou code incorrect."; }
+      else{
+        try{ sessionStorage.setItem("mlrt_membre",JSON.stringify({k:MLRT.b64(s.raw),who:id,role:s.role})); }catch(_){}
+        $("#mCode").value=""; await enter(s.raw,id,s.role);
+      }
+    }catch(err){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
+    btn.disabled=false; btn.textContent="Se connecter";
   });
-}).catch(()=>{});
+  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
+  try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
+})();
 
 /* Multimédia : photos et vidéos du dossier "medias" (sous-dossiers = albums) + liens YouTube de videos.txt */
 (function(){
