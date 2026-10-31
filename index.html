@@ -420,6 +420,7 @@ function showTab(name,push){
   document.querySelectorAll("#links [data-go]").forEach(b=>b.classList.toggle("active",b.dataset.go===name));
   if(push){ try{ history.replaceState(null,"","#"+name); }catch(e){ location.hash=name; } }
   window.scrollTo({top:0,behavior:"instant"});
+  if(name==="fichiers" && window.refreshMembres) window.refreshMembres();
 }
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.sujet){ const o=[...document.querySelectorAll("#cSujet option")].find(x=>x.textContent===b.dataset.sujet); if(o) o.selected=true; } showTab(b.dataset.go,true); }));
 window.addEventListener("hashchange",()=>showTab(location.hash.slice(1),false));
@@ -614,6 +615,8 @@ const DEPOT="mlracingteam29-code/mlr29";
   });
   $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
   try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
+  /* rafraîchit la liste à chaque ouverture de l'onglet */
+  window.refreshMembres=async()=>{ if(!KEY) return; try{ INDEX=await loadIndex(); render(); }catch(_){} };
 })();
 
 /* Multimédia : photos et vidéos du dossier "medias" (sous-dossiers = albums) + liens YouTube de videos.txt */
