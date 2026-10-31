@@ -24,6 +24,7 @@
       <button data-go="roulages">Dates de roulages</button>
       <button data-go="gazettes">Gazettes</button>
       <button data-go="multimedia">Multimédia</button>
+      <button data-go="equipe">Nos membres</button>
       <button data-go="fichiers">🔒 Fichiers membres</button>
       <button data-go="inscriptions">Adhésion</button>
       <button data-go="echange">Messagerie directe</button>
@@ -210,6 +211,18 @@
   <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
   <button class="lb-nav lb-next" id="lbNext" aria-label="Suivante">›</button>
 </div>
+
+<!-- NOS MEMBRES -->
+<section class="tab" data-tab="equipe">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Nos membres</h2>
+      <p data-txt="equipe.intro">Les pilotes et passionnés qui font vivre la ML Racing Team.</p>
+    </div>
+    <div class="team" id="team"></div>
+    <div class="empty" id="teamEmpty">La présentation de nos membres arrive très bientôt !</div>
+  </div>
+</section>
 
 <!-- FICHIERS MEMBRES -->
 <section class="tab" data-tab="fichiers">
@@ -399,8 +412,8 @@ function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTi
 $("#year").textContent = new Date().getFullYear();
 
 /* Onglets */
-const TABS=["infos","presentation","roulages","gazettes","multimedia","fichiers","echange","partenaires","contact","inscriptions"];
-const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",mentions:"infos",legal:"infos",dates:"roulages",telechargements:"fichiers",membres:"fichiers","espace-membres":"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia"};
+const TABS=["infos","presentation","roulages","gazettes","multimedia","equipe","fichiers","echange","partenaires","contact","inscriptions"];
+const ALIAS={accueil:"presentation",association:"presentation",discussion:"echange",messagerie:"echange",inscription:"inscriptions",adhesion:"inscriptions",mentions:"infos",legal:"infos",dates:"roulages",telechargements:"fichiers",membres:"fichiers","espace-membres":"fichiers",photos:"multimedia",videos:"multimedia",medias:"multimedia",equipe:"equipe",pilotes:"equipe","nos-membres":"equipe"};
 function showTab(name,push){
   name=ALIAS[name]||name; if(!TABS.includes(name)) name="presentation";
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
@@ -461,6 +474,38 @@ fetch("partenaires.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject
   if(!names.length) return;
   const box=document.getElementById("partners"); box.innerHTML="";
   names.forEach(n=>{ const d=document.createElement("div"); d.className="partner"; d.textContent=n; box.appendChild(d); });
+}).catch(()=>{});
+
+/* Nos membres : lus depuis equipe.txt + photos du dossier "equipe" (modifiables sur GitHub) */
+fetch("equipe.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+  const norm=k=>k.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+  const KEYS={nom:"nom",photo:"photo",moto:"moto",motos:"moto",numero:"numero","n°":"numero",discipline:"discipline",disciplines:"discipline",texte:"texte",presentation:"texte"};
+  const fiches=[]; let cur=null, last=null;
+  t.split(/\r?\n/).forEach(line=>{
+    if(/^\s*#/.test(line)) return;
+    if(!line.trim()){ cur=null; last=null; return; }
+    const m=line.match(/^\s*([^:]{1,20}?)\s*:\s*(.*)$/); const key=m&&KEYS[norm(m[1])];
+    if(key){ if(!cur||(key==="nom"&&cur.nom)){ cur={}; fiches.push(cur); } cur[key]=(cur[key]?cur[key]+" ":"")+m[2].trim(); last=key; }
+    else if(cur&&last==="texte"){ cur.texte+=" "+line.trim(); }
+  });
+  const list=fiches.filter(f=>f.nom); if(!list.length) return;
+  $("#teamEmpty").hidden=true; const box=$("#team");
+  list.forEach(f=>{
+    const c=document.createElement("article"); c.className="member";
+    const ph=document.createElement("div"); ph.className="mphoto";
+    if(f.photo){ const im=document.createElement("img"); im.src="equipe/"+f.photo.split("/").map(encodeURIComponent).join("/"); im.alt=f.nom; im.loading="lazy";
+      im.onerror=()=>{ im.remove(); ph.classList.add("noimg"); ph.textContent=f.nom.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase(); }; ph.appendChild(im); }
+    else{ ph.classList.add("noimg"); ph.textContent=f.nom.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase(); }
+    if(f.numero){ const n=document.createElement("span"); n.className="mnum"; n.textContent="#"+f.numero.replace(/^#/,""); ph.appendChild(n); }
+    const body=document.createElement("div"); body.className="mbody";
+    const h=document.createElement("h3"); h.textContent=f.nom; body.appendChild(h);
+    const tags=document.createElement("div"); tags.className="mtags";
+    if(f.moto){ const s=document.createElement("span"); s.textContent="🏍️ "+f.moto; tags.appendChild(s); }
+    if(f.discipline){ f.discipline.split(",").map(x=>x.trim()).filter(Boolean).forEach(d=>{ const s=document.createElement("span"); s.className="disc"; s.textContent=d; tags.appendChild(s); }); }
+    if(tags.children.length) body.appendChild(tags);
+    if(f.texte){ const p=document.createElement("p"); p.textContent=f.texte; body.appendChild(p); }
+    c.append(ph,body); box.appendChild(c);
+  });
 }).catch(()=>{});
 
 /* Dates roulages : lues depuis roulages.txt (modifiable sur GitHub) */

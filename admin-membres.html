@@ -165,6 +165,7 @@
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
+const VIDEO_URL="https://mlracingteam29-code.github.io/mlr29/tutoriel.html";
 /* Saison affichée sur les cartes membres — à changer chaque année */
 const SAISON="2027", VALIDITE="d'octobre 2026 à octobre 2027";
 document.querySelectorAll(".saison").forEach(e=>e.textContent=SAISON);
@@ -288,7 +289,7 @@ async function createAccess(kind,f,st){
   setSt(st,"","Création…");
   const c=await MLRT.makeCompte(f.id,f.code,RAW,KEY,kind,ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=f.id;
   stageAcces(); await renderMembers();
-  const acces="Identifiant : "+f.id+"\nCode d'accès : "+f.code+"\n\nSite : "+SITE+"\n(Vos accès sont actifs d'ici quelques minutes.)";
+  const acces="Identifiant : "+f.id+"\nCode d'accès : "+f.code+"\n\nSite : "+SITE+"\n(Vos accès sont actifs d'ici quelques minutes.)\n\nDécouvrez le site en 1 minute grâce à notre vidéo de présentation :\n"+VIDEO_URL;
   $("#msg").textContent = P
     ? "Bonjour"+(f.contact?" "+f.contact:"")+",\n\nToute l'équipe ML Racing Team vous remercie chaleureusement pour votre soutien en tant que partenaire de l'association.\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous sommes fiers de la vivre à vos côtés !\n\nVoici votre accès partenaire à l'espace « Fichiers membres » du site (gazettes, documents de l'association…) :\n"+acces+"\n\nVous trouverez en pièce jointe votre carte partenaire saison "+SAISON+" (valable "+VALIDITE+").\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team"
     : "Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous avons hâte de la vivre avec vous !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\n"+acces+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";

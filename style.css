@@ -259,3 +259,17 @@
   .date.full .cal b{color:#8a8a94}
 
   .badge-places{display:inline-block;vertical-align:middle;margin-left:10px;background:rgba(47,191,113,.15);border:1px solid rgba(47,191,113,.5);color:#5fe39a;font:700 12px "Saira";letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
+
+  /* Nos membres */
+  .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+  .member{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .mphoto{position:relative;aspect-ratio:4/5;background:#0f0f12;overflow:hidden}
+  .mphoto img{width:100%;height:100%;object-fit:cover;display:block}
+  .mphoto.noimg{display:flex;align-items:center;justify-content:center;font-family:"Saira Condensed";font-weight:800;font-size:64px;color:#3a3a42;background:repeating-linear-gradient(135deg,#141417 0 14px,#18181c 14px 28px)}
+  .mnum{position:absolute;left:12px;bottom:12px;background:var(--red);color:#fff;font-family:"Saira Condensed";font-weight:800;font-size:24px;line-height:1;padding:6px 10px;border-radius:8px}
+  .mbody{padding:16px 18px 18px}
+  .mbody h3{font-size:24px}
+  .mtags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .mtags span{font-size:13px;border:1px solid var(--line);background:#141417;border-radius:99px;padding:3px 10px}
+  .mtags span.disc{border-color:rgba(225,6,0,.5);color:#ff6a60}
+  .mbody p{margin:12px 0 0;color:var(--muted);font-size:15px}

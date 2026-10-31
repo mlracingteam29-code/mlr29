@@ -1,0 +1,25 @@
+# =====================================================================
+# NOS MEMBRES — onglet « Nos membres » du site
+# ---------------------------------------------------------------------
+# Une fiche par membre, séparées par UNE LIGNE VIDE. Seul « Nom » est obligatoire.
+#
+#   Nom : prénom et nom affichés
+#   Photo : nom du fichier photo déposé dans le dossier « equipe » (ex. clement.jpg)
+#   Moto : la ou les motos (ex. Yamaha R6 2019)
+#   Numéro : numéro de course (facultatif)
+#   Discipline : séparées par des virgules (ex. Vitesse, Supermotard)
+#   Texte : petit texte de présentation (peut continuer sur les lignes suivantes)
+#
+# Les lignes qui commencent par # sont ignorées. Exemple à copier (sans les #) :
+#
+# Nom : Clément Merroux
+# Photo : clement.jpg
+# Moto : Yamaha R6
+# Numéro : 29
+# Discipline : Vitesse, Mini moto
+# Texte : Passionné de piste depuis 10 ans, toujours partant pour un roulage
+# au Mans ou au Vigeant.
+#
+# Pensez à demander l'accord de chaque membre avant de publier sa photo.
+# =====================================================================
+

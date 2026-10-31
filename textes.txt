@@ -87,6 +87,9 @@ Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver vot
 [multimedia.intro]
 Photos et vidéos de la team : roulages, courses, enduro, vie du paddock.
 
+[equipe.intro]
+Les pilotes et passionnés qui font vivre la ML Racing Team.
+
 [fichiers.intro]
 Espace réservé aux membres de l'association : documents, plannings, règlements…
 
