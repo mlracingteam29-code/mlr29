@@ -96,14 +96,33 @@
       <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
     </div>
 
+    <!-- Partenaires -->
+    <div class="card" id="partSec">
+      <h3>🤝 Inscription partenaire</h3>
+      <p>Pour un partenaire ou sponsor, sans passer par le formulaire d'adhésion : créez directement son accès à l'espace « Fichiers membres », sa <strong>carte partenaire</strong> et son e-mail de remerciement (à contrôler puis expédier, comme pour un membre).</p>
+      <div class="row">
+        <div><label for="pname">Entreprise / partenaire</label><input id="pname" placeholder="ex. Yamaha Brest"></div>
+        <div><label for="pcontact">Nom du contact (facultatif)</label><input id="pcontact" placeholder="ex. Paul Martin"></div>
+        <div><label for="pmail">E-mail du partenaire</label><input id="pmail" type="email" placeholder="ex. contact@partenaire.fr" autocapitalize="none"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div><label for="pid">Identifiant</label><input id="pid" placeholder="ex. yamaha.brest" autocapitalize="none"></div>
+        <div><label for="pcode">Code d'accès</label><input id="pcode" placeholder="cliquez sur Générer"></div>
+        <div style="flex:0"><button class="btn ghost" id="pgen" type="button">Générer</button></div>
+        <div style="flex:0"><button class="btn red" id="padd" type="button">Créer l'accès partenaire</button></div>
+      </div>
+      <div class="status" id="pst"></div>
+    </div>
+
     <!-- Carte membre -->
     <div class="card" id="cardSec">
-      <h3>🪪 Carte membre saison <span class="saison"></span></h3>
+      <h3>🪪 Carte membre / partenaire saison <span class="saison"></span></h3>
       <p>Générée automatiquement à la création d'un accès. Vous pouvez aussi en refaire une ici (carte perdue, correction…).</p>
       <div class="row">
+        <div style="flex:0 0 150px"><label for="ctype">Type de carte</label><select id="ctype"><option value="membre">Membre</option><option value="partenaire">Partenaire</option></select></div>
         <div><label for="cname">Nom et prénom</label><input id="cname" placeholder="ex. DUPONT Jean"></div>
         <div><label for="cnum">N° d'adhérent</label><input id="cnum" placeholder="ex. 2027-001"></div>
-        <div><label for="ccourse">N° de course (facultatif)</label><input id="ccourse" placeholder="ex. 29"></div>
+        <div><label for="ccourse" id="ccourseLbl">N° de course (facultatif)</label><input id="ccourse" placeholder="ex. 29"></div>
         <div style="flex:0"><button class="btn red" id="cgen" type="button">Générer la carte</button></div>
       </div>
       <div class="status" id="cst"></div>
@@ -151,7 +170,9 @@ const SAISON="2027", VALIDITE="d'octobre 2026 à octobre 2027";
 document.querySelectorAll(".saison").forEach(e=>e.textContent=SAISON);
 let CARD_NAME="carte-membre.png";
 const loadImg=src=>new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=src; });
-async function drawCard(nom,num,course){
+let CARD_KIND="membre";
+async function drawCard(nom,num,course,kind){
+  kind=kind||"membre"; CARD_KIND=kind; const P=kind==="partenaire";
   try{ await Promise.all([document.fonts.load('800 60px "Saira Condensed"'),document.fonts.load('600 30px "Saira"')]); }catch(_){}
   const cv=$("#cardCanvas"), g=cv.getContext("2d"), W=cv.width, H=cv.height, R=36;
   g.clearRect(0,0,W,H); g.save();
@@ -167,23 +188,24 @@ async function drawCard(nom,num,course){
   g.fillStyle="#e10600"; g.beginPath(); g.moveTo(W-250,H); g.lineTo(W-150,278); g.lineTo(W-118,278); g.lineTo(W-218,H); g.fill();
   g.fillStyle="rgba(225,6,0,.35)"; g.beginPath(); g.moveTo(W-190,H); g.lineTo(W-90,278); g.lineTo(W-74,278); g.lineTo(W-174,H); g.fill();
   // textes
-  g.fillStyle="#ff2a1f"; g.font='600 24px "Saira", sans-serif'; g.fillText("CARTE MEMBRE",56,334);
+  g.fillStyle="#ff2a1f"; g.font='600 24px "Saira", sans-serif'; g.fillText(P?"CARTE PARTENAIRE":"CARTE MEMBRE",56,334);
   g.fillStyle="#fff"; g.font='800 64px "Saira Condensed", sans-serif'; g.fillText("SAISON "+SAISON,56,398);
   g.fillStyle="#a3a3ad"; g.font='500 22px "Saira", sans-serif'; g.fillText("Valable "+VALIDITE+" (saison d'octobre à octobre)",56,432);
   g.fillStyle="#fff"; let fs=54; g.font='800 '+fs+'px "Saira Condensed", sans-serif';
   const N=(nom||"").toUpperCase(); while(g.measureText(N).width>W-330 && fs>30){ fs-=2; g.font='800 '+fs+'px "Saira Condensed", sans-serif'; }
   g.fillText(N,56,510);
   g.fillStyle="#a3a3ad"; g.font='500 20px "Saira", sans-serif';
-  const meta=["N° adhérent : "+(num||"—")]; if(course) meta.push("N° de course : "+course);
+  const meta=[(P?"N° partenaire : ":"N° adhérent : ")+(num||"—")]; if(course) meta.push((P?"Contact : ":"N° de course : ")+course);
   g.fillText(meta.join("     "),56,552);
   g.fillStyle="#6f6f78"; g.font='400 17px "Saira", sans-serif';
-  g.fillText("Délivrée le "+new Date().toLocaleDateString("fr-FR")+" · À présenter chez nos partenaires · RNA W291014847",56,598);
+  g.fillText("Délivrée le "+new Date().toLocaleDateString("fr-FR")+(P?" · Partenaire officiel ML Racing Team · Merci pour votre soutien":" · À présenter chez nos partenaires")+" · RNA W291014847",56,598);
   g.restore();
-  CARD_NAME="carte-membre-"+SAISON+"-"+(nom||"membre").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()+".png";
+  CARD_NAME="carte-"+(P?"partenaire":"membre")+"-"+SAISON+"-"+(nom||"membre").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()+".png";
   $("#cardOut").hidden=false;
 }
-function nextNum(){ const n=ACCES.comptes.filter(c=>c.role!=="bureau").length; return SAISON+"-"+String(n).padStart(3,"0"); }
-$("#cgen").onclick=async()=>{ const n=$("#cname").value.trim(); if(!n){ setSt($("#cst"),"ko","Indiquez le nom et prénom."); return; } setSt($("#cst"),"",""); await drawCard(n,$("#cnum").value.trim(),$("#ccourse").value.trim()); };
+function nextNum(kind){ const P=kind==="partenaire"; const n=ACCES.comptes.filter(c=>P?c.role==="partenaire":(c.role!=="bureau"&&c.role!=="partenaire")).length; return (P?"P":"")+SAISON+"-"+String(n).padStart(3,"0"); }
+$("#ctype").onchange=()=>{ const P=$("#ctype").value==="partenaire"; $("#ccourseLbl").textContent=P?"Contact (facultatif)":"N° de course (facultatif)"; document.querySelector('label[for="cname"]').textContent=P?"Entreprise / partenaire":"Nom et prénom"; };
+$("#cgen").onclick=async()=>{ const n=$("#cname").value.trim(); if(!n){ setSt($("#cst"),"ko","Indiquez le nom."); return; } setSt($("#cst"),"",""); await drawCard(n,$("#cnum").value.trim(),$("#ccourse").value.trim(),$("#ctype").value); };
 $("#cdl").onclick=()=>{ $("#cardCanvas").toBlob(b=>download(CARD_NAME,b),"image/png"); };
 let RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={};
 const PENDING=new Map(); // nom de fichier -> Blob
@@ -210,7 +232,7 @@ async function renderMembers(){
   }
   ACCES.comptes.slice().sort((a,b)=>(a.role==="bureau"?-1:1)-(b.role==="bureau"?-1:1)||NAMES[a.h].localeCompare(NAMES[b.h])).forEach(c=>{
     const tr=document.createElement("tr");
-    const t1=document.createElement("td"); t1.textContent=NAMES[c.h]; if(c.role==="bureau"){ const g=document.createElement("span"); g.className="tag"; g.textContent="bureau"; t1.appendChild(g); }
+    const t1=document.createElement("td"); t1.textContent=NAMES[c.h]; if(c.role==="bureau"||c.role==="partenaire"){ const g=document.createElement("span"); g.className="tag"; g.textContent=c.role; t1.appendChild(g); }
     const t2=document.createElement("td"); t2.textContent=fr(c.cree);
     const t3=document.createElement("td"); t3.style.textAlign="right";
     const isMe=c===ME.compte;
@@ -256,23 +278,37 @@ $("#lf").addEventListener("submit",async e=>{
 
 $("#gen").onclick=()=>{ $("#ncode").value=MLRT.genCode(); };
 $("#bgen").onclick=()=>{ $("#bcode").value=MLRT.genCode(); };
-$("#add").onclick=async()=>{
-  const st=$("#ast"); const id=$("#nid").value.trim(), code=$("#ncode").value.trim(), fullname=$("#nname").value.trim(), email=$("#nmail").value.trim();
-  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setSt(st,"ko","L'adresse e-mail du membre n'est pas valide."); return; }
-  if(!fullname){ setSt(st,"ko","Indiquez le nom et prénom du membre (pour sa carte)."); return; }
-  if(!/^[\w.@-]{3,60}$/.test(id)){ setSt(st,"ko","Identifiant : 3 caractères minimum, lettres, chiffres, point, tiret."); return; }
-  if(code.length<8){ setSt(st,"ko","Code trop court (8 caractères minimum) — utilisez Générer."); return; }
-  const h=await MLRT.idHash(id); if(ACCES.comptes.some(c=>c.h===h)){ setSt(st,"ko","Cet identifiant existe déjà."); return; }
+async function createAccess(kind,f,st){
+  const P=kind==="partenaire", who=P?"partenaire":"membre";
+  if(!f.name){ setSt(st,"ko",P?"Indiquez le nom de l'entreprise / du partenaire.":"Indiquez le nom et prénom du membre (pour sa carte)."); return false; }
+  if(f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)){ setSt(st,"ko","L'adresse e-mail du "+who+" n'est pas valide."); return false; }
+  if(!/^[\w.@-]{3,60}$/.test(f.id)){ setSt(st,"ko","Identifiant : 3 caractères minimum, lettres, chiffres, point, tiret."); return false; }
+  if(f.code.length<8){ setSt(st,"ko","Code trop court (8 caractères minimum) — utilisez Générer."); return false; }
+  const h=await MLRT.idHash(f.id); if(ACCES.comptes.some(c=>c.h===h)){ setSt(st,"ko","Cet identifiant existe déjà."); return false; }
   setSt(st,"","Création…");
-  const c=await MLRT.makeCompte(id,code,RAW,KEY,"membre",ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=id;
+  const c=await MLRT.makeCompte(f.id,f.code,RAW,KEY,kind,ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=f.id;
   stageAcces(); await renderMembers();
-  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous avons hâte de la vivre avec vous !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n(Vos accès sont actifs d'ici quelques minutes.)\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
-  $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value=""; $("#nname").value=""; $("#nmail").value="";
-  $("#cname").value=fullname; $("#cnum").value=nextNum(); $("#ccourse").value=""; await drawCard(fullname,$("#cnum").value,"");
-  setSt(st,"ok","Accès créé et carte membre générée (plus bas). Envoyez tout de suite les fichiers sur GitHub (encadré jaune en haut) pour activer l'accès.");
-  $("#mto").value=email; $("#send").disabled=false; $("#send").textContent="📧 Expédier l'e-mail avec la carte";
-  setSt($("#mailst"),"",email?"Contrôlez l'adresse, le message et la carte (plus bas), puis cliquez sur « Expédier ».":"Indiquez l'e-mail du membre ci-dessus pour lui envoyer ses accès et sa carte, ou téléchargez la carte et envoyez le message vous-même.");
+  const acces="Identifiant : "+f.id+"\nCode d'accès : "+f.code+"\n\nSite : "+SITE+"\n(Vos accès sont actifs d'ici quelques minutes.)";
+  $("#msg").textContent = P
+    ? "Bonjour"+(f.contact?" "+f.contact:"")+",\n\nToute l'équipe ML Racing Team vous remercie chaleureusement pour votre soutien en tant que partenaire de l'association.\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous sommes fiers de la vivre à vos côtés !\n\nVoici votre accès partenaire à l'espace « Fichiers membres » du site (gazettes, documents de l'association…) :\n"+acces+"\n\nVous trouverez en pièce jointe votre carte partenaire saison "+SAISON+" (valable "+VALIDITE+").\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team"
+    : "Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous avons hâte de la vivre avec vous !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\n"+acces+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
+  $("#newmsg").hidden=false;
+  $("#ctype").value=kind; $("#ctype").onchange(); $("#cname").value=f.name; $("#cnum").value=nextNum(kind); $("#ccourse").value=P?(f.contact||""):"";
+  await drawCard(f.name,$("#cnum").value,$("#ccourse").value,kind);
+  setSt(st,"ok","Accès "+who+" créé et carte générée. Contrôlez l'e-mail dans la rubrique Membres, et envoyez tout de suite les fichiers sur GitHub (encadré jaune en haut) pour activer l'accès.");
+  $("#mto").value=f.email||""; $("#send").disabled=false; $("#send").textContent="📧 Expédier l'e-mail avec la carte";
+  setSt($("#mailst"),"",f.email?"Contrôlez l'adresse, le message et la carte (plus bas), puis cliquez sur « Expédier ».":"Indiquez l'e-mail du "+who+" ci-dessus pour lui envoyer ses accès et sa carte, ou téléchargez la carte et envoyez le message vous-même.");
   $("#newmsg").scrollIntoView({behavior:"smooth",block:"start"});
+  return true;
+}
+$("#add").onclick=async()=>{
+  const ok=await createAccess("membre",{name:$("#nname").value.trim(),id:$("#nid").value.trim(),code:$("#ncode").value.trim(),email:$("#nmail").value.trim()},$("#ast"));
+  if(ok){ $("#nid").value=""; $("#ncode").value=""; $("#nname").value=""; $("#nmail").value=""; }
+};
+$("#pgen").onclick=()=>{ $("#pcode").value=MLRT.genCode(); };
+$("#padd").onclick=async()=>{
+  const ok=await createAccess("partenaire",{name:$("#pname").value.trim(),contact:$("#pcontact").value.trim(),id:$("#pid").value.trim(),code:$("#pcode").value.trim(),email:$("#pmail").value.trim()},$("#pst"));
+  if(ok){ ["#pname","#pcontact","#pid","#pcode","#pmail"].forEach(x=>$(x).value=""); }
 };
 /* E-mail de bienvenue automatique (FormSubmit : membre en copie, carte en pièce jointe) */
 const FS_MAIL="mlracingteam29@gmail.com";
@@ -280,7 +316,7 @@ async function sendWelcome(){
   const st=$("#mailst"), to=$("#mto").value.trim(), msg=$("#msg").innerText.trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ setSt(st,"ko","Indiquez une adresse e-mail valide pour le membre."); $("#mto").focus(); return; }
   if(!msg){ setSt(st,"ko","Le message est vide."); return; }
-  if($("#cardOut").hidden){ setSt(st,"ko","Générez d'abord la carte membre (rubrique Carte membre)."); return; }
+  if($("#cardOut").hidden){ setSt(st,"ko","Générez d'abord la carte (rubrique Carte membre / partenaire)."); return; }
   const LAST_MAIL={email:to,msg}; $("#send").disabled=true;
   setSt(st,"","Envoi de l'e-mail à "+to+"…");
   const blob=await new Promise(r=>$("#cardCanvas").toBlob(r,"image/png"));
@@ -288,7 +324,7 @@ async function sendWelcome(){
   if(!fr){ fr=document.createElement("iframe"); fr.name="fsFrame"; fr.id="fsFrame"; fr.hidden=true; document.body.appendChild(fr); await new Promise(r=>setTimeout(r,150)); }
   const f=document.createElement("form"); f.action="https://formsubmit.co/"+FS_MAIL; f.method="POST"; f.enctype="multipart/form-data"; f.target="fsFrame"; f.hidden=true;
   const add=(n,v)=>{ const i=document.createElement("input"); i.type="hidden"; i.name=n; i.value=v; f.appendChild(i); };
-  add("_subject","Bienvenue dans la ML Racing Team — vos accès et votre carte membre "+SAISON);
+  add("_subject",CARD_KIND==="partenaire"?"Merci pour votre soutien — votre accès et votre carte partenaire ML Racing Team "+SAISON:"Bienvenue dans la ML Racing Team — vos accès et votre carte membre "+SAISON);
   add("_cc",LAST_MAIL.email); add("_captcha","false"); add("_template","box"); add("_replyto",FS_MAIL);
   add("message",LAST_MAIL.msg);
   const fi=document.createElement("input"); fi.type="file"; fi.name="attachment";
