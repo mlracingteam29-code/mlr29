@@ -67,9 +67,11 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
    (identifiant : bureau — code : celui donné par Claude, à changer dans cette page)
    - Les fichiers membres sont CHIFFRÉS : même si le dépôt est public, personne ne peut
      les ouvrir sans un identifiant et un code valides.
-   - Après validation d'une inscription : "Créer l'accès" (nom et prénom + identifiant +
-     bouton Générer). La CARTE MEMBRE de la saison est générée automatiquement :
-     "Télécharger la carte (image)", puis envoyez le message + la carte au membre par e-mail.
+   - Après validation d'une inscription : "Créer l'accès" (nom et prénom + e-mail du membre +
+     identifiant + bouton Générer). La CARTE MEMBRE de la saison est générée et le membre
+     reçoit AUTOMATIQUEMENT un e-mail avec ses accès et sa carte en pièce jointe
+     (copie sur mlracingteam29@gmail.com). Envoyez ensuite tout de suite acces.json sur GitHub.
+     Sans e-mail indiqué : "Télécharger la carte (image)" et envoyez le message vous-même.
    - Refaire une carte (perte, correction) : rubrique "Carte membre" de la page de gestion.
    - Chaque année : changer la saison en haut du script de admin-membres.html
      (const SAISON="2027", VALIDITE="d'octobre 2026 à octobre 2027") — ou demandez à Claude.

@@ -75,9 +75,10 @@
     <!-- Membres -->
     <div class="card">
       <h3>👥 Membres ayant accès</h3>
-      <p>Créez un accès quand le bureau a validé une inscription. Le code n'est affiché qu'une seule fois : envoyez-le au membre.</p>
+      <p>Créez un accès quand le bureau a validé une inscription. Si vous indiquez son e-mail, le membre reçoit automatiquement ses accès et sa carte membre en pièce jointe (copie sur la boîte de l'association).</p>
       <div class="row">
         <div><label for="nname">Nom et prénom</label><input id="nname" placeholder="ex. DUPONT Jean"></div>
+        <div><label for="nmail">E-mail du membre</label><input id="nmail" type="email" placeholder="ex. jean.dupont@gmail.com" autocapitalize="none"></div>
         <div><label for="nid">Identifiant du membre</label><input id="nid" placeholder="ex. jean.dupont" autocapitalize="none"></div>
         <div><label for="ncode">Code d'accès</label><input id="ncode" placeholder="cliquez sur Générer"></div>
         <div style="flex:0"><button class="btn ghost" id="gen" type="button">Générer</button></div>
@@ -87,7 +88,9 @@
       <div id="newmsg" hidden>
         <p style="margin-top:12px"><strong>Message à envoyer au membre :</strong></p>
         <div class="msgbox" id="msg"></div>
-        <button class="btn ghost small" id="copyMsg">Copier le message</button>
+        <div class="status" id="mailst"></div>
+        <div class="cta" style="margin-top:8px"><button class="btn ghost small" id="copyMsg">Copier le message</button>
+        <button class="btn ghost small" id="resend" type="button" hidden>Renvoyer l'e-mail avec la carte</button></div>
       </div>
       <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
     </div>
@@ -253,7 +256,8 @@ $("#lf").addEventListener("submit",async e=>{
 $("#gen").onclick=()=>{ $("#ncode").value=MLRT.genCode(); };
 $("#bgen").onclick=()=>{ $("#bcode").value=MLRT.genCode(); };
 $("#add").onclick=async()=>{
-  const st=$("#ast"); const id=$("#nid").value.trim(), code=$("#ncode").value.trim(), fullname=$("#nname").value.trim();
+  const st=$("#ast"); const id=$("#nid").value.trim(), code=$("#ncode").value.trim(), fullname=$("#nname").value.trim(), email=$("#nmail").value.trim();
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setSt(st,"ko","L'adresse e-mail du membre n'est pas valide."); return; }
   if(!fullname){ setSt(st,"ko","Indiquez le nom et prénom du membre (pour sa carte)."); return; }
   if(!/^[\w.@-]{3,60}$/.test(id)){ setSt(st,"ko","Identifiant : 3 caractères minimum, lettres, chiffres, point, tiret."); return; }
   if(code.length<8){ setSt(st,"ko","Code trop court (8 caractères minimum) — utilisez Générer."); return; }
@@ -261,11 +265,35 @@ $("#add").onclick=async()=>{
   setSt(st,"","Création…");
   const c=await MLRT.makeCompte(id,code,RAW,KEY,"membre",ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=id;
   stageAcces(); await renderMembers();
-  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
-  $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value=""; $("#nname").value="";
+  $("#msg").textContent="Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\nIdentifiant : "+id+"\nCode d'accès : "+code+"\n\nSite : "+SITE+"\n(Vos accès sont actifs d'ici quelques minutes.)\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
+  $("#newmsg").hidden=false; $("#nid").value=""; $("#ncode").value=""; $("#nname").value=""; $("#nmail").value="";
   $("#cname").value=fullname; $("#cnum").value=nextNum(); $("#ccourse").value=""; await drawCard(fullname,$("#cnum").value,"");
-  setSt(st,"ok","Accès créé et carte membre générée (plus bas). Pensez à envoyer les fichiers sur GitHub (encadré jaune en haut).");
+  setSt(st,"ok","Accès créé et carte membre générée (plus bas). Envoyez tout de suite les fichiers sur GitHub (encadré jaune en haut) pour activer l'accès.");
+  if(email){ LAST_MAIL={email,msg:$("#msg").textContent}; $("#resend").hidden=false; await sendWelcome(); }
+  else{ LAST_MAIL=null; $("#resend").hidden=true; setSt($("#mailst"),"","Pas d'e-mail indiqué : téléchargez la carte (plus bas) et envoyez le message au membre vous-même."); }
 };
+/* E-mail de bienvenue automatique (FormSubmit : membre en copie, carte en pièce jointe) */
+const FS_MAIL="mlracingteam29@gmail.com"; let LAST_MAIL=null;
+async function sendWelcome(){
+  if(!LAST_MAIL) return;
+  const st=$("#mailst"); setSt(st,"","Envoi de l'e-mail à "+LAST_MAIL.email+"…");
+  const blob=await new Promise(r=>$("#cardCanvas").toBlob(r,"image/png"));
+  let fr=document.getElementById("fsFrame");
+  if(!fr){ fr=document.createElement("iframe"); fr.name="fsFrame"; fr.id="fsFrame"; fr.hidden=true; document.body.appendChild(fr); await new Promise(r=>setTimeout(r,150)); }
+  const f=document.createElement("form"); f.action="https://formsubmit.co/"+FS_MAIL; f.method="POST"; f.enctype="multipart/form-data"; f.target="fsFrame"; f.hidden=true;
+  const add=(n,v)=>{ const i=document.createElement("input"); i.type="hidden"; i.name=n; i.value=v; f.appendChild(i); };
+  add("_subject","Bienvenue dans la ML Racing Team — vos accès et votre carte membre "+SAISON);
+  add("_cc",LAST_MAIL.email); add("_captcha","false"); add("_template","box"); add("_replyto",FS_MAIL);
+  add("message",LAST_MAIL.msg);
+  const fi=document.createElement("input"); fi.type="file"; fi.name="attachment";
+  const dt=new DataTransfer(); dt.items.add(new File([blob],CARD_NAME,{type:"image/png"})); fi.files=dt.files; f.appendChild(fi);
+  document.body.appendChild(f);
+  let done=false;
+  fr.onload=()=>{ done=true; f.remove(); setSt(st,"ok","E-mail envoyé à "+LAST_MAIL.email+" avec sa carte membre (copie sur "+FS_MAIL+")."); };
+  f.submit();
+  setTimeout(()=>{ if(!done) setSt(st,"ko","Pas de confirmation d'envoi. Vérifiez la copie sur "+FS_MAIL+" ; sinon cliquez sur « Renvoyer », ou téléchargez la carte et envoyez le message vous-même."); },25000);
+}
+$("#resend").onclick=()=>sendWelcome();
 $("#copyMsg").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#msg").textContent); $("#copyMsg").textContent="Copié ✓"; }catch(_){ $("#copyMsg").textContent="Sélectionnez le texte"; } };
 
 $("#fadd").onclick=async()=>{
