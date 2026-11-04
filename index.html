@@ -406,6 +406,8 @@ const REGLAGES = {
 };
 
 const CONTACT = "mlracingteam29@gmail.com";
+/* Secours si FormSubmit est en panne : clé gratuite à créer sur https://web3forms.com avec mlracingteam29@gmail.com, à coller entre les guillemets. */
+const WEB3FORMS_KEY = "";
 const $ = s => document.querySelector(s);
 const toastEl = $("#toast");
 function toast(t){ toastEl.textContent=t; toastEl.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove("show"),2200); }
@@ -676,7 +678,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   }).catch(()=>{});
 })();
 
-/* Formulaire de contact (FormSubmit) */
+/* Formulaire de contact (FormSubmit, avec Web3Forms en secours) */
 $("#contactForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const st=$("#cStatus"), btn=$("#cBtn"); st.className="cstatus"; st.textContent="";
@@ -685,11 +687,14 @@ $("#contactForm").addEventListener("submit",async e=>{
   if(e.target._honey.value) return;
   btn.disabled=true; btn.textContent="Envoi…";
   try{
-    const r=await fetch("https://formsubmit.co/ajax/"+CONTACT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
-      body:JSON.stringify({_subject:"Contact site ML Racing Team — "+$("#cSujet").value+" — "+nom,_template:"table",_replyto:mail,
-        "Nom":nom,"email":mail,"Téléphone":$("#cTel").value.trim()||"—","Sujet":$("#cSujet").value,"Message":msg})});
-    const j=await r.json().catch(()=>({}));
-    if(!r.ok || j.success===false || j.success==="false") throw 0;
+    const sujet="Contact site ML Racing Team — "+$("#cSujet").value+" — "+nom;
+    const champs={"Nom":nom,"email":mail,"Téléphone":$("#cTel").value.trim()||"—","Sujet":$("#cSujet").value,"Message":msg};
+    const post=async(url,data)=>{ const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),15000);
+      try{ const r=await fetch(url,{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)});
+        const j=await r.json().catch(()=>({})); return r.ok && j.success!==false && j.success!=="false"; }catch(_){ return false; }finally{ clearTimeout(t); } };
+    let ok=await post("https://formsubmit.co/ajax/"+CONTACT,{_subject:sujet,_template:"table",_replyto:mail,...champs});
+    if(!ok && WEB3FORMS_KEY) ok=await post("https://api.web3forms.com/submit",{access_key:WEB3FORMS_KEY,subject:sujet,from_name:"Site ML Racing Team",replyto:mail,...champs});
+    if(!ok) throw 0;
     e.target.reset(); st.classList.add("ok"); st.textContent="Merci ! Votre message a bien été envoyé.";
   }catch(_){ st.classList.add("ko"); st.textContent="L'envoi n'a pas abouti. Écrivez-nous directement à "+CONTACT+"."; }
   btn.disabled=false; btn.textContent="Envoyer le message";

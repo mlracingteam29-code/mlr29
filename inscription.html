@@ -197,6 +197,8 @@ $("#year").textContent=new Date().getFullYear();
 const now=new Date();
 $("#dateAff").value=now.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
 $("#_next").value=new URL("merci.html",location.href).href;
+/* Secours si FormSubmit est en panne : même clé Web3Forms que dans index.html (vide = pas de secours). */
+const WEB3FORMS_KEY = "";
 
 const form=$("#form");
 form.addEventListener("submit",e=>{
@@ -224,6 +226,25 @@ form.addEventListener("submit",e=>{
   $("#acceptVal").value="Oui — accepté en ligne";
   $("#_subject").value="Nouvelle inscription ML Racing Team — "+$("#prenom").value.trim()+" "+$("#nom").value.trim().toUpperCase();
   $("#submitBtn").disabled=true; $("#submitBtn").textContent="Envoi en cours…";
+  // Envoi en arrière-plan : FormSubmit d'abord, Web3Forms en secours s'il ne répond pas
+  e.preventDefault();
+  if(form._honey.value) return;
+  const data={}; new FormData(form).forEach((v,k)=>{ if(k!=="_next" && k!=="_honey") data[k]=v; });
+  const post=async(url,body)=>{ const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),20000);
+    try{ const r=await fetch(url,{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(body)});
+      const j=await r.json().catch(()=>({})); return r.ok && j.success!==false && j.success!=="false"; }catch(_){ return false; }finally{ clearTimeout(t); } };
+  (async()=>{
+    let ok=await post("https://formsubmit.co/ajax/mlracingteam29@gmail.com",data);
+    if(!ok && WEB3FORMS_KEY){
+      const w={access_key:WEB3FORMS_KEY,subject:data._subject,from_name:"Inscriptions ML Racing Team"};
+      for(const k in data) if(!k.startsWith("_")) w[k]=data[k];
+      ok=await post("https://api.web3forms.com/submit",w);
+    }
+    if(ok){ location.href=$("#_next").value; return; }
+    $("#submitBtn").disabled=false; $("#submitBtn").textContent="Envoyer mon inscription";
+    err.textContent="L'envoi n'a pas abouti (service d'envoi momentanément indisponible). Réessayez dans quelques minutes, ou écrivez-nous à mlracingteam29@gmail.com.";
+    err.scrollIntoView({behavior:"smooth",block:"center"});
+  })();
 });
 </script>
 </body>

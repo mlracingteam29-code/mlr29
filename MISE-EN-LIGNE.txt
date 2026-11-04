@@ -38,6 +38,11 @@ Tout se fait avec le compte Gmail de l'association : mlracingteam29@gmail.com
      FormSubmit envoie alors un e-mail "Activate Form" à mlracingteam29@gmail.com :
      cliquez sur le bouton d'activation. Les inscriptions arrivent ensuite normalement.
    - Pensez à vérifier le dossier "Spam" la première fois.
+   - SECOURS si FormSubmit est en panne (erreur 522) : allez sur https://web3forms.com,
+     entrez mlracingteam29@gmail.com, copiez la clé reçue par e-mail et collez-la dans
+     const WEB3FORMS_KEY = "";  (dans index.html ET dans inscription.html).
+     Les messages passent alors par Web3Forms quand FormSubmit ne répond pas
+     (dans ce cas l'adhérent ne reçoit pas sa copie automatique).
 
 5. MODIFIER LES PARTENAIRES (sans toucher au code)
    - Ouvrez : https://github.com/mlracingteam29-code/mlr29/edit/main/partenaires.txt
