@@ -198,7 +198,7 @@ const now=new Date();
 $("#dateAff").value=now.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
 $("#_next").value=new URL("merci.html",location.href).href;
 /* Secours si FormSubmit est en panne : même clé Web3Forms que dans index.html (vide = pas de secours). */
-const WEB3FORMS_KEY = "";
+const WEB3FORMS_KEY = "2270cb80-03bb-48f6-b977-5422bea70f93";
 
 const form=$("#form");
 form.addEventListener("submit",e=>{
