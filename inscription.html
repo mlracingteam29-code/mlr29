@@ -230,7 +230,7 @@ form.addEventListener("submit",e=>{
   e.preventDefault();
   if(form._honey.value) return;
   const data={}; new FormData(form).forEach((v,k)=>{ if(k!=="_next" && k!=="_honey") data[k]=v; });
-  const post=async(url,body)=>{ const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),20000);
+  const post=async(url,body)=>{ const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),10000);
     try{ const r=await fetch(url,{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(body)});
       const j=await r.json().catch(()=>({})); return r.ok && j.success!==false && j.success!=="false"; }catch(_){ return false; }finally{ clearTimeout(t); } };
   (async()=>{

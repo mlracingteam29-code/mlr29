@@ -689,7 +689,7 @@ $("#contactForm").addEventListener("submit",async e=>{
   try{
     const sujet="Contact site ML Racing Team — "+$("#cSujet").value+" — "+nom;
     const champs={"Nom":nom,"email":mail,"Téléphone":$("#cTel").value.trim()||"—","Sujet":$("#cSujet").value,"Message":msg};
-    const post=async(url,data)=>{ const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),15000);
+    const post=async(url,data,ms=8000)=>{ const ctl=new AbortController(), t=setTimeout(()=>ctl.abort(),ms);
       try{ const r=await fetch(url,{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)});
         const j=await r.json().catch(()=>({})); return r.ok && j.success!==false && j.success!=="false"; }catch(_){ return false; }finally{ clearTimeout(t); } };
     let ok=await post("https://formsubmit.co/ajax/"+CONTACT,{_subject:sujet,_template:"table",_replyto:mail,...champs});
