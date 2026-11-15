@@ -1,0 +1,27 @@
+# Remet automatiquement les bons noms aux fichiers envoyés sur GitHub
+# quand le navigateur les a renommés (ex. « roulages (1).bin » -> « roulages.bin »).
+name: Noms des fichiers membres
+on:
+  push:
+    paths: ["membres/**"]
+permissions:
+  contents: write
+jobs:
+  renommer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Renommer les copies « (1) », « (2) »…
+        run: |
+          shopt -s nullglob
+          changed=0
+          for f in membres/*\ \(*\).*; do
+            base=$(echo "$f" | sed -E 's/ \([0-9]+\)(\.[^.]+)$/\1/')
+            [ "$f" = "$base" ] && continue
+            # garder la copie la plus récente (dernier commit)
+            git mv -f "$f" "$base"; changed=1
+          done
+          if [ $changed = 1 ]; then
+            git config user.name "ML Racing Team"; git config user.email "mlracingteam29@gmail.com"
+            git commit -m "Espace membres : noms de fichiers corrigés automatiquement" && git push
+          fi
