@@ -145,6 +145,20 @@ const MLRR = (() => {
     return box;
   }
 
-  return { inscrits, nbInscrits, guestEditor, loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
+  /* Clé GitHub du bureau, chiffrée avec le code bureau (seul le bureau peut l'ouvrir) */
+  async function wrapTok(code, tok) {
+    const salt = MLRT.rand(16), k = await MLRT.derive(code, salt);
+    return { s: MLRT.b64(salt), c: MLRT.b64(await MLRT.encBytes(k, new TextEncoder().encode(tok))) };
+  }
+  async function unwrapTok(code, gt) {
+    try { const k = await MLRT.derive(code, MLRT.unb64(gt.s)); return new TextDecoder().decode(await MLRT.decBytes(k, MLRT.unb64(gt.c))); } catch (_) { return ""; }
+  }
+  async function restoreTok(code, compte) {
+    if (!compte || !compte.gt) return false;
+    const t = await unwrapTok(code, compte.gt); if (!t) return false;
+    try { localStorage.setItem("mlrt_gh_token", t); } catch (_) {} return true;
+  }
+
+  return { wrapTok, unwrapTok, restoreTok, inscrits, nbInscrits, guestEditor, loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
 })();
 if (typeof module !== "undefined") module.exports = MLRR;

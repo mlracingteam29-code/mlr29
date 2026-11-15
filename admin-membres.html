@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151145">
+<link rel="stylesheet" href="style.css?v=202611151204">
 <style>
   .page{padding:40px 0 80px}
   .page h1{font-size:clamp(34px,6vw,54px);font-weight:800;margin:6px 0 10px}
@@ -275,8 +275,8 @@
 <div class="checker"></div>
 <footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
 
-<script src="membres/membres.js?v=202611151145"></script>
-<script src="membres/roulages.js?v=202611151145"></script>
+<script src="membres/membres.js?v=202611151204"></script>
+<script src="membres/roulages.js?v=202611151204"></script>
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
@@ -323,7 +323,7 @@ function nextNum(kind){ const P=kind==="partenaire"; const n=ACCES.comptes.filte
 $("#ctype").onchange=()=>{ const P=$("#ctype").value==="partenaire"; $("#ccourseLbl").textContent=P?"Contact (facultatif)":"N° de course (facultatif)"; document.querySelector('label[for="cname"]').textContent=P?"Entreprise / partenaire":"Nom et prénom"; };
 $("#cgen").onclick=async()=>{ const n=$("#cname").value.trim(); if(!n){ setSt($("#cst"),"ko","Indiquez le nom."); return; } setSt($("#cst"),"",""); await drawCard(n,$("#cnum").value.trim(),$("#ccourse").value.trim(),$("#ctype").value); };
 $("#cdl").onclick=()=>{ $("#cardCanvas").toBlob(b=>download(CARD_NAME,b),"image/png"); };
-let RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={}, NP={};
+let BCODE="", RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={}, NP={};
 const PENDING=new Map(); // nom de fichier -> Blob
 const size=n=>n>1048576?(n/1048576).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(n/1024))+" Ko";
 const fr=d=>d?d.split("-").reverse().join("/"):"";
@@ -389,6 +389,7 @@ $("#lf").addEventListener("submit",async e=>{
     const accB=await ghBytes("membres/acces.json");
     ACCES=accB?JSON.parse(new TextDecoder().decode(accB)):await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
     const s=await MLRT.login(ACCES,$("#lid").value,$("#lcode").value);
+    if(s&&s.role==="bureau"){ BCODE=$("#lcode").value.trim(); try{ if(await MLRR.restoreTok(BCODE,s.compte)) ghUI&&setTimeout(ghUI,0); }catch(_){} }
     if(!s){ setSt(st,"ko","Identifiant ou code incorrect."); }
     else if(s.role!=="bureau"){ setSt(st,"ko","Ce compte n'a pas les droits du bureau."); }
     else{
@@ -453,8 +454,14 @@ const GH={owner:"mlracingteam29-code",repo:"mlr29",branch:"main",K:"mlrt_gh_toke
 function ghUI(){ const on=!!GH.token; $("#ghPubPending").hidden=!on; $("#ghTok").value=""; $("#ghTok").placeholder=on?"Clé enregistrée sur cet appareil ✓":"github_pat_…"; }
 $("#ghSave").onclick=async()=>{ const v=$("#ghTok").value.trim(), st=$("#ghst"); if(!v){ setSt(st,"ko","Collez la clé GitHub."); return; }
   const old=GH.token; GH.token=v; setSt(st,"","Test de la clé…");
-  try{ if(await GH.test()){ setSt(st,"ok","Clé valide : la publication directe est activée sur cet appareil."); ghUI(); return; } }catch(_){}
+  try{ if(await GH.test()){ await saveBureauTok(v); setSt(st,"ok","Clé valide et enregistrée avec le compte bureau : elle marchera sur tous vos appareils dès la connexion bureau."); ghUI(); return; } }catch(_){}
   GH.token=old; setSt(st,"ko","Clé refusée ou sans droit d'écriture sur mlr29 (vérifiez « Contents : Read and write »)."); ghUI(); };
+async function saveBureauTok(tok){
+  if(!BCODE||!ME||!ME.compte) return false;
+  ME.compte.gt=await MLRR.wrapTok(BCODE,tok);
+  const blob=new Blob([JSON.stringify(ACCES,null,1)],{type:"application/json"});
+  try{ await GH.put("membres/acces.json",blob,"Espace membres : clé du bureau"); PENDING.delete("acces.json"); renderPending(); return true; }catch(_){ stageAcces(); return false; }
+}
 $("#ghForget").onclick=()=>{ GH.token=""; ghUI(); setSt($("#ghst"),"","Clé supprimée de cet appareil."); };
 $("#ghPubPending").onclick=async()=>{ const st=$("#pendst"), btn=$("#ghPubPending"); btn.disabled=true;
   try{ let n=0; for(const [name,blob] of [...PENDING]){ setSt(st,"","Publication "+(++n)+"/"+PENDING.size+"…"); await GH.put("membres/"+name,blob,"Espace membres : "+name+" (page de gestion)"); PENDING.delete(name); }
@@ -656,6 +663,7 @@ $("#fadd").onclick=async()=>{
 $("#bset").onclick=async()=>{
   const st=$("#bst"); const code=$("#bcode").value.trim(); if(code.length<12){ setSt(st,"ko","12 caractères minimum."); return; }
   const id=NAMES[ME.compte.h]; const c=await MLRT.makeCompte(id,code,RAW,KEY,"bureau",ACCES.iter);
+  if(ME.compte.np) c.np=ME.compte.np; if(GH.token) c.gt=await MLRR.wrapTok(code,GH.token); BCODE=code;
   ACCES.comptes=ACCES.comptes.map(x=>x===ME.compte?c:x); ME.compte=c; NAMES[c.h]=id; stageAcces(); await renderMembers();
   setSt(st,"ok","Nouveau code enregistré : notez-le ! Il sera actif une fois acces.json envoyé sur GitHub.");
 };

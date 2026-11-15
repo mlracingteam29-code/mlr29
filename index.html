@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151145">
+<link rel="stylesheet" href="style.css?v=202611151204">
 </head>
 <body>
 
@@ -392,8 +392,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151145"></script>
-<script src="membres/roulages.js?v=202611151145"></script>
+<script src="membres/membres.js?v=202611151204"></script>
+<script src="membres/roulages.js?v=202611151204"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -791,6 +791,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     try{
       const acces=await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
       const s=await MLRT.login(acces,id,code);
+      if(s&&s.role==="bureau"&&typeof MLRR!=="undefined"){ try{ await MLRR.restoreTok(code,s.compte); }catch(_){} }
       if(!s){ st.classList.add("ko"); st.textContent="Identifiant ou code incorrect."; }
       else{
         try{ sessionStorage.setItem("mlrt_membre",JSON.stringify({k:MLRT.b64(s.raw),who:id,role:s.role})); }catch(_){}
