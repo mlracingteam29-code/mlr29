@@ -23,3 +23,9 @@
 # Pensez à demander l'accord de chaque membre avant de publier sa photo.
 # =====================================================================
 
+
+Nom : Damien
+Photo : damien.jpg
+Moto : KTM
+Discipline : Photographe officiel, KTMiste
+Texte : Photographe officiel de la ML Racing Team et KTMiste convaincu ! C'est lui qui immortalise nos roulages, du paddock au bord de piste.
