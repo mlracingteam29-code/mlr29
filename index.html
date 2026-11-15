@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151142">
+<link rel="stylesheet" href="style.css?v=202611151145">
 </head>
 <body>
 
@@ -195,6 +195,7 @@
     <div class="mrl" id="mRl" hidden>
       <div class="mbar"><span>Connecté : <b id="rlWho"></b></span><span class="cta" style="margin:0"><button class="btn ghost small" type="button" data-go="fichiers">📁 Fichiers membres</button></span></div>
       <div class="card rl-bureau" id="rlBureau" hidden></div>
+      <div class="rl-cal" id="rlCal"></div>
       <h3 class="msub" id="rlValidT" hidden>✅ Roulages validés</h3>
       <div id="rlValid" class="dates"></div>
       <h3 class="msub" id="rlPropT" hidden>📅 Dates proposées — cochez si vous êtes intéressé(e)</h3>
@@ -391,8 +392,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151142"></script>
-<script src="membres/roulages.js?v=202611151142"></script>
+<script src="membres/membres.js?v=202611151145"></script>
+<script src="membres/roulages.js?v=202611151145"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -608,7 +609,7 @@ const DEPOT="mlracingteam29-code/mlr29";
       if(STORE){ const p=document.createElement("p"); p.className="rl-who"; p.textContent=list.length?"Intéressés ("+list.length+") : "+names(list):"Personne pour l'instant, soyez le premier !"; info.appendChild(p); }
       cb.onchange=()=>toggleInterest(r,cb);
     }
-    el.append(MLRR.calBox(r),info); return el;
+    el.id="rl-"+r.id; el.append(MLRR.calBox(r),info); return el;
   }
   /* ---- Bureau : cocher les présents directement depuis le site ---- */
   let ROLE="", MEMBRES=[];
@@ -705,6 +706,47 @@ const DEPOT="mlracingteam29-code/mlr29";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
     prop.forEach(r=>pb.appendChild(rlCard(r,false)));
     $("#rlValidT").hidden=!val.length; $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
+    renderCal();
+  }
+  /* ---- Petit calendrier des dates circuit ---- */
+  const MOISL=["JANVIER","FÉVRIER","MARS","AVRIL","MAI","JUIN","JUILLET","AOÛT","SEPTEMBRE","OCTOBRE","NOVEMBRE","DÉCEMBRE"];
+  let CALM=null;
+  function calDays(){ /* "AAAA-M-J" -> [roulages] */
+    const m={};
+    (RL.roulages||[]).forEach(r=>{ const p=MLRR.span(r.dates); if(!p) return; for(let d=new Date(p.start);d<=p.end;d.setDate(d.getDate()+1)){ const k=d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate(); (m[k]=m[k]||[]).push(r); } });
+    return m;
+  }
+  function renderCal(){
+    const box=$("#rlCal"); box.innerHTML=""; const days=calDays(); const keys=Object.keys(days); if(!keys.length){ box.hidden=true; return; } box.hidden=false;
+    if(!CALM){ const t=new Date(); t.setHours(0,0,0,0); const next=MLRR.sorted(RL.roulages||[]).map(r=>MLRR.span(r.dates)).find(p=>p&&p.end>=t); const d=next?next.start:t; CALM=new Date(d.getFullYear(),d.getMonth(),1); }
+    const y=CALM.getFullYear(), mo=CALM.getMonth();
+    const head=document.createElement("div"); head.className="rc-head";
+    const prev=document.createElement("button"); prev.type="button"; prev.textContent="‹"; prev.setAttribute("aria-label","Mois précédent"); prev.onclick=()=>{ CALM=new Date(y,mo-1,1); renderCal(); };
+    const next=document.createElement("button"); next.type="button"; next.textContent="›"; next.setAttribute("aria-label","Mois suivant"); next.onclick=()=>{ CALM=new Date(y,mo+1,1); renderCal(); };
+    const tt=document.createElement("b"); tt.textContent=MOISL[mo]+" "+y; head.append(prev,tt,next); box.appendChild(head);
+    const g=document.createElement("div"); g.className="rc-grid";
+    ["LUN","MAR","MER","JEU","VEN","SAM","DIM"].forEach(j=>{ const e=document.createElement("span"); e.className="rc-wd"; e.textContent=j; g.appendChild(e); });
+    const off=(new Date(y,mo,1).getDay()+6)%7, nb=new Date(y,mo+1,0).getDate(); const today=new Date(); today.setHours(0,0,0,0);
+    for(let i=0;i<off;i++) g.appendChild(document.createElement("span"));
+    const mois=[];
+    for(let d=1;d<=nb;d++){
+      const k=y+"-"+mo+"-"+d, rs=days[k]||[], c=document.createElement(rs.length?"button":"span"); c.className="rc-d"; c.textContent=d;
+      if(new Date(y,mo,d).getTime()===today.getTime()) c.classList.add("today");
+      if(rs.length){ c.type="button"; c.classList.add("on"); if(rs.some(r=>r.statut==="valide")) c.classList.add("val"); if(rs.length>1) c.classList.add("multi");
+        c.title=rs.map(r=>r.circuit).join(" · "); c.onclick=()=>{ const el=document.getElementById("rl-"+rs[0].id); if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
+        rs.forEach(r=>{ if(!mois.includes(r)) mois.push(r); }); }
+      g.appendChild(c);
+    }
+    box.appendChild(g);
+    const ul=document.createElement("div"); ul.className="rc-list";
+    if(!mois.length){ ul.textContent="Aucun roulage ce mois-ci."; ul.classList.add("none"); }
+    MLRR.sorted(mois).forEach(r=>{ const p=MLRR.span(r.dates); const J=["DIM","LUN","MAR","MER","JEU","VEN","SAM"];
+      const a=document.createElement("button"); a.type="button"; a.className="rc-item"+(r.statut==="valide"?" val":"");
+      const d=document.createElement("b"); d.textContent=p.end>p.start?J[p.start.getDay()]+" "+p.start.getDate()+" → "+J[p.end.getDay()]+" "+p.end.getDate()+(p.end.getMonth()!==p.start.getMonth()?" "+MOISL[p.end.getMonth()].slice(0,4).toLowerCase()+".":""):J[p.start.getDay()]+" "+p.start.getDate();
+      const n=document.createElement("span"); n.textContent=(r.circuit||"Roulage")+(r.type?" · "+r.type:"");
+      a.append(d,n); a.onclick=()=>{ const el=document.getElementById("rl-"+r.id); if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
+      ul.appendChild(a); });
+    box.appendChild(ul);
   }
   async function toggleInterest(r,cb){
     const st=$("#rlSt"); st.className="cstatus"; st.textContent="Enregistrement…"; cb.disabled=true;

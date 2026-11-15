@@ -302,3 +302,21 @@
 .rl-bureau .rl-grow{max-width:520px;margin-bottom:6px}
 .rl-id{flex:0 0 130px;font-size:14px;color:#efe3c2;overflow:hidden;text-overflow:ellipsis}
 .date .cal .wd{display:block;font-style:normal;font-size:12px;font-weight:700;color:#fff;letter-spacing:.08em;margin-top:3px}
+.rl-cal{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;max-width:420px;margin:16px 0 6px}
+.rc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rc-head b{font-family:"Saira Condensed";font-size:22px;letter-spacing:.04em}
+.rc-head button{background:#0f0f12;border:1px solid var(--line);color:#fff;border-radius:8px;width:34px;height:34px;font-size:20px;cursor:pointer;line-height:1}
+.rc-head button:hover{border-color:var(--red)}
+.rc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.rc-wd{font-size:10px;color:var(--muted);letter-spacing:.06em;padding-bottom:2px}
+.rc-d{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:8px;font-size:14px;color:#8a8a94;border:1px solid transparent;background:none;font-family:inherit;padding:0}
+.rc-d.today{border-color:#55555f;color:#fff}
+.rc-d.on{background:var(--red);color:#fff;font-weight:700;cursor:pointer}
+.rc-d.on.val{background:#1f8f55}
+.rc-d.multi{box-shadow:inset 0 -3px 0 #fff}
+.rc-list{display:grid;gap:4px;margin-top:12px}
+.rc-list.none{color:var(--muted);font-size:13px}
+.rc-item{display:flex;gap:10px;align-items:baseline;background:none;border:0;border-left:3px solid var(--red);padding:3px 8px;color:#fff;text-align:left;cursor:pointer;font:14px "Saira"}
+.rc-item.val{border-left-color:#1f8f55}
+.rc-item b{white-space:nowrap;font-size:12px;letter-spacing:.04em;color:#cfcfd6;min-width:92px}
+.date.flash{outline:2px solid var(--red);outline-offset:2px}
