@@ -177,6 +177,19 @@ const MLRR = (() => {
     try { localStorage.setItem("mlrt_gh_token", t); } catch (_) {} return true;
   }
 
-  return { wrapTok, unwrapTok, restoreTok, inscrits, nbInscrits, guestEditor, loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
+  /* Catégories de roulages (choisies par le bureau, sinon devinées d'après le nom / le type) */
+  const CATS = ["Moto piste", "Enduro", "Motocross", "Mini moto / Supermotard", "Événements privés"];
+  const ICONS = { "Moto piste": "🏁", "Enduro": "🌲", "Motocross": "🪨", "Mini moto / Supermotard": "🛵", "Événements privés": "🔒" };
+  function catOf(r) {
+    if (r.cat && CATS.includes(r.cat)) return r.cat;
+    const t = [r.circuit, r.type, r.infos].join(" ").toLowerCase();
+    if (/enduro/.test(t)) return "Enduro";
+    if (/motocross|\bcross\b|\bmx\b/.test(t)) return "Motocross";
+    if (/mini ?moto|supermot|\bsm\b/.test(t)) return "Mini moto / Supermotard";
+    if (/priv|événement|evenement|soirée|repas/.test(t)) return "Événements privés";
+    return "Moto piste";
+  }
+
+  return { CATS, ICONS, catOf, wrapTok, unwrapTok, restoreTok, inscrits, nbInscrits, guestEditor, loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
 })();
 if (typeof module !== "undefined") module.exports = MLRR;

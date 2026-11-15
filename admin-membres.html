@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151317">
+<link rel="stylesheet" href="style.css?v=202611151324">
 <style>
   .page{padding:40px 0 80px}
   .page h1{font-size:clamp(34px,6vw,54px);font-weight:800;margin:6px 0 10px}
@@ -133,6 +133,7 @@
         <div><label for="rdates">Date(s) — JJ/MM/AAAA *</label><input id="rdates" placeholder="ex. 13/08/2027 au 14/08/2027"></div>
       </div>
       <div class="row" style="margin-top:10px">
+        <div style="flex:0 0 210px"><label for="rcat">Catégorie</label><select id="rcat"><option value="">(automatique)</option><option>Moto piste</option><option>Enduro</option><option>Motocross</option><option>Mini moto / Supermotard</option><option>Événements privés</option></select></div>
         <div><label for="rtype">Type (facultatif)</label><input id="rtype" placeholder="ex. Roulage gros cube, Enduro, Mini moto"></div>
         <div><label for="rinfos">Infos (facultatif)</label><input id="rinfos" placeholder="ex. 150 € la journée · 12 places"></div>
         <div style="flex:0"><button class="btn red" id="radd" type="button">Proposer la date</button></div>
@@ -275,8 +276,8 @@
 <div class="checker"></div>
 <footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
 
-<script src="membres/membres.js?v=202611151317"></script>
-<script src="membres/roulages.js?v=202611151317"></script>
+<script src="membres/membres.js?v=202611151324"></script>
+<script src="membres/roulages.js?v=202611151324"></script>
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
@@ -499,7 +500,7 @@ function renderRoulagesAdm(){
     const V=r.statut==="valide", past=MLRR.isPast(r);
     const it=document.createElement("div"); it.className="ritem"+(V?" valide":"")+(past?" past":"");
     const rh=document.createElement("div"); rh.className="rh";
-    const t=document.createElement("div"); const b=document.createElement("b"); b.textContent=r.circuit; const sm=document.createElement("small"); sm.textContent="  "+[r.dates,r.type,r.infos].filter(Boolean).join(" · ")+(past?" · terminé":""); t.append(b,sm);
+    const t=document.createElement("div"); const b=document.createElement("b"); b.textContent=r.circuit; const sm=document.createElement("small"); sm.textContent="  "+[r.dates,MLRR.catOf(r),r.type,r.infos].filter(Boolean).join(" · ")+(past?" · terminé":""); t.append(b,sm);
     const tag=document.createElement("span"); tag.className="rs "+(V?"val":"prop"); tag.textContent=V?"Validé":"Proposé";
     rh.append(t,tag); it.appendChild(rh);
     const ints=RINT[r.id]||[];
@@ -524,16 +525,16 @@ function renderRoulagesAdm(){
     btn(V?"Repasser en « proposé »":"✓ Valider le roulage",async()=>{ r.statut=V?"propose":"valide"; if(!V&&!(r.pilotes||[]).length){ r.pilotes=ints.slice(); } await stageRoulages(); renderRoulagesAdm();
       setSt($("#rst"),"ok",V?"Roulage repassé en proposition.":"Roulage validé"+(ints.length?" : les intéressés sont pré-cochés, ajustez la liste.":".")+" Pensez à publier (encadré jaune)."); });
     if(ints.length) btn("Cocher tous les intéressés",async()=>{ const set=r.pilotes||[]; ints.forEach(n=>{ if(!set.some(p=>MLRR.norm(p)===MLRR.norm(n))) set.push(n); }); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); });
-    btn("Modifier",()=>{ REDIT=r; $("#rcirc").value=r.circuit||""; $("#rdates").value=r.dates||""; $("#rtype").value=r.type||""; $("#rinfos").value=r.infos||""; $("#radd").textContent="Enregistrer"; $("#rcancel").hidden=false; $("#rcirc").scrollIntoView({behavior:"smooth",block:"center"}); });
+    btn("Modifier",()=>{ REDIT=r; $("#rcirc").value=r.circuit||""; $("#rdates").value=r.dates||""; $("#rtype").value=r.type||""; $("#rinfos").value=r.infos||""; $("#rcat").value=r.cat||""; $("#radd").textContent="Enregistrer"; $("#rcancel").hidden=false; $("#rcirc").scrollIntoView({behavior:"smooth",block:"center"}); });
     const del=btn("Supprimer",async()=>{ if(del.dataset.c!=="1"){ del.dataset.c="1"; del.textContent="Confirmer ?"; setTimeout(()=>{del.dataset.c="";del.textContent="Supprimer";},3000); return; }
       RL.roulages=RL.roulages.filter(x=>x!==r); if(/^t-/.test(r.id)) RL.retires=[...(RL.retires||[]),r.id]; await stageRoulages(); renderRoulagesAdm(); });
     it.appendChild(acts); box.appendChild(it);
   });
 }
-function rReset(){ REDIT=null; ["#rcirc","#rdates","#rtype","#rinfos"].forEach(x=>$(x).value=""); $("#radd").textContent="Proposer la date"; $("#rcancel").hidden=true; }
+function rReset(){ REDIT=null; ["#rcirc","#rdates","#rtype","#rinfos","#rcat"].forEach(x=>$(x).value=""); $("#radd").textContent="Proposer la date"; $("#rcancel").hidden=true; }
 $("#rcancel").onclick=rReset;
 $("#radd").onclick=async()=>{
-  const st=$("#rst"), f={circuit:$("#rcirc").value.trim(),dates:$("#rdates").value.trim(),type:$("#rtype").value.trim(),infos:$("#rinfos").value.trim()};
+  const st=$("#rst"), f={circuit:$("#rcirc").value.trim(),dates:$("#rdates").value.trim(),type:$("#rtype").value.trim(),infos:$("#rinfos").value.trim(),cat:$("#rcat").value};
   if(!f.circuit||!f.dates){ setSt(st,"ko","Indiquez le circuit et la ou les dates."); return; }
   if(!MLRR.span(f.dates)){ setSt(st,"ko","Écrivez les dates au format JJ/MM/AAAA (ex. 13/08/2027 au 14/08/2027)."); return; }
   if(REDIT) Object.assign(REDIT,f); else RL.roulages.push({id:MLRR.newId(),...f,statut:"propose",pilotes:[],cree:new Date().toISOString().slice(0,10)});

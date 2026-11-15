@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151317">
+<link rel="stylesheet" href="style.css?v=202611151324">
 </head>
 <body>
 
@@ -393,8 +393,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151317"></script>
-<script src="membres/roulages.js?v=202611151317"></script>
+<script src="membres/membres.js?v=202611151324"></script>
+<script src="membres/roulages.js?v=202611151324"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -593,7 +593,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
     if(/\bcomplet\b/i.test([r.type,r.infos].join(" "))&&!past){ const bc=document.createElement("span"); bc.className="badge-full"; bc.textContent="Complet"; h.appendChild(bc); el.classList.add("full"); }
     if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes inscrit(e) ✓"; h.appendChild(bd); }
-    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
+    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[valid?MLRR.catOf(r):"",r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
     if(r.dates && !MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+r.dates; info.appendChild(p); }
     if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
@@ -711,6 +711,9 @@ const DEPOT="mlracingteam29-code/mlr29";
     if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
     box.appendChild(wrap);
     box.appendChild(MLRR.guestEditor(r,()=>{ renderRoulages(); saveRL(); }));
+    const cs=document.createElement("select"); cs.className="rl-catsel"; cs.title="Catégorie";
+    MLRR.CATS.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent="Catégorie : "+c; cs.appendChild(o); }); cs.value=MLRR.catOf(r);
+    cs.onchange=()=>{ r.cat=cs.value; renderRoulages(); saveRL(); }; box.appendChild(cs);
     const v=document.createElement("button"); v.type="button"; v.className="linkbtn"; v.textContent=r.statut==="valide"?"Repasser en « proposé »":"✓ Valider le roulage";
     v.onclick=()=>{ r.statut=r.statut==="valide"?"propose":"valide"; renderRoulages(); saveRL(); };
     box.appendChild(v);
@@ -725,7 +728,9 @@ const DEPOT="mlracingteam29-code/mlr29";
     const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
     const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
-    prop.forEach(r=>pb.appendChild(rlCard(r,false)));
+    MLRR.CATS.forEach(c=>{ const l=prop.filter(r=>MLRR.catOf(r)===c); if(!l.length) return;
+      const h=document.createElement("h4"); h.className="rl-cat"; h.textContent=MLRR.ICONS[c]+" "+c+" ("+l.length+")"; pb.appendChild(h);
+      l.forEach(r=>pb.appendChild(rlCard(r,false))); });
     $("#rlValidT").hidden=!val.length; $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
     renderCal();
   }
