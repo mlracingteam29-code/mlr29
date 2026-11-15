@@ -178,11 +178,12 @@ const MLRR = (() => {
   }
 
   /* Catégories de roulages (choisies par le bureau, sinon devinées d'après le nom / le type) */
-  const CATS = ["Moto piste", "Enduro", "Motocross", "Mini moto / Supermotard", "Événements privés"];
-  const ICONS = { "Moto piste": "🏁", "Enduro": "🌲", "Motocross": "🪨", "Mini moto / Supermotard": "🛵", "Événements privés": "🔒" };
+  const CATS = ["Moto piste", "Course", "Enduro", "Motocross", "Mini moto / Supermotard", "Événements privés"];
+  const ICONS = { "Moto piste": "🏁", "Course": "🏆", "Enduro": "🌲", "Motocross": "🪨", "Mini moto / Supermotard": "🛵", "Événements privés": "🔒" };
   function catOf(r) {
     if (r.cat && CATS.includes(r.cat)) return r.cat;
     const t = [r.circuit, r.type, r.infos].join(" ").toLowerCase();
+    if (/\bcup\b|course|championnat|trophée|trophee|\brace\b/.test(t)) return "Course";
     if (/enduro/.test(t)) return "Enduro";
     if (/motocross|\bcross\b|\bmx\b/.test(t)) return "Motocross";
     if (/mini ?moto|supermot|\bsm\b/.test(t)) return "Mini moto / Supermotard";
