@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151342">
+<link rel="stylesheet" href="style.css?v=202611151349">
 <style>
   .page{padding:40px 0 80px}
   .page h1{font-size:clamp(34px,6vw,54px);font-weight:800;margin:6px 0 10px}
@@ -113,7 +113,7 @@
       </div>
       <div class="status" id="ast"></div>
       <div id="newmsg" hidden>
-        <p style="margin-top:12px"><strong>E-mail à envoyer au membre</strong> — vérifiez l'adresse, le message (modifiable) et la carte plus bas avant d'expédier :</p>
+        <p style="margin-top:12px"><strong id="mailTitle">E-mail à envoyer au membre</strong> — vérifiez l'adresse, le message (modifiable) et la carte plus bas avant d'expédier :</p>
         <div class="row" style="margin-top:6px"><div><label for="mto">Destinataire</label><input id="mto" type="email" placeholder="e-mail du membre" autocapitalize="none"></div></div>
         <div class="msgbox" id="msg" contenteditable="true" spellcheck="true"></div>
         <div class="status" id="mailst"></div>
@@ -276,8 +276,8 @@
 <div class="checker"></div>
 <footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
 
-<script src="membres/membres.js?v=202611151342"></script>
-<script src="membres/roulages.js?v=202611151342"></script>
+<script src="membres/membres.js?v=202611151349"></script>
+<script src="membres/roulages.js?v=202611151349"></script>
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
@@ -285,7 +285,7 @@ const VIDEO_URL="https://mlracingteam29-code.github.io/mlr29/tutoriel.html";
 /* Saison affichée sur les cartes membres — à changer chaque année */
 const SAISON="2027", VALIDITE="d'octobre 2026 à octobre 2027";
 document.querySelectorAll(".saison").forEach(e=>e.textContent=SAISON);
-let CARD_NAME="carte-membre.png";
+let CARD_NAME="carte-membre.png", MAIL=null;
 const loadImg=src=>new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=src; });
 let CARD_KIND="membre";
 async function drawCard(nom,num,course,kind){
@@ -420,9 +420,14 @@ async function createAccess(kind,f,st){
   $("#msg").textContent = P
     ? "Bonjour"+(f.contact?" "+f.contact:"")+",\n\nToute l'équipe ML Racing Team vous remercie chaleureusement pour votre soutien en tant que partenaire de l'association.\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous sommes fiers de la vivre à vos côtés !\n\nVoici votre accès partenaire à l'espace « Fichiers membres » du site (gazettes, documents de l'association…) :\n"+acces+"\n\nVous trouverez en pièce jointe votre carte partenaire saison "+SAISON+" (valable "+VALIDITE+").\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team"
     : "Bonjour,\n\nVotre inscription à ML Racing Team a été validée par le bureau. Bienvenue dans la team !\n\nMerci pour votre investissement et pour la confiance que vous accordez à nos projets. Une nouvelle saison s'ouvre, et elle s'annonce prometteuse : nous avons hâte de la vivre avec vous !\n\nVoici vos accès à l'espace « Fichiers membres » du site :\n"+acces+"\n\nVous trouverez en pièce jointe votre carte membre saison "+SAISON+" (valable "+VALIDITE+", saison d'octobre à octobre), à présenter chez nos partenaires.\n\nCes accès sont personnels, merci de ne pas les partager.\n\nSportivement,\nLe bureau ML Racing Team";
+  MAIL={kind,name:f.name,num:"",course:""};
+  (P?$("#pst"):$("#ast")).after($("#newmsg"));
+  $("#mailTitle").textContent=P?"E-mail de remerciement à envoyer au partenaire":"E-mail à envoyer au membre";
+  $("#mto").placeholder=P?"e-mail du partenaire":"e-mail du membre";
   $("#newmsg").hidden=false;
   $("#ctype").value=kind; $("#ctype").onchange(); $("#cname").value=f.name; $("#cnum").value=nextNum(kind); $("#ccourse").value=P?(f.contact||""):"";
-  await drawCard(f.name,$("#cnum").value,$("#ccourse").value,kind);
+  MAIL.num=$("#cnum").value; MAIL.course=$("#ccourse").value;
+  await drawCard(f.name,MAIL.num,MAIL.course,kind);
   setSt(st,"ok","Accès "+who+" créé et carte générée. Contrôlez l'e-mail dans la rubrique Membres, et envoyez tout de suite les fichiers sur GitHub (encadré jaune en haut) pour activer l'accès.");
   $("#mto").value=f.email||""; $("#send").disabled=false; $("#send").textContent="📧 Expédier l'e-mail avec la carte";
   setSt($("#mailst"),"",f.email?"Contrôlez l'adresse, le message et la carte (plus bas), puis cliquez sur « Expédier ».":"Indiquez l'e-mail du "+who+" ci-dessus pour lui envoyer ses accès et sa carte, ou téléchargez la carte et envoyez le message vous-même.");
@@ -623,9 +628,11 @@ window.addEventListener("beforeunload",e=>{ if(TEAM_DIRTY){ e.preventDefault(); 
 const FS_MAIL="mlracingteam29@gmail.com";
 async function sendWelcome(){
   const st=$("#mailst"), to=$("#mto").value.trim(), msg=$("#msg").innerText.trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ setSt(st,"ko","Indiquez une adresse e-mail valide pour le membre."); $("#mto").focus(); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ setSt(st,"ko","Indiquez une adresse e-mail valide pour le destinataire."); $("#mto").focus(); return; }
   if(!msg){ setSt(st,"ko","Le message est vide."); return; }
   if($("#cardOut").hidden){ setSt(st,"ko","Générez d'abord la carte (rubrique Carte membre / partenaire)."); return; }
+  const KIND=(MAIL&&MAIL.kind)||CARD_KIND, PK=KIND==="partenaire", QUI=PK?"partenaire":"membre";
+  if(MAIL && (CARD_KIND!==MAIL.kind)) await drawCard(MAIL.name,MAIL.num,MAIL.course,MAIL.kind);
   const LAST_MAIL={email:to,msg}; $("#send").disabled=true;
   setSt(st,"","Envoi de l'e-mail à "+to+"…");
   const blob=await new Promise(r=>$("#cardCanvas").toBlob(r,"image/png"));
@@ -633,7 +640,7 @@ async function sendWelcome(){
   if(!fr){ fr=document.createElement("iframe"); fr.name="fsFrame"; fr.id="fsFrame"; fr.hidden=true; document.body.appendChild(fr); await new Promise(r=>setTimeout(r,150)); }
   const f=document.createElement("form"); f.action="https://formsubmit.co/"+FS_MAIL; f.method="POST"; f.enctype="multipart/form-data"; f.target="fsFrame"; f.hidden=true;
   const add=(n,v)=>{ const i=document.createElement("input"); i.type="hidden"; i.name=n; i.value=v; f.appendChild(i); };
-  add("_subject",CARD_KIND==="partenaire"?"Merci pour votre soutien — votre accès et votre carte partenaire ML Racing Team "+SAISON:"Bienvenue dans la ML Racing Team — vos accès et votre carte membre "+SAISON);
+  add("_subject",PK?"Merci pour votre soutien — votre accès et votre carte partenaire ML Racing Team "+SAISON:"Bienvenue dans la ML Racing Team — vos accès et votre carte membre "+SAISON);
   add("_cc",LAST_MAIL.email); add("_captcha","false"); add("_template","box"); add("_replyto",FS_MAIL);
   add("message",LAST_MAIL.msg);
   const fi=document.createElement("input"); fi.type="file"; fi.name="attachment";
@@ -641,7 +648,7 @@ async function sendWelcome(){
   document.body.appendChild(f);
   let done=false;
   fr.onload=()=>{ done=true; f.remove(); $("#send").disabled=false; $("#send").textContent="📧 Renvoyer l'e-mail";
-    setSt(st,"ok","E-mail expédié à "+LAST_MAIL.email+" avec sa carte membre (copie sur "+FS_MAIL+")."); };
+    setSt(st,"ok","E-mail expédié à "+LAST_MAIL.email+" avec sa carte "+QUI+" (copie sur "+FS_MAIL+")."); };
   f.submit();
   setTimeout(()=>{ if(!done){ $("#send").disabled=false; setSt(st,"ko","Pas de confirmation d'envoi. Vérifiez la copie sur "+FS_MAIL+" ; sinon réessayez, ou téléchargez la carte et envoyez le message vous-même."); } },25000);
 }
