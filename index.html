@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=202611151123">
 </head>
 <body>
 
@@ -390,8 +390,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js"></script>
-<script src="membres/roulages.js"></script>
+<script src="membres/membres.js?v=202611151123"></script>
+<script src="membres/roulages.js?v=202611151123"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -690,7 +690,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
     $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";
     $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
-    if(typeof MLRR!=="undefined") loadRoulages();
+    if(typeof MLRR!=="undefined") loadRoulages().catch(()=>{ try{ RL=RL||MLRR.empty(); renderRoulages(); }catch(_){ $("#rlLock").hidden=true; $("#mRl").hidden=false; $("#rlEmpty").hidden=false; $("#rlEmpty").textContent="Les roulages n'ont pas pu se charger : rechargez la page (Ctrl+F5 ou tirez vers le bas sur téléphone)."; } });
     if(BACK_RL){ BACK_RL=false; showTab("roulages",true); }
   }
   let BACK_RL=false;
