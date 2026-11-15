@@ -15,7 +15,7 @@
 # Les dates sont triées toutes seules ; les dates passées s'affichent en grisé.
 # Écrivez "Complet" dans le type ou les infos pour afficher l'étiquette COMPLET,
 # ou par ex. "6 places disponibles" pour afficher l'étiquette verte des places restantes.
-Circuit du Mans | 14/08/2027 au 15/08/2027 |  | 6 places disponibles
+Circuit du Mans | 14/08/2027 au 15/08/2027 |  | Complet
 Edern Motocross | 12/12/2026 | Stage privé motocross | Complet
 Fontenay-le-Comte | 25/04/2027 au 26/04/2027 |  | 27/04 possible en plus
 Fontenay-le-Comte | 30/05/2027 au 31/05/2027

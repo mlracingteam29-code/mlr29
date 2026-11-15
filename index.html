@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151310">
+<link rel="stylesheet" href="style.css?v=202611151317">
 </head>
 <body>
 
@@ -393,8 +393,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151310"></script>
-<script src="membres/roulages.js?v=202611151310"></script>
+<script src="membres/membres.js?v=202611151317"></script>
+<script src="membres/roulages.js?v=202611151317"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -591,6 +591,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     const info=document.createElement("div"); info.className="info";
     const h=document.createElement("h3"); h.textContent=r.circuit||"Roulage";
     const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
+    if(/\bcomplet\b/i.test([r.type,r.infos].join(" "))&&!past){ const bc=document.createElement("span"); bc.className="badge-full"; bc.textContent="Complet"; h.appendChild(bc); el.classList.add("full"); }
     if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes inscrit(e) ✓"; h.appendChild(bd); }
     const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
