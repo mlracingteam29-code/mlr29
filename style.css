@@ -324,3 +324,12 @@
 .rl-savebar .btn{box-shadow:0 6px 20px rgba(0,0,0,.6)}
 .rl-cat{font-family:"Saira Condensed";text-transform:uppercase;font-size:17px;letter-spacing:.06em;color:#fff;margin:16px 0 8px;padding:6px 12px;border-left:4px solid var(--red);background:rgba(225,6,0,.08);border-radius:0 8px 8px 0}
 .rl-catsel{width:auto;max-width:100%;padding:6px 10px;font-size:13px;margin:4px 0 8px;display:block}
+.rl-folder{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin:10px 0;overflow:hidden}
+.rl-folder>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;font-family:"Saira Condensed";text-transform:uppercase;font-size:19px;letter-spacing:.05em}
+.rl-folder>summary::-webkit-details-marker{display:none}
+.rl-folder>summary .ic{font-size:22px}
+.rl-folder>summary .nb{margin-left:auto;font:600 12px "Saira";letter-spacing:.06em;color:var(--muted);background:#0f0f12;border:1px solid var(--line);border-radius:99px;padding:3px 10px;text-transform:none}
+.rl-folder>summary::after{content:"▸";color:var(--red);font-size:18px;transition:transform .2s}
+.rl-folder[open]>summary::after{transform:rotate(90deg)}
+.rl-folder[open]>summary{border-bottom:1px solid var(--line)}
+.rl-folder>.dates{padding:10px}

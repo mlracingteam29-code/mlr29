@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151324">
+<link rel="stylesheet" href="style.css?v=202611151328">
 </head>
 <body>
 
@@ -393,8 +393,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151324"></script>
-<script src="membres/roulages.js?v=202611151324"></script>
+<script src="membres/membres.js?v=202611151328"></script>
+<script src="membres/roulages.js?v=202611151328"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -729,8 +729,11 @@ const DEPOT="mlracingteam29-code/mlr29";
     const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
     MLRR.CATS.forEach(c=>{ const l=prop.filter(r=>MLRR.catOf(r)===c); if(!l.length) return;
-      const h=document.createElement("h4"); h.className="rl-cat"; h.textContent=MLRR.ICONS[c]+" "+c+" ("+l.length+")"; pb.appendChild(h);
-      l.forEach(r=>pb.appendChild(rlCard(r,false))); });
+      const d=document.createElement("details"); d.className="rl-folder"; d.dataset.cat=c; d.open=OPENCATS.has(c);
+      const sm=document.createElement("summary"); sm.innerHTML='<span class="ic">📁</span>'; const t=document.createElement("span"); t.textContent=MLRR.ICONS[c]+" "+c; const n=document.createElement("span"); n.className="nb"; n.textContent=l.length+" date"+(l.length>1?"s":"");
+      sm.append(t,n); d.appendChild(sm); d.ontoggle=()=>{ d.open?OPENCATS.add(c):OPENCATS.delete(c); sm.firstChild.textContent=d.open?"📂":"📁"; };
+      if(d.open) sm.firstChild.textContent="📂";
+      const body=document.createElement("div"); body.className="dates"; l.forEach(r=>body.appendChild(rlCard(r,false))); d.appendChild(body); pb.appendChild(d); });
     $("#rlValidT").hidden=!val.length; $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
     renderCal();
   }
@@ -759,7 +762,7 @@ const DEPOT="mlracingteam29-code/mlr29";
       const k=y+"-"+mo+"-"+d, rs=days[k]||[], c=document.createElement(rs.length?"button":"span"); c.className="rc-d"; c.textContent=d;
       if(new Date(y,mo,d).getTime()===today.getTime()) c.classList.add("today");
       if(rs.length){ c.type="button"; c.classList.add("on"); if(rs.some(r=>r.statut==="valide")) c.classList.add("val"); if(rs.length>1) c.classList.add("multi");
-        c.title=rs.map(r=>r.circuit).join(" · "); c.onclick=()=>{ const el=document.getElementById("rl-"+rs[0].id); if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
+        c.title=rs.map(r=>r.circuit).join(" · "); c.onclick=()=>{ const el=document.getElementById("rl-"+rs[0].id); if(el){ const f=el.closest("details"); if(f) f.open=true; el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
         rs.forEach(r=>{ if(!mois.includes(r)) mois.push(r); }); }
       g.appendChild(c);
     }
@@ -770,11 +773,11 @@ const DEPOT="mlracingteam29-code/mlr29";
       const a=document.createElement("button"); a.type="button"; a.className="rc-item"+(r.statut==="valide"?" val":"");
       const d=document.createElement("b"); d.textContent=p.end>p.start?J[p.start.getDay()]+" "+p.start.getDate()+" → "+J[p.end.getDay()]+" "+p.end.getDate()+(p.end.getMonth()!==p.start.getMonth()?" "+MOISL[p.end.getMonth()].slice(0,4).toLowerCase()+".":""):J[p.start.getDay()]+" "+p.start.getDate();
       const n=document.createElement("span"); n.textContent=(r.circuit||"Roulage")+(r.type?" · "+r.type:"");
-      a.append(d,n); a.onclick=()=>{ const el=document.getElementById("rl-"+r.id); if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
+      a.append(d,n); a.onclick=()=>{ const el=document.getElementById("rl-"+r.id); if(el){ const f=el.closest("details"); if(f) f.open=true; el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
       ul.appendChild(a); });
     box.appendChild(ul);
   }
-  let PEND=new Set();
+  let PEND=new Set(); const OPENCATS=new Set();
   function majSave(){
     const b=$("#rlSave"); if(!b) return;
     const diff=PEND.size!==MINE.size||[...PEND].some(x=>!MINE.has(x));
