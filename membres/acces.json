@@ -46,6 +46,15 @@
    "iv": "H9FMk8PltdgvC2/N",
    "cle": "mCWS9GUQFgp/triMOF5DDwp4GGsOKNQ1PeJRiiSO4brs6wODTftT3qLCrR2SAwDK",
    "cree": "2026-11-10"
+  },
+  {
+   "h": "ZUCBYa7pvt7Tmjyvq3aYkP0/VTTngWyGAvh9A7/fBs0=",
+   "role": "membre",
+   "nom": "gCbg2qlUYyFK/vm8A77epDu4H53XAuw2hJJXVLv9cNSmaFRoe2YV1Q==",
+   "salt": "A5IA4QQOcZxdDvLEds9fLw==",
+   "iv": "j0scdSfQoVoxR3xd",
+   "cle": "cf6lqTjCrNVuvAQ8WsM0nCSUELHPn9EYT+pdP5jmKqOz98X53CX6b8iz2dqFt4SF",
+   "cree": "2026-11-15"
   }
  ]
 }
