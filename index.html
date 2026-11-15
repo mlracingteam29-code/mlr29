@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151330">
+<link rel="stylesheet" href="style.css?v=202611151342">
 </head>
 <body>
 
@@ -193,7 +193,7 @@
         <button class="btn ghost" type="button" data-go="inscriptions">Adhérer à l'association</button></div>
     </div>
     <div class="mrl" id="mRl" hidden>
-      <div class="mbar"><span>Connecté : <b id="rlWho"></b></span><span class="cta" style="margin:0"><button class="btn ghost small" type="button" data-go="fichiers">📁 Fichiers membres</button></span></div>
+      <div class="mbar"><span>Connecté : <b id="rlWho"></b></span><span class="cta" style="margin:0"><button class="btn ghost small" type="button" data-go="fichiers">📁 Fichiers membres</button><button class="btn ghost small" type="button" id="rlOut">Se déconnecter</button></span></div>
       <div class="card rl-bureau" id="rlBureau" hidden></div>
       <div class="rl-cal" id="rlCal"></div>
       <h3 class="msub" id="rlValidT" hidden>✅ Roulages validés</h3>
@@ -393,8 +393,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151330"></script>
-<script src="membres/roulages.js?v=202611151330"></script>
+<script src="membres/membres.js?v=202611151342"></script>
+<script src="membres/roulages.js?v=202611151342"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -830,6 +830,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   }
   let BACK_RL=false;
   $("#rlSave").onclick=saveInterest;
+  $("#rlOut").onclick=()=>{ $("#mOut").click(); window.scrollTo({top:0}); };
   $("#rlLogin").onclick=()=>{ BACK_RL=true; showTab("fichiers",true); setTimeout(()=>{ try{ $("#mId").focus(); }catch(_){} },50); };
   $("#mForm").addEventListener("submit",async e=>{
     e.preventDefault();
