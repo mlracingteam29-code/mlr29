@@ -103,6 +103,19 @@ const MLRR = (() => {
     return n;
   }
 
-  return { fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
+  /* Nom et prénom des membres (champ "np" chiffré dans acces.json) ; à défaut, l'identifiant */
+  let NOMS = {};
+  async function loadNoms(KEY, acces) {
+    NOMS = {};
+    for (const c of (acces && acces.comptes) || []) {
+      try { const id = c.nom ? await MLRT.decText(KEY, c.nom) : ""; const np = c.np ? await MLRT.decText(KEY, c.np) : "";
+            if (id) NOMS[norm(id)] = np || (c.role === "bureau" && norm(id) === "bureau" ? "LOECKX Maxence" : id); } catch (_) {}
+    }
+    return NOMS;
+  }
+  const label = id => NOMS[norm(id)] || String(id || "");
+  const labels = list => (list || []).map(label).sort((a, b) => a.localeCompare(b, "fr")).join(", ");
+
+  return { loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
 })();
 if (typeof module !== "undefined") module.exports = MLRR;

@@ -580,7 +580,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     else{ try{ (JSON.parse(localStorage.getItem(LSK())||"[]")).forEach(i=>MINE.add(i)); }catch(_){} }
     renderRoulages();
   }
-  function names(list){ return list.length?list.join(", "):""; }
+  function names(list){ return MLRR.labels(list); }
   function rlCard(r,valid){
     const past=MLRR.isPast(r);
     const el=document.createElement("div"); el.className="date"+(past?" past":"");
@@ -613,10 +613,11 @@ const DEPOT="mlracingteam29-code/mlr29";
   let ROLE="", MEMBRES=[];
   const ghTok=()=>{ try{ return localStorage.getItem("mlrt_gh_token")||""; }catch(_){ return ""; } };
   const ghApi=(p,opt={})=>fetch("https://api.github.com/repos/"+DEPOT+"/"+p,{...opt,cache:"no-store",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+ghTok(),"X-GitHub-Api-Version":"2022-11-28",...(opt.headers||{})}});
+  let ACC=null;
   async function loadMembres(){
-    try{ const a=await (await fetch("membres/acces.json",{cache:"no-cache"})).json(); const out=[];
-      for(const c of a.comptes){ if(c.role==="bureau"||c.role==="partenaire"||!c.nom) continue; try{ out.push(await MLRT.decText(KEY,c.nom)); }catch(_){} }
-      MEMBRES=out.sort((x,y)=>x.localeCompare(y,"fr")); }catch(_){ MEMBRES=[]; }
+    try{ const out=[];
+      for(const c of ACC.comptes){ if(c.role==="partenaire"||!c.nom) continue; try{ out.push(await MLRT.decText(KEY,c.nom)); }catch(_){} }
+      MEMBRES=out.sort((x,y)=>MLRR.label(x).localeCompare(MLRR.label(y),"fr")); }catch(_){ MEMBRES=[]; }
   }
   let SAVING=Promise.resolve();
   function saveRL(){
@@ -642,7 +643,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     cands.forEach(n=>{ const l=document.createElement("label"); const isInt=ints.some(x=>MLRR.norm(x)===MLRR.norm(n)); l.className="rpil"+(isInt?" int":"");
       const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=pil.some(p=>MLRR.norm(p)===MLRR.norm(n));
       cb.onchange=()=>{ const set=(r.pilotes||[]).filter(p=>MLRR.norm(p)!==MLRR.norm(n)); if(cb.checked) set.push(n); r.pilotes=set; renderRoulages(); saveRL(); };
-      const sp=document.createElement("span"); sp.textContent=n+(isInt?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
+      const sp=document.createElement("span"); sp.textContent=MLRR.label(n)+(isInt?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
     if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
     box.appendChild(wrap);
     const v=document.createElement("button"); v.type="button"; v.className="linkbtn"; v.textContent=r.statut==="valide"?"Repasser en « proposé »":"✓ Valider le roulage";
@@ -652,7 +653,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     return box;
   }
   function renderRoulages(){
-    const box=$("#mRl"); box.hidden=false; $("#rlLock").hidden=true; $("#rlWho").textContent=WHO;
+    const box=$("#mRl"); box.hidden=false; $("#rlLock").hidden=true; $("#rlWho").textContent=MLRR.label(WHO);
     const all=MLRR.sorted(RL.roulages||[]);
     const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
     const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
@@ -684,6 +685,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   }
   async function enter(raw,who,role){
     KEY=await MLRT.importMaster(raw); WHO=who; ROLE=role||"membre";
+    try{ ACC=await (await fetch("membres/acces.json",{cache:"no-cache"})).json(); await MLRR.loadNoms(KEY,ACC); }catch(_){ ACC={comptes:[]}; }
     if(ROLE==="bureau") await loadMembres();
     try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
     $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";

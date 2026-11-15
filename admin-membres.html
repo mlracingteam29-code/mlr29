@@ -120,7 +120,8 @@
         <div class="cta" style="margin-top:8px"><button class="btn red" id="send" type="button">📧 Expédier l'e-mail avec la carte</button>
         <button class="btn ghost small" id="copyMsg">Copier le message</button></div>
       </div>
-      <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
+      <p class="hint" style="margin-top:10px">Le <strong>nom et prénom</strong> est celui affiché aux membres (roulages, présents). Corrigez-le directement dans la liste, puis publiez.</p>
+      <table><thead><tr><th>Nom et prénom</th><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
     </div>
 
     <!-- Roulages (espace membres) -->
@@ -322,7 +323,7 @@ function nextNum(kind){ const P=kind==="partenaire"; const n=ACCES.comptes.filte
 $("#ctype").onchange=()=>{ const P=$("#ctype").value==="partenaire"; $("#ccourseLbl").textContent=P?"Contact (facultatif)":"N° de course (facultatif)"; document.querySelector('label[for="cname"]').textContent=P?"Entreprise / partenaire":"Nom et prénom"; };
 $("#cgen").onclick=async()=>{ const n=$("#cname").value.trim(); if(!n){ setSt($("#cst"),"ko","Indiquez le nom."); return; } setSt($("#cst"),"",""); await drawCard(n,$("#cnum").value.trim(),$("#ccourse").value.trim(),$("#ctype").value); };
 $("#cdl").onclick=()=>{ $("#cardCanvas").toBlob(b=>download(CARD_NAME,b),"image/png"); };
-let RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={};
+let RAW=null, KEY=null, ACCES=null, INDEX=[], ME=null, NAMES={}, NP={};
 const PENDING=new Map(); // nom de fichier -> Blob
 const size=n=>n>1048576?(n/1048576).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(n/1024))+" Ko";
 const fr=d=>d?d.split("-").reverse().join("/"):"";
@@ -344,9 +345,14 @@ async function renderMembers(){
   const tb=$("#mlist"); tb.innerHTML="";
   for(const c of ACCES.comptes){
     if(!(c.h in NAMES)){ try{ NAMES[c.h]=c.nom?await MLRT.decText(KEY,c.nom):"(inconnu)"; }catch(_){ NAMES[c.h]="(inconnu)"; } }
+    if(!(c.h in NP)){ try{ NP[c.h]=c.np?await MLRT.decText(KEY,c.np):""; }catch(_){ NP[c.h]=""; } }
   }
   ACCES.comptes.slice().sort((a,b)=>(a.role==="bureau"?-1:1)-(b.role==="bureau"?-1:1)||NAMES[a.h].localeCompare(NAMES[b.h])).forEach(c=>{
     const tr=document.createElement("tr");
+    const t0=document.createElement("td");
+    { const inp=document.createElement("input"); inp.value=NP[c.h]||(c.role==="bureau"?MLRR.label(NAMES[c.h]):""); inp.placeholder="à compléter"; inp.style.padding="6px 9px"; inp.style.fontSize="14px";
+      inp.onchange=async()=>{ const v=inp.value.trim(); NP[c.h]=v; if(v) c.np=await MLRT.encText(KEY,v); else delete c.np; stageAcces(); await MLRR.loadNoms(KEY,ACCES); if(typeof renderRoulagesAdm==="function"&&RL) renderRoulagesAdm(); };
+      t0.appendChild(inp); }
     const t1=document.createElement("td"); t1.textContent=NAMES[c.h]; if(c.role==="bureau"||c.role==="partenaire"){ const g=document.createElement("span"); g.className="tag"; g.textContent=c.role; t1.appendChild(g); }
     const t2=document.createElement("td"); t2.textContent=fr(c.cree);
     const t3=document.createElement("td"); t3.style.textAlign="right";
@@ -355,7 +361,7 @@ async function renderMembers(){
       b.onclick=()=>{ if(b.dataset.c!=="1"){ b.dataset.c="1"; b.textContent="Confirmer ?"; setTimeout(()=>{b.dataset.c="";b.textContent="Retirer l'accès";},3000); return; }
         ACCES.comptes=ACCES.comptes.filter(x=>x!==c); stageAcces(); renderMembers(); };
       t3.appendChild(b); } else { t3.textContent="(vous)"; t3.style.color="var(--muted)"; }
-    tr.append(t1,t2,t3); tb.appendChild(tr);
+    tr.append(t0,t1,t2,t3); tb.appendChild(tr);
   });
   if(typeof renderRoulagesAdm==="function" && RL) renderRoulagesAdm();
 }
@@ -390,7 +396,7 @@ $("#lf").addEventListener("submit",async e=>{
       try{ const ib=await ghBytes("membres/index.bin"); const buf=ib?ib.buffer:await (async()=>{ const r=await fetch("membres/index.bin",{cache:"no-cache"}); return r.ok?await r.arrayBuffer():null; })();
         INDEX=buf?JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,buf))):[]; }catch(_){ INDEX=[]; }
       $("#login").hidden=true; $("#app").hidden=false; $("#lcode").value="";
-      await renderMembers(); renderFiles(); ghUI(); loadTeam(); loadRoulages(ghBytes);
+      await renderMembers(); renderFiles(); ghUI(); loadTeam(); await MLRR.loadNoms(KEY,ACCES); loadRoulages(ghBytes);
     }
   }catch(err){ setSt(st,"ko","Impossible de charger l'espace membres."); }
   $("#lbtn").disabled=false;
@@ -406,7 +412,7 @@ async function createAccess(kind,f,st){
   if(f.code.length<8){ setSt(st,"ko","Code trop court (8 caractères minimum) — utilisez Générer."); return false; }
   const h=await MLRT.idHash(f.id); if(ACCES.comptes.some(c=>c.h===h)){ setSt(st,"ko","Cet identifiant existe déjà."); return false; }
   setSt(st,"","Création…");
-  const c=await MLRT.makeCompte(f.id,f.code,RAW,KEY,kind,ACCES.iter); ACCES.comptes.push(c); NAMES[c.h]=f.id;
+  const c=await MLRT.makeCompte(f.id,f.code,RAW,KEY,kind,ACCES.iter); c.np=await MLRT.encText(KEY,f.name); ACCES.comptes.push(c); NAMES[c.h]=f.id; NP[c.h]=f.name; await MLRR.loadNoms(KEY,ACCES);
   stageAcces(); await renderMembers();
   const acces="Identifiant : "+f.id+"\nCode d'accès : "+f.code+"\n\nSite : "+SITE+"\n(Vos accès sont actifs d'ici quelques minutes.)\n\nDécouvrez le site en 1 minute grâce à notre vidéo de présentation :\n"+VIDEO_URL;
   $("#msg").textContent = P
@@ -472,7 +478,7 @@ async function loadInterets(){
 async function stageRoulages(){ stage("roulages.bin",new Blob([await MLRR.encode(KEY,RL)])); }
 function rcfgUI(){ const on=!!(RL.cfg&&RL.cfg.tok); $("#rcfgState").textContent=on?"active ✓":"non configurée (réponses par e-mail)"; $("#rcfgState").style.color=on?"var(--ok)":"#f1d58a";
   if(RL.cfg&&RL.cfg.repo) $("#rrepo").value=RL.cfg.repo; $("#rtok").value=""; $("#rtok").placeholder=on?"Clé enregistrée ✓ (collez-en une autre pour la remplacer)":"github_pat_…"; }
-function pilotesPossibles(){ return ACCES.comptes.filter(c=>c.role!=="partenaire"&&c.role!=="bureau").map(c=>NAMES[c.h]).filter(n=>n&&n!=="(inconnu)").sort((a,b)=>a.localeCompare(b,"fr")); }
+function pilotesPossibles(){ return ACCES.comptes.filter(c=>c.role!=="partenaire").map(c=>NAMES[c.h]).filter(n=>n&&n!=="(inconnu)").sort((a,b)=>MLRR.label(a).localeCompare(MLRR.label(b),"fr")); }
 function renderRoulagesAdm(){
   const box=$("#rlist"); box.innerHTML="";
   const list=MLRR.sorted(RL.roulages);
@@ -486,7 +492,7 @@ function renderRoulagesAdm(){
     rh.append(t,tag); it.appendChild(rh);
     const ints=RINT[r.id]||[];
     const pi=document.createElement("div"); pi.className="rint";
-    pi.textContent=RL.cfg&&RL.cfg.tok?("★ Intéressés ("+ints.length+") : "+(ints.length?ints.join(", "):"personne pour l'instant")):"★ Intéressés : réponses reçues par e-mail (clé de participation non configurée)";
+    pi.textContent=RL.cfg&&RL.cfg.tok?("★ Intéressés ("+ints.length+") : "+(ints.length?MLRR.labels(ints):"personne pour l'instant")):"★ Intéressés : réponses reçues par e-mail (clé de participation non configurée)";
     it.appendChild(pi);
     {
       const lab=document.createElement("div"); lab.className="rint"; lab.textContent="Présents au roulage ("+(r.pilotes||[]).length+") — cliquez pour cocher :"; it.appendChild(lab);
@@ -496,7 +502,7 @@ function renderRoulagesAdm(){
       cands.forEach(n=>{ const l=document.createElement("label"); l.className="rpil"+(ints.some(x=>MLRR.norm(x)===MLRR.norm(n))?" int":"");
         const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=sel.has(MLRR.norm(n));
         cb.onchange=async()=>{ const set=(r.pilotes||[]).filter(p=>MLRR.norm(p)!==MLRR.norm(n)); if(cb.checked) set.push(n); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); };
-        const sp=document.createElement("span"); sp.textContent=n+(l.classList.contains("int")?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
+        const sp=document.createElement("span"); sp.textContent=MLRR.label(n)+(l.classList.contains("int")?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
       if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
       it.appendChild(wrap);
     }
