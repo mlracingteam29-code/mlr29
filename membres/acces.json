@@ -71,6 +71,16 @@
    "cle": "rNvfrMW8JY/H1wJvPB3rQp3RcpYrFfJZhFmUhXLY6ACKQhI4a2Yrh2B1eI2fkrp9",
    "cree": "2026-11-15",
    "np": "vfd068g9USaBPfvK290RJhQlW+rA/su0ZenUjPW+17xQ0UUpSG9/N7dv6S4="
+  },
+  {
+   "h": "XQ939o+CwumXFk7lYE64onfgnccFEmIHdpUF7dtc2+4=",
+   "role": "partenaire",
+   "nom": "mnNBz+aTYlcN1zYo7OJkqzKPE3xh1c7kqzlK5E5y+mLuBIXbopvWDY/N",
+   "salt": "tfc6AJfrbqI0SgByPbKwpA==",
+   "iv": "bSxQW5mf0JRvmVMS",
+   "cle": "/XRyEiYVcb1U5HDvffH0pT4l5o+1q4lTsDvg36hvbOQSf0/uW6Cd5270lHG2nuGl",
+   "cree": "2026-11-15",
+   "np": "PZ/2/tb3OdCThaIVVjbQ1bfzL48dF7iI6cIZWV1qygo/Qu9mOO4ohAC81lrdAr+1"
   }
  ]
 }
