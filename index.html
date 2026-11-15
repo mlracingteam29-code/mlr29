@@ -185,10 +185,24 @@
       <h2>Dates de roulages</h2>
       <p data-txt="roulages.intro">Les prochaines sorties de la team : piste, mini moto, enduro. Pour réserver votre place, contactez le bureau.</p>
     </div>
-    <div class="dates" id="dates"></div>
-    <div class="empty" id="datesEmpty">Les dates de la saison 2027 arrivent très bientôt. Les membres les reçoivent en avance !</div>
-    <div class="cta" style="margin-top:20px">
-      <button class="btn red small" data-go="contact" data-sujet="Roulages">Réserver un roulage</button>
+    <div class="card mlogin" id="rlLock">
+      <div class="lock">🔒</div>
+      <h3>Accès réservé aux membres</h3>
+      <p>Les dates de roulages de la team sont réservées aux membres de l'association. Connectez-vous avec l'<strong>identifiant</strong> et le <strong>code</strong> reçus après la validation de votre inscription pour les consulter et indiquer celles qui vous intéressent.</p>
+      <div class="cta"><button class="btn red" type="button" id="rlLogin">Se connecter</button>
+        <button class="btn ghost" type="button" data-go="inscriptions">Adhérer à l'association</button></div>
+    </div>
+    <div class="mrl" id="mRl" hidden>
+      <div class="mbar"><span>Connecté : <b id="rlWho"></b></span><span class="cta" style="margin:0"><button class="btn ghost small" type="button" data-go="fichiers">📁 Fichiers membres</button></span></div>
+      <h3 class="msub" id="rlValidT" hidden>✅ Roulages validés</h3>
+      <div id="rlValid" class="dates"></div>
+      <h3 class="msub" id="rlPropT" hidden>📅 Dates proposées — cochez si vous êtes intéressé(e)</h3>
+      <div id="rlProp" class="dates"></div>
+      <div class="empty" id="rlEmpty" hidden>Aucun roulage pour le moment : les prochaines dates arrivent bientôt.</div>
+      <p class="cstatus" id="rlSt" role="status"></p>
+      <div class="cta" style="margin-top:20px">
+        <button class="btn red small" data-go="contact" data-sujet="Roulages">Contacter le bureau</button>
+      </div>
     </div>
   </div>
 </section>
@@ -254,15 +268,6 @@
           <a class="btn ghost small" id="mAdmin" href="admin-membres.html" hidden>⚙️ Gérer l'espace membres</a>
           <button class="btn ghost small" id="mOut">Se déconnecter</button>
         </span>
-      </div>
-      <div class="mrl" id="mRl" hidden>
-        <h3 class="msub">🏁 Roulages des membres</h3>
-        <div id="rlValid" class="dates"></div>
-        <h4 class="msub2" id="rlPropT" hidden>Dates proposées — cochez si vous êtes intéressé(e)</h4>
-        <div id="rlProp" class="dates"></div>
-        <div class="empty" id="rlEmpty" hidden>Aucun roulage pour le moment : les prochaines dates arrivent bientôt.</div>
-        <p class="cstatus" id="rlSt" role="status"></p>
-        <h3 class="msub">📁 Fichiers</h3>
       </div>
       <div class="files" id="files"></div>
       <div class="empty" id="filesEmpty" hidden>Aucun fichier pour le moment.</div>
@@ -432,7 +437,7 @@ function showTab(name,push){
   document.querySelectorAll("#links [data-go]").forEach(b=>b.classList.toggle("active",b.dataset.go===name));
   if(push){ try{ history.replaceState(null,"","#"+name); }catch(e){ location.hash=name; } }
   window.scrollTo({top:0,behavior:"instant"});
-  if(name==="fichiers" && window.refreshMembres) window.refreshMembres();
+  if((name==="fichiers"||name==="roulages") && window.refreshMembres) window.refreshMembres();
 }
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.sujet){ const o=[...document.querySelectorAll("#cSujet option")].find(x=>x.textContent===b.dataset.sujet); if(o) o.selected=true; } showTab(b.dataset.go,true); }));
 window.addEventListener("hashchange",()=>showTab(location.hash.slice(1),false));
@@ -521,49 +526,7 @@ fetch("equipe.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).t
   });
 }).catch(()=>{});
 
-/* Dates roulages : lues depuis roulages.txt (modifiable sur GitHub) */
-fetch("roulages.txt",{cache:"no-cache"}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
-  const today=new Date(); today.setHours(0,0,0,0);
-  const D=/(\d{1,2})\/(\d{1,2})\/(\d{4})/g;
-  const rows=[];
-  t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith("#")).forEach(l=>{
-    const parts=l.split("|").map(x=>x.trim());
-    const di=parts.findIndex(p=>/\d{1,2}\/\d{1,2}\/\d{4}/.test(p)); if(di<0) return;
-    const rest=parts.filter((_,k)=>k!==di);
-    const [lieu,type,infos]=[rest[0]||"",rest[1]||"",rest.slice(2).join(" · ")];
-    // plusieurs dates séparées par "," ou ";" ; une période avec "au" ou "-"
-    parts[di].split(/[,;]/).forEach(chunk=>{
-      const ds=[...chunk.matchAll(D)].map(m=>new Date(+m[3],+m[2]-1,+m[1]));
-      if(!ds.length) return;
-      rows.push({start:ds[0], end:ds[ds.length-1], lieu, type, infos});
-    });
-  });
-  rows.sort((a,b)=>a.start-b.start);
-  if(!rows.length) return;
-  const box=$("#dates"); $("#datesEmpty").hidden=true;
-  const MO=["JANV","FÉVR","MARS","AVR","MAI","JUIN","JUIL","AOÛT","SEPT","OCT","NOV","DÉC"];
-  rows.forEach(r=>{
-    const past=r.end<today, multi=r.end>r.start, sameM=r.start.getMonth()===r.end.getMonth();
-    const el=document.createElement("div"); el.className="date"+(past?" past":"");
-    const cal=document.createElement("div"); cal.className="cal";
-    const dd=document.createElement("b"); dd.textContent=multi&&sameM? r.start.getDate()+"-"+r.end.getDate() : r.start.getDate();
-    const mm=document.createElement("span"); mm.textContent=(multi&&!sameM? MO[r.start.getMonth()]+" → "+r.end.getDate()+" "+MO[r.end.getMonth()] : MO[r.start.getMonth()])+" "+r.start.getFullYear();
-    cal.append(dd,mm);
-    const info=document.createElement("div"); info.className="info";
-    const h=document.createElement("h3"); h.textContent=r.lieu||"Roulage";
-    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,past?"terminé":""].filter(Boolean).join(" · ");
-    const full=/\bcomplet\b/i.test([r.type,r.infos].join(" "));
-    if(full && !past){ const bd=document.createElement("span"); bd.className="badge-full"; bd.textContent="Complet"; h.appendChild(bd); el.classList.add("full"); }
-    const pm=[r.type,r.infos].join(" ").match(/(\d+)\s*places?(\s+(disponibles?|restantes?|libres?))?/i);
-    if(!full && pm && !past){ const bd=document.createElement("span"); bd.className="badge-places"; const n=+pm[1]; bd.textContent=n+(n>1?" places disponibles":" place disponible"); h.appendChild(bd); }
-    info.append(h,ty);
-    let inf=full?r.infos.replace(/^\s*complet\s*[.·-]?\s*/i,""):r.infos;
-    if(!full&&pm) inf=inf.replace(pm[0],"").replace(/^\s*[.·,-]\s*|\s*[.·,-]\s*$/g,"").trim();
-    if(inf){ const p=document.createElement("p"); p.textContent=inf; info.appendChild(p); }
-    el.append(cal,info); box.appendChild(el);
-  });
-}).catch(()=>{});
-
+/* Dates roulages : réservées aux membres connectés (voir « Roulages réservés aux membres » plus bas) */
 const DEPOT="mlracingteam29-code/mlr29";
 
 /* Fichiers membres : contenu chiffré, ouvert avec identifiant + code */
@@ -642,13 +605,13 @@ const DEPOT="mlracingteam29-code/mlr29";
     el.append(MLRR.calBox(r),info); return el;
   }
   function renderRoulages(){
-    const box=$("#mRl"); box.hidden=false;
+    const box=$("#mRl"); box.hidden=false; $("#rlLock").hidden=true; $("#rlWho").textContent=WHO;
     const all=MLRR.sorted(RL.roulages||[]);
     const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
     const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
     prop.forEach(r=>pb.appendChild(rlCard(r,false)));
-    $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
+    $("#rlValidT").hidden=!val.length; $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
   }
   async function toggleInterest(r,cb){
     const st=$("#rlSt"); st.className="cstatus"; st.textContent="Enregistrement…"; cb.disabled=true;
@@ -678,7 +641,10 @@ const DEPOT="mlracingteam29-code/mlr29";
     $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";
     $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
     if(typeof MLRR!=="undefined") loadRoulages();
+    if(BACK_RL){ BACK_RL=false; showTab("roulages",true); }
   }
+  let BACK_RL=false;
+  $("#rlLogin").onclick=()=>{ BACK_RL=true; showTab("fichiers",true); setTimeout(()=>{ try{ $("#mId").focus(); }catch(_){} },50); };
   $("#mForm").addEventListener("submit",async e=>{
     e.preventDefault();
     const st=$("#mStatus"), btn=$("#mBtn"); st.className="cstatus"; st.textContent="";
@@ -696,7 +662,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     }catch(err){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
     btn.disabled=false; btn.textContent="Se connecter";
   });
-  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; WHO=""; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
+  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; $("#mRl").hidden=true; $("#rlLock").hidden=false; WHO=""; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
   try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
   /* rafraîchit la liste à chaque ouverture de l'onglet */
   window.refreshMembres=async()=>{ if(!KEY) return; try{ INDEX=await loadIndex(); render(); }catch(_){} if(typeof MLRR!=="undefined") loadRoulages(); };

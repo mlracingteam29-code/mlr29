@@ -142,7 +142,8 @@ APRÈS CHAQUE MODIFICATION DE index.html
    - Les membres connectés voient les dates proposées et cochent « Je suis intéressé(e) ».
    - « ✓ Valider le roulage » : les intéressés sont pré-cochés ; cochez/décochez les membres qui
      roulent. Les membres voient alors la liste des pilotes (et « Vous roulez ✓ » pour eux).
-   - Ces roulages ne sont PAS affichés dans l'onglet public « Dates de roulages » (roulages.txt).
+   - L'onglet « Dates de roulages » affiche « Accès réservé aux membres » aux visiteurs ; une fois connecté,
+     le membre y voit les roulages (ceux de roulages.txt + ceux proposés depuis la page de gestion).
    - CLÉ DE PARTICIPATION (une seule fois, pour que les cases des membres s'enregistrent) :
      créez le dépôt privé « mlr29-roulages » + une clé limitée à CE dépôt (Contents : Read and write),
      collez-la dans « Clé de participation » > « Enregistrer et tester », puis publiez.
