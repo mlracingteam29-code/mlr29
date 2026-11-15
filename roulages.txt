@@ -15,5 +15,5 @@
 # Les dates sont triées toutes seules ; les dates passées s'affichent en grisé.
 # Écrivez "Complet" dans le type ou les infos pour afficher l'étiquette COMPLET,
 # ou par ex. "6 places disponibles" pour afficher l'étiquette verte des places restantes.
-Circuit du Mans | 13/08/2027 au 14/08/2027 |  | 6 places disponibles
+Circuit du Mans | 14/08/2027 au 15/08/2027 |  | 6 places disponibles
 Edern Motocross | 12/12/2026 | Stage privé motocross | Complet
