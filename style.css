@@ -301,3 +301,4 @@
 .rl-bureau p{color:#efe3c2;font-size:14px;margin:0 0 8px}
 .rl-bureau .rl-grow{max-width:520px;margin-bottom:6px}
 .rl-id{flex:0 0 130px;font-size:14px;color:#efe3c2;overflow:hidden;text-overflow:ellipsis}
+.date .cal .wd{display:block;font-style:normal;font-size:12px;font-weight:700;color:#fff;letter-spacing:.08em;margin-top:3px}

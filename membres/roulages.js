@@ -33,7 +33,10 @@ const MLRR = (() => {
       b.textContent = multi && same ? p.start.getDate() + "-" + p.end.getDate() : p.start.getDate();
       s.textContent = (multi && !same ? MO[p.start.getMonth()] + " → " + p.end.getDate() + " " + MO[p.end.getMonth()] : MO[p.start.getMonth()]) + " " + p.start.getFullYear();
     }
-    cal.append(b, s); return cal;
+    cal.append(b, s);
+    if (p) { const J = ["DIM","LUN","MAR","MER","JEU","VEN","SAM"]; const w = document.createElement("i"); w.className = "wd";
+      w.textContent = p.end > p.start ? J[p.start.getDay()] + " → " + J[p.end.getDay()] : J[p.start.getDay()]; cal.appendChild(w); }
+    return cal;
   }
 
   const empty = () => ({ v: 1, cfg: null, roulages: [] });
