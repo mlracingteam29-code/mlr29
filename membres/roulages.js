@@ -48,8 +48,26 @@ const MLRR = (() => {
   const encode = async (KEY, data) => MLRT.encBytes(KEY, new TextEncoder().encode(JSON.stringify(data)));
 
   /* Dépôt de participation (intérêts des membres) via l'API GitHub */
+  /* Service Google (compte mlracingteam29@gmail.com) qui garde les intérêts des membres, chiffrés */
+  const INTERETS_URL = "https://script.google.com/macros/s/AKfycbzjpC5liCODApecn41ONhCuIZ8BZ8cK8mrLtZDsY5bDiaGCDn3bSn487tquvjNuf4F3/exec";
+  function GStore() {
+    const keyFor = async id => (await MLRT.idHash(id)).replace(/[^A-Za-z0-9]/g, "").slice(0, 24);
+    const dec = async (KEY, v) => { try { return JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY, MLRT.unb64(v)))); } catch (_) { return null; } };
+    return {
+      async readAll(KEY) {
+        const r = await fetch(INTERETS_URL + "?t=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status);
+        const d = await r.json(); const out = await Promise.all(Object.values(d).map(v => dec(KEY, v)));
+        return out.filter(x => x && x.id && Array.isArray(x.ids));
+      },
+      async write(KEY, id, ids) {
+        const v = ids.length ? MLRT.b64(await MLRT.encBytes(KEY, new TextEncoder().encode(JSON.stringify({ id: String(id).trim(), ids, maj: new Date().toISOString() })))) : "";
+        const r = await fetch(INTERETS_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ k: await keyFor(id), v }) });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+      }
+    };
+  }
   function Store(cfg) {
-    if (!cfg || !cfg.repo || !cfg.tok) return null;
+    if (!cfg || !cfg.repo || !cfg.tok) return INTERETS_URL ? GStore() : null;
     const api = (p, opt = {}) => fetch("https://api.github.com/repos/" + cfg.repo + "/" + p, { ...opt, cache: "no-store",
       headers: { Accept: "application/vnd.github+json", Authorization: "Bearer " + cfg.tok, "X-GitHub-Api-Version": "2022-11-28", ...(opt.headers || {}) } });
     const raw = c => Uint8Array.from(atob(String(c).replace(/\n/g, "")), x => x.charCodeAt(0));

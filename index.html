@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151248">
+<link rel="stylesheet" href="style.css?v=202611151310">
 </head>
 <body>
 
@@ -200,6 +200,7 @@
       <div id="rlValid" class="dates"></div>
       <h3 class="msub" id="rlPropT" hidden>📅 Dates proposées — cochez si vous êtes intéressé(e)</h3>
       <div id="rlProp" class="dates"></div>
+      <div class="rl-savebar"><button class="btn red" type="button" id="rlSave" hidden>💾 Enregistrer mes choix</button></div>
       <div class="empty" id="rlEmpty" hidden>Aucun roulage pour le moment : les prochaines dates arrivent bientôt.</div>
       <p class="cstatus" id="rlSt" role="status"></p>
       <div class="cta" style="margin-top:20px">
@@ -392,8 +393,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151248"></script>
-<script src="membres/roulages.js?v=202611151248"></script>
+<script src="membres/membres.js?v=202611151310"></script>
+<script src="membres/roulages.js?v=202611151310"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -580,6 +581,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     if(STORE){ try{ const all=await STORE.readAll(KEY); INT=MLRR.byRoulage(all);
         const me=all.find(x=>MLRR.norm(x.id)===MLRR.norm(WHO)); if(me) me.ids.forEach(i=>MINE.add(i)); }catch(_){} }
     else{ try{ (JSON.parse(localStorage.getItem(LSK())||"[]")).forEach(i=>MINE.add(i)); }catch(_){} }
+    PEND=new Set(MINE);
     renderRoulages();
   }
   function names(list){ return MLRR.labels(list); }
@@ -602,12 +604,13 @@ const DEPOT="mlracingteam29-code/mlr29";
     }
     if(!valid && ROLE!=="bureau"){
       const lab=document.createElement("label"); lab.className="rl-check";
-      const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=MINE.has(r.id); cb.disabled=past;
+      const cb=document.createElement("input"); cb.type="checkbox"; cb.disabled=past;
       const t=document.createElement("span"); t.textContent="Je suis intéressé(e)";
       lab.append(cb,t); info.appendChild(lab);
       const list=(INT[r.id]||[]);
       if(STORE){ const p=document.createElement("p"); p.className="rl-who"; p.textContent=list.length?"Intéressés ("+list.length+") : "+names(list):"Personne pour l'instant, soyez le premier !"; info.appendChild(p); }
-      cb.onchange=()=>toggleInterest(r,cb);
+      cb.checked=PEND.has(r.id);
+      cb.onchange=()=>{ cb.checked?PEND.add(r.id):PEND.delete(r.id); majSave(); };
     }
     el.id="rl-"+r.id; el.append(MLRR.calBox(r),info); return el;
   }
@@ -711,6 +714,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     v.onclick=()=>{ r.statut=r.statut==="valide"?"propose":"valide"; renderRoulages(); saveRL(); };
     box.appendChild(v);
     if(ints.length){ const h=document.createElement("small"); h.className="rl-hint"; h.textContent=" ★ = a coché « intéressé »"; box.appendChild(h); }
+    const iw=document.createElement("p"); iw.className="rl-who"; iw.textContent="Intéressés ("+ints.length+") : "+(ints.length?names(ints):"personne pour l'instant"); box.insertBefore(iw,box.firstChild);
     return box;
   }
   function renderRoulages(){
@@ -764,6 +768,25 @@ const DEPOT="mlracingteam29-code/mlr29";
       ul.appendChild(a); });
     box.appendChild(ul);
   }
+  let PEND=new Set();
+  function majSave(){
+    const b=$("#rlSave"); if(!b) return;
+    const diff=PEND.size!==MINE.size||[...PEND].some(x=>!MINE.has(x));
+    b.hidden=!diff||ROLE==="bureau";
+  }
+  async function saveInterest(){
+    const st=$("#rlSt"), b=$("#rlSave"); st.className="cstatus"; st.textContent="Enregistrement…"; b.disabled=true;
+    try{
+      const ids=[...PEND].filter(id=>(RL.roulages||[]).some(x=>x.id===id));
+      if(STORE){ await STORE.write(KEY,WHO,ids);
+        Object.keys(INT).forEach(k=>INT[k]=INT[k].filter(x=>MLRR.norm(x)!==MLRR.norm(WHO)));
+        ids.forEach(id=>{ (INT[id]=INT[id]||[]).push(WHO); });
+      } else throw new Error("indisponible");
+      MINE=new Set(ids); st.classList.add("ok"); st.textContent="Enregistré ✓ Votre nom apparaît dans les intéressés.";
+      renderRoulages();
+    }catch(e){ st.classList.add("ko"); st.textContent="L'enregistrement n'a pas abouti, réessayez dans un instant."; }
+    b.disabled=false; majSave();
+  }
   async function toggleInterest(r,cb){
     const st=$("#rlSt"); st.className="cstatus"; st.textContent="Enregistrement…"; cb.disabled=true;
     const next=new Set(MINE); cb.checked?next.add(r.id):next.delete(r.id);
@@ -797,6 +820,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     if(BACK_RL){ BACK_RL=false; showTab("roulages",true); }
   }
   let BACK_RL=false;
+  $("#rlSave").onclick=saveInterest;
   $("#rlLogin").onclick=()=>{ BACK_RL=true; showTab("fichiers",true); setTimeout(()=>{ try{ $("#mId").focus(); }catch(_){} },50); };
   $("#mForm").addEventListener("submit",async e=>{
     e.preventDefault();

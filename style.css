@@ -320,3 +320,5 @@
 .rc-item.val{border-left-color:#1f8f55}
 .rc-item b{white-space:nowrap;font-size:12px;letter-spacing:.04em;color:#cfcfd6;min-width:92px}
 .date.flash{outline:2px solid var(--red);outline-offset:2px}
+.rl-savebar{position:sticky;bottom:12px;z-index:5;margin:10px 0}
+.rl-savebar .btn{box-shadow:0 6px 20px rgba(0,0,0,.6)}
