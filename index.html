@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151127">
+<link rel="stylesheet" href="style.css?v=202611151131">
 </head>
 <body>
 
@@ -194,6 +194,7 @@
     </div>
     <div class="mrl" id="mRl" hidden>
       <div class="mbar"><span>Connecté : <b id="rlWho"></b></span><span class="cta" style="margin:0"><button class="btn ghost small" type="button" data-go="fichiers">📁 Fichiers membres</button></span></div>
+      <div class="card rl-bureau" id="rlBureau" hidden></div>
       <h3 class="msub" id="rlValidT" hidden>✅ Roulages validés</h3>
       <div id="rlValid" class="dates"></div>
       <h3 class="msub" id="rlPropT" hidden>📅 Dates proposées — cochez si vous êtes intéressé(e)</h3>
@@ -390,8 +391,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151127"></script>
-<script src="membres/roulages.js?v=202611151127"></script>
+<script src="membres/membres.js?v=202611151131"></script>
+<script src="membres/roulages.js?v=202611151131"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -614,25 +615,67 @@ const DEPOT="mlracingteam29-code/mlr29";
   const ghTok=()=>{ try{ return localStorage.getItem("mlrt_gh_token")||""; }catch(_){ return ""; } };
   const ghApi=(p,opt={})=>fetch("https://api.github.com/repos/"+DEPOT+"/"+p,{...opt,cache:"no-store",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+ghTok(),"X-GitHub-Api-Version":"2022-11-28",...(opt.headers||{})}});
   let ACC=null;
+  let NOMID={};
   async function loadMembres(){
     try{ const out=[];
-      for(const c of ACC.comptes){ if(c.role==="partenaire"||!c.nom) continue; try{ out.push(await MLRT.decText(KEY,c.nom)); }catch(_){} }
+      for(const c of ACC.comptes){ if(c.role==="partenaire"||!c.nom) continue; try{ const id=await MLRT.decText(KEY,c.nom); NOMID[c.h]=id; out.push(id); }catch(_){} }
       MEMBRES=out.sort((x,y)=>MLRR.label(x).localeCompare(MLRR.label(y),"fr")); }catch(_){ MEMBRES=[]; }
   }
   let SAVING=Promise.resolve();
+  function say(ok,t){ const st=$("#rlSt"); st.className="cstatus "+(ok===true?"ok":ok===false?"ko":""); st.textContent=t; try{ toast(t); }catch(_){} }
   function saveRL(){
-    const st=$("#rlSt"); st.className="cstatus";
-    if(!ghTok()){ st.classList.add("ko"); st.innerHTML=""; st.append("Pour enregistrer depuis le site, activez d'abord la publication directe sur cet appareil (");
-      const a=document.createElement("a"); a.href="admin-membres.html"; a.textContent="page de gestion"; st.append(a," › Publication directe)."); return; }
-    st.textContent="Enregistrement…";
+    if(!ghTok()){ renderBureau(); say(false,"Non enregistré : collez d'abord votre clé GitHub dans l'encadré « Bureau » en haut de la page."); $("#rlBureau").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+    say(null,"Enregistrement…");
     SAVING=SAVING.then(async()=>{
       try{ const bytes=await MLRR.encode(KEY,RL);
-        const cur=await ghApi("contents/membres/roulages.bin?ref=main"); const sha=cur.ok?(await cur.json()).sha:undefined;
+        const cur=await ghApi("contents/membres/roulages.bin?ref=main"); if(!cur.ok&&cur.status!==404) throw new Error("GitHub "+cur.status);
+        const sha=cur.ok?(await cur.json()).sha:undefined;
         const body={message:"Roulages : inscrits mis à jour (site)",content:MLRT.b64(bytes),branch:"main"}; if(sha) body.sha=sha;
-        const r=await ghApi("contents/membres/roulages.bin",{method:"PUT",body:JSON.stringify(body)}); if(!r.ok) throw new Error(r.status);
-        st.className="cstatus ok"; st.textContent="Enregistré ✓ Les membres le voient d'ici une à deux minutes.";
-      }catch(e){ st.className="cstatus ko"; st.textContent="L'enregistrement n'a pas abouti ("+e.message+"), réessayez."; }
+        const r=await ghApi("contents/membres/roulages.bin",{method:"PUT",body:JSON.stringify(body)}); if(!r.ok) throw new Error("GitHub "+r.status);
+        say(true,"Enregistré ✓ Les membres le voient d'ici une à deux minutes.");
+      }catch(e){ say(false,"L'enregistrement n'a pas abouti ("+e.message+(/40[13]/.test(e.message)?" : clé GitHub refusée ou expirée, recollez-la dans l'encadré Bureau":"")+")."); if(/40[13]/.test(e.message)) renderBureau(true); }
     });
+  }
+  /* Encadré bureau : clé GitHub de cet appareil + noms et prénoms manquants */
+  function renderBureau(forceKey){
+    const box=$("#rlBureau"); box.innerHTML=""; if(ROLE!=="bureau"){ box.hidden=true; return; }
+    const sansNom=(ACC&&ACC.comptes||[]).filter(c=>c.role!=="partenaire"&&c.role!=="bureau"&&c.nom&&!c.np);
+    const needKey=forceKey||!ghTok();
+    if(!needKey&&!sansNom.length){ box.hidden=true; return; }
+    box.hidden=false;
+    const h=document.createElement("h3"); h.textContent="⚙️ Bureau"; box.appendChild(h);
+    if(needKey){
+      const p=document.createElement("p"); p.textContent="Pour que vos clics (inscrits, invités, noms) s'enregistrent depuis cet appareil, collez une fois votre clé GitHub (celle de la « Publication directe », qui commence par github_pat_)."; box.appendChild(p);
+      const row=document.createElement("div"); row.className="rl-grow";
+      const inp=document.createElement("input"); inp.type="password"; inp.placeholder="github_pat_…"; inp.autocomplete="off";
+      const b=document.createElement("button"); b.type="button"; b.className="rl-add"; b.textContent="Enregistrer la clé";
+      b.onclick=async()=>{ const v=inp.value.trim(); if(!v) return; const old=ghTok(); try{ localStorage.setItem("mlrt_gh_token",v); }catch(_){}
+        let ok=false; try{ const r=await ghApi(""); if(r.ok){ const j=await r.json(); ok=!!(j.permissions&&j.permissions.push); } }catch(_){}
+        if(ok){ say(true,"Clé enregistrée sur cet appareil ✓"); renderBureau(); saveRL(); }
+        else{ try{ old?localStorage.setItem("mlrt_gh_token",old):localStorage.removeItem("mlrt_gh_token"); }catch(_){} say(false,"Clé refusée (vérifiez qu'elle donne « Contents : Read and write » sur mlr29)."); } };
+      row.append(inp,b); box.appendChild(row);
+    }
+    if(sansNom.length){
+      const p=document.createElement("p"); p.style.marginTop="12px"; p.textContent="Noms et prénoms à compléter (ce sont eux qui s'affichent aux membres) :"; box.appendChild(p);
+      const inputs=[];
+      sansNom.forEach(c=>{ const row=document.createElement("div"); row.className="rl-grow";
+        const id=document.createElement("span"); id.className="rl-id"; id.textContent=MLRR.label(NOMID[c.h]||"?");
+        const inp=document.createElement("input"); inp.placeholder="NOM Prénom"; inputs.push([c,inp]); row.append(id,inp); box.appendChild(row); });
+      const b=document.createElement("button"); b.type="button"; b.className="rl-add"; b.style.marginTop="8px"; b.textContent="Enregistrer les noms";
+      b.onclick=async()=>{
+        if(!ghTok()){ say(false,"Collez d'abord votre clé GitHub ci-dessus."); return; }
+        const todo=inputs.filter(([c,i])=>i.value.trim()); if(!todo.length) return;
+        b.disabled=true; say(null,"Enregistrement des noms…");
+        try{ const cur=await ghApi("contents/membres/acces.json?ref=main"); if(!cur.ok) throw new Error("GitHub "+cur.status); const j=await cur.json();
+          const acc=JSON.parse(new TextDecoder().decode(MLRT.unb64(j.content.replace(/\n/g,""))));
+          for(const [c,i] of todo){ const t=acc.comptes.find(x=>x.h===c.h); if(t) t.np=await MLRT.encText(KEY,i.value.trim()); }
+          const body={message:"Espace membres : noms et prénoms (site)",content:MLRT.b64(new TextEncoder().encode(JSON.stringify(acc,null,1))),branch:"main",sha:j.sha};
+          const r=await ghApi("contents/membres/acces.json",{method:"PUT",body:JSON.stringify(body)}); if(!r.ok) throw new Error("GitHub "+r.status);
+          ACC=acc; await MLRR.loadNoms(KEY,ACC); await loadMembres(); say(true,"Noms enregistrés ✓"); renderRoulages();
+        }catch(e){ say(false,"Les noms n'ont pas pu être enregistrés ("+e.message+")."); }
+        b.disabled=false; };
+      box.appendChild(b);
+    }
   }
   function presenceEditor(r){
     const box=document.createElement("div"); box.className="rl-pres";
@@ -643,7 +686,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     cands.forEach(n=>{ const l=document.createElement("label"); const isInt=ints.some(x=>MLRR.norm(x)===MLRR.norm(n)); l.className="rpil"+(isInt?" int":"");
       const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=pil.some(p=>MLRR.norm(p)===MLRR.norm(n));
       cb.onchange=()=>{ const set=(r.pilotes||[]).filter(p=>MLRR.norm(p)!==MLRR.norm(n)); if(cb.checked) set.push(n); r.pilotes=set; renderRoulages(); saveRL(); };
-      const sp=document.createElement("span"); sp.textContent=MLRR.label(n)+(isInt?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
+      const sp=document.createElement("span"); sp.textContent=MLRR.label(n)+(MLRR.label(n)===n&&MLRR.norm(n)!=="bureau"?" (nom à compléter)":"")+(isInt?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
     if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
     box.appendChild(wrap);
     box.appendChild(MLRR.guestEditor(r,()=>{ renderRoulages(); saveRL(); }));
@@ -655,6 +698,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   }
   function renderRoulages(){
     const box=$("#mRl"); box.hidden=false; $("#rlLock").hidden=true; $("#rlWho").textContent=MLRR.label(WHO);
+    renderBureau();
     const all=MLRR.sorted(RL.roulages||[]);
     const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
     const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";

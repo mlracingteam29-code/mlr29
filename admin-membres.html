@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151127">
+<link rel="stylesheet" href="style.css?v=202611151131">
 <style>
   .page{padding:40px 0 80px}
   .page h1{font-size:clamp(34px,6vw,54px);font-weight:800;margin:6px 0 10px}
@@ -275,8 +275,8 @@
 <div class="checker"></div>
 <footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
 
-<script src="membres/membres.js?v=202611151127"></script>
-<script src="membres/roulages.js?v=202611151127"></script>
+<script src="membres/membres.js?v=202611151131"></script>
+<script src="membres/roulages.js?v=202611151131"></script>
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
@@ -475,7 +475,12 @@ async function loadInterets(){
   if(S){ try{ RINT=MLRR.byRoulage(await S.readAll(KEY)); }catch(e){ setSt(st,"ko","Impossible de lire les intéressés ("+e.message+") : vérifiez la clé de participation."); } }
   renderRoulagesAdm();
 }
-async function stageRoulages(){ stage("roulages.bin",new Blob([await MLRR.encode(KEY,RL)])); }
+let RL_AUTO=null;
+async function stageRoulages(){ stage("roulages.bin",new Blob([await MLRR.encode(KEY,RL)]));
+  /* Avec la publication directe : envoi automatique, plus besoin de cliquer sur Publier */
+  if(GH.token){ clearTimeout(RL_AUTO); RL_AUTO=setTimeout(async()=>{ const b=PENDING.get("roulages.bin"); if(!b) return;
+    try{ await GH.put("membres/roulages.bin",b,"Roulages : mise à jour (page de gestion)"); if(PENDING.get("roulages.bin")===b) PENDING.delete("roulages.bin"); renderPending(); setSt($("#rst"),"ok","Enregistré et publié ✓"); }
+    catch(e){ setSt($("#rst"),"ko","Publication automatique impossible ("+e.message+") : utilisez l'encadré jaune."); } },700); } }
 function rcfgUI(){ const on=!!(RL.cfg&&RL.cfg.tok); $("#rcfgState").textContent=on?"active ✓":"non configurée (réponses par e-mail)"; $("#rcfgState").style.color=on?"var(--ok)":"#f1d58a";
   if(RL.cfg&&RL.cfg.repo) $("#rrepo").value=RL.cfg.repo; $("#rtok").value=""; $("#rtok").placeholder=on?"Clé enregistrée ✓ (collez-en une autre pour la remplacer)":"github_pat_…"; }
 function pilotesPossibles(){ return ACCES.comptes.filter(c=>c.role!=="partenaire").map(c=>NAMES[c.h]).filter(n=>n&&n!=="(inconnu)").sort((a,b)=>MLRR.label(a).localeCompare(MLRR.label(b),"fr")); }

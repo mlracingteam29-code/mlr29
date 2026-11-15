@@ -296,3 +296,8 @@
 .rl-x,.rl-add{flex:none;background:#0f0f12;border:1px solid var(--line);color:#fff;border-radius:9px;padding:7px 11px;cursor:pointer;font:600 14px "Saira";white-space:nowrap}
 .rl-x:hover{border-color:var(--red);color:var(--red2)}
 .rl-add{border-color:var(--red);background:rgba(225,6,0,.15)}
+.rl-bureau{border:2px solid #e5c07b;background:#1e1a10;margin:14px 0}
+.rl-bureau h3{font-size:20px;color:#f1d58a;margin-bottom:6px}
+.rl-bureau p{color:#efe3c2;font-size:14px;margin:0 0 8px}
+.rl-bureau .rl-grow{max-width:520px;margin-bottom:6px}
+.rl-id{flex:0 0 130px;font-size:14px;color:#efe3c2;overflow:hidden;text-overflow:ellipsis}
