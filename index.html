@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151204">
+<link rel="stylesheet" href="style.css?v=202611151248">
 </head>
 <body>
 
@@ -392,8 +392,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151204"></script>
-<script src="membres/roulages.js?v=202611151204"></script>
+<script src="membres/membres.js?v=202611151248"></script>
+<script src="membres/roulages.js?v=202611151248"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -625,7 +625,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   let SAVING=Promise.resolve();
   function say(ok,t){ const st=$("#rlSt"); st.className="cstatus "+(ok===true?"ok":ok===false?"ko":""); st.textContent=t; try{ toast(t); }catch(_){} }
   function saveRL(){
-    if(!ghTok()){ renderBureau(); say(false,"Non enregistré : collez d'abord votre clé GitHub dans l'encadré « Bureau » en haut de la page."); $("#rlBureau").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+    if(!ghTok()){ DIRTY=true; renderBureau(); say(null,"Modification prête : cliquez sur « Publier sur le site » dans l'encadré Bureau en haut."); return; }
     say(null,"Enregistrement…");
     SAVING=SAVING.then(async()=>{
       try{ const bytes=await MLRR.encode(KEY,RL);
@@ -638,8 +638,24 @@ const DEPOT="mlracingteam29-code/mlr29";
     });
   }
   /* Encadré bureau : clé GitHub de cet appareil + noms et prénoms manquants */
+  let DIRTY=false;
+  async function publierManuel(){
+    const blob=new Blob([await MLRR.encode(KEY,RL)]); const u=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=u; a.download="roulages.bin"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),60000);
+    window.open("https://github.com/mlracingteam29-code/mlr29/upload/main/membres","_blank","noopener");
+    DIRTY=false; renderBureau();
+    say(true,"Fichier roulages.bin téléchargé. Sur la page GitHub qui s'est ouverte : glissez-le, puis « Commit changes ».");
+  }
   function renderBureau(forceKey){
     const box=$("#rlBureau"); box.innerHTML=""; if(ROLE!=="bureau"){ box.hidden=true; return; }
+    if(!ghTok()){
+      box.hidden=false;
+      const h=document.createElement("h3"); h.textContent="⚙️ Bureau"; box.appendChild(h);
+      const p=document.createElement("p"); p.textContent=DIRTY?"Vous avez des modifications à publier. Cliquez sur le bouton : le fichier se télécharge et GitHub s'ouvre. Glissez le fichier roulages.bin dans la page GitHub, puis cliquez sur « Commit changes ».":"Cochez les inscrits et ajoutez vos invités ci-dessous, puis cliquez sur « Publier sur le site ».";
+      box.appendChild(p);
+      const b=document.createElement("button"); b.type="button"; b.className="btn red"; b.textContent="📤 Publier sur le site"; b.onclick=publierManuel; box.appendChild(b);
+      return;
+    }
     const sansNom=(ACC&&ACC.comptes||[]).filter(c=>c.role!=="partenaire"&&c.role!=="bureau"&&c.nom&&!c.np);
     const needKey=forceKey||!ghTok();
     if(!needKey&&!sansNom.length){ box.hidden=true; return; }
