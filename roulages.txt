@@ -17,3 +17,21 @@
 # ou par ex. "6 places disponibles" pour afficher l'étiquette verte des places restantes.
 Circuit du Mans | 14/08/2027 au 15/08/2027 |  | 6 places disponibles
 Edern Motocross | 12/12/2026 | Stage privé motocross | Complet
+Fontenay-le-Comte | 25/04/2027 au 26/04/2027 |  | 27/04 possible en plus
+Fontenay-le-Comte | 30/05/2027 au 31/05/2027
+Circuit du Mans | 15/03/2027 au 16/03/2027
+Circuit du Mans | 21/04/2027 au 22/04/2027
+Circuit du Mans | 17/08/2027 au 18/08/2027
+Circuit du Mans | 07/10/2027 au 08/10/2027
+Circuit du Mans | 16/07/2027 au 19/07/2027
+Circuit du Mans | 20/07/2027 au 21/07/2027
+Circuit du Mans | 27/07/2027 au 28/07/2027
+Circuit du Mans | 29/08/2027 au 30/08/2027
+Barcelone | 17/04/2027 au 19/04/2027
+Fay-de-Bretagne | 02/03/2027
+Fay-de-Bretagne | 22/06/2027
+Le Vigeant | 03/07/2027 au 04/07/2027
+Le Vigeant | 01/05/2027 au 03/05/2027
+Le Vigeant | 18/06/2027 au 21/06/2027
+Le Vigeant | 09/07/2027 au 12/07/2027
+Le Vigeant | 10/09/2027 au 12/09/2027 | R7 Cup
