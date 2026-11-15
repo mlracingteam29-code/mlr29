@@ -461,6 +461,7 @@ let RL=MLRR.empty(), RINT={}, REDIT=null;
 async function loadRoulages(ghBytes){
   try{ const b=await ghBytes("membres/roulages.bin"); const buf=b?b.buffer:await (async()=>{ const r=await fetch("membres/roulages.bin",{cache:"no-cache"}); return r.ok?await r.arrayBuffer():null; })();
     RL=await MLRR.decode(KEY,buf); }catch(_){ RL=MLRR.empty(); }
+  try{ const t=await ghBytes("roulages.txt"); MLRR.merge(RL,t?await MLRR.fromTxt(new TextDecoder().decode(t)):await MLRR.loadTxt()); }catch(_){}
   rcfgUI(); await loadInterets();
 }
 async function loadInterets(){
@@ -506,7 +507,7 @@ function renderRoulagesAdm(){
     if(V && ints.length) btn("Cocher tous les intéressés",async()=>{ const set=r.pilotes||[]; ints.forEach(n=>{ if(!set.some(p=>MLRR.norm(p)===MLRR.norm(n))) set.push(n); }); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); });
     btn("Modifier",()=>{ REDIT=r; $("#rcirc").value=r.circuit||""; $("#rdates").value=r.dates||""; $("#rtype").value=r.type||""; $("#rinfos").value=r.infos||""; $("#radd").textContent="Enregistrer"; $("#rcancel").hidden=false; $("#rcirc").scrollIntoView({behavior:"smooth",block:"center"}); });
     const del=btn("Supprimer",async()=>{ if(del.dataset.c!=="1"){ del.dataset.c="1"; del.textContent="Confirmer ?"; setTimeout(()=>{del.dataset.c="";del.textContent="Supprimer";},3000); return; }
-      RL.roulages=RL.roulages.filter(x=>x!==r); await stageRoulages(); renderRoulagesAdm(); });
+      RL.roulages=RL.roulages.filter(x=>x!==r); if(/^t-/.test(r.id)) RL.retires=[...(RL.retires||[]),r.id]; await stageRoulages(); renderRoulagesAdm(); });
     it.appendChild(acts); box.appendChild(it);
   });
 }

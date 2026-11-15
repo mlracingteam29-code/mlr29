@@ -607,6 +607,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   const LSK=()=>"mlrt_interets_"+MLRR.norm(WHO);
   async function loadRoulages(){
     try{ const r=await fetch("membres/roulages.bin",{cache:"no-cache"}); RL=await MLRR.decode(KEY,r.ok?await r.arrayBuffer():null); }catch(_){ RL=MLRR.empty(); }
+    MLRR.merge(RL,await MLRR.loadTxt());
     STORE=typeof MLRR!=="undefined"?MLRR.Store(RL.cfg):null; INT={}; MINE=new Set();
     if(STORE){ try{ const all=await STORE.readAll(KEY); INT=MLRR.byRoulage(all);
         const me=all.find(x=>MLRR.norm(x.id)===MLRR.norm(WHO)); if(me) me.ids.forEach(i=>MINE.add(i)); }catch(_){} }

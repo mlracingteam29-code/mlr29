@@ -81,6 +81,28 @@ const MLRR = (() => {
     return m;
   }
 
-  return { span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
+  /* Dates déjà publiées dans roulages.txt (onglet public) : reprises dans l'espace membres */
+  async function fromTxt(text) {
+    const out = [];
+    for (const l of String(text || "").split(/\r?\n/).map(x => x.trim()).filter(x => x && !x.startsWith("#"))) {
+      const parts = l.split("|").map(x => x.trim());
+      const di = parts.findIndex(x => /\d{1,2}\/\d{1,2}\/\d{4}/.test(x)); if (di < 0) continue;
+      const rest = parts.filter((_, k) => k !== di);
+      const r = { circuit: rest[0] || "Roulage", dates: parts[di], type: rest[1] || "", infos: rest.slice(2).filter(Boolean).join(" · "), statut: "propose", pilotes: [] };
+      const h = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(norm(r.circuit) + "|" + r.dates.replace(/\s+/g, ""))));
+      r.id = "t-" + Array.from(h.slice(0, 6), b => b.toString(16).padStart(2, "0")).join("");
+      out.push(r);
+    }
+    return out;
+  }
+  async function loadTxt() { try { const r = await fetch("roulages.txt", { cache: "no-cache" }); return r.ok ? await fromTxt(await r.text()) : []; } catch (_) { return []; } }
+  /* Ajoute à data.roulages les dates de roulages.txt absentes (sauf celles retirées par le bureau) ; renvoie le nombre ajouté */
+  function merge(data, txt) {
+    const have = new Set(data.roulages.map(r => r.id)), gone = new Set(data.retires || []); let n = 0;
+    txt.forEach(r => { if (!have.has(r.id) && !gone.has(r.id)) { data.roulages.push(r); n++; } });
+    return n;
+  }
+
+  return { fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
 })();
 if (typeof module !== "undefined") module.exports = MLRR;
