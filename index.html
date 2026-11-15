@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151328">
+<link rel="stylesheet" href="style.css?v=202611151329">
 </head>
 <body>
 
@@ -393,8 +393,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151328"></script>
-<script src="membres/roulages.js?v=202611151328"></script>
+<script src="membres/membres.js?v=202611151329"></script>
+<script src="membres/roulages.js?v=202611151329"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -728,13 +728,13 @@ const DEPOT="mlracingteam29-code/mlr29";
     const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
     const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
-    MLRR.CATS.forEach(c=>{ const l=prop.filter(r=>MLRR.catOf(r)===c); if(!l.length) return;
+    MLRR.CATS.forEach(c=>{ const l=prop.filter(r=>MLRR.catOf(r)===c);
       const d=document.createElement("details"); d.className="rl-folder"; d.dataset.cat=c; d.open=OPENCATS.has(c);
-      const sm=document.createElement("summary"); sm.innerHTML='<span class="ic">📁</span>'; const t=document.createElement("span"); t.textContent=MLRR.ICONS[c]+" "+c; const n=document.createElement("span"); n.className="nb"; n.textContent=l.length+" date"+(l.length>1?"s":"");
+      const sm=document.createElement("summary"); sm.innerHTML='<span class="ic">📁</span>'; const t=document.createElement("span"); t.textContent=MLRR.ICONS[c]+" "+c; const n=document.createElement("span"); n.className="nb"; n.textContent=l.length?l.length+" date"+(l.length>1?"s":""):"aucune date";
       sm.append(t,n); d.appendChild(sm); d.ontoggle=()=>{ d.open?OPENCATS.add(c):OPENCATS.delete(c); sm.firstChild.textContent=d.open?"📂":"📁"; };
       if(d.open) sm.firstChild.textContent="📂";
-      const body=document.createElement("div"); body.className="dates"; l.forEach(r=>body.appendChild(rlCard(r,false))); d.appendChild(body); pb.appendChild(d); });
-    $("#rlValidT").hidden=!val.length; $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
+      const body=document.createElement("div"); body.className="dates"; l.forEach(r=>body.appendChild(rlCard(r,false))); if(!l.length){ const e=document.createElement("p"); e.className="rl-who"; e.style.margin="4px 8px"; e.textContent="Pas encore de date dans cette catégorie : elles arrivent bientôt."; body.appendChild(e); d.classList.add("vide"); } d.appendChild(body); pb.appendChild(d); });
+    $("#rlValidT").hidden=!val.length; $("#rlPropT").hidden=false; $("#rlEmpty").hidden=true;
     renderCal();
   }
   /* ---- Petit calendrier des dates circuit ---- */

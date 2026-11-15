@@ -333,3 +333,4 @@
 .rl-folder[open]>summary::after{transform:rotate(90deg)}
 .rl-folder[open]>summary{border-bottom:1px solid var(--line)}
 .rl-folder>.dates{padding:10px}
+.rl-folder.vide>summary{opacity:.6}
