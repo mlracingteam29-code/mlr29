@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151123">
+<link rel="stylesheet" href="style.css?v=202611151127">
 <style>
   .page{padding:40px 0 80px}
   .page h1{font-size:clamp(34px,6vw,54px);font-weight:800;margin:6px 0 10px}
@@ -120,14 +120,14 @@
         <div class="cta" style="margin-top:8px"><button class="btn red" id="send" type="button">📧 Expédier l'e-mail avec la carte</button>
         <button class="btn ghost small" id="copyMsg">Copier le message</button></div>
       </div>
-      <p class="hint" style="margin-top:10px">Le <strong>nom et prénom</strong> est celui affiché aux membres (roulages, présents). Corrigez-le directement dans la liste, puis publiez.</p>
+      <p class="hint" style="margin-top:10px">Le <strong>nom et prénom</strong> est celui affiché aux membres (roulages, inscrits). Corrigez-le directement dans la liste, puis publiez.</p>
       <table><thead><tr><th>Nom et prénom</th><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
     </div>
 
     <!-- Roulages (espace membres) -->
     <div class="card" id="rlSec">
       <h3>🏁 Roulages — réservé aux membres</h3>
-      <p>Visible uniquement par les membres connectés (onglet « Fichiers membres »). Proposez une date : les membres cochent « Je suis intéressé(e) ». Ensuite, validez le roulage et cochez les membres qui roulent.</p>
+      <p>Visible uniquement par les membres connectés (onglet « Dates de roulages »). Proposez une date : les membres cochent « Je suis intéressé(e) ». Cochez ensuite les membres inscrits et ajoutez à la main vos invités : tous les membres voient la liste des inscrits.</p>
       <div class="row">
         <div><label for="rcirc">Circuit / lieu *</label><input id="rcirc" placeholder="ex. Circuit du Mans (Bugatti)"></div>
         <div><label for="rdates">Date(s) — JJ/MM/AAAA *</label><input id="rdates" placeholder="ex. 13/08/2027 au 14/08/2027"></div>
@@ -275,8 +275,8 @@
 <div class="checker"></div>
 <footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
 
-<script src="membres/membres.js?v=202611151123"></script>
-<script src="membres/roulages.js?v=202611151123"></script>
+<script src="membres/membres.js?v=202611151127"></script>
+<script src="membres/roulages.js?v=202611151127"></script>
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
@@ -495,7 +495,7 @@ function renderRoulagesAdm(){
     pi.textContent=RL.cfg&&RL.cfg.tok?("★ Intéressés ("+ints.length+") : "+(ints.length?MLRR.labels(ints):"personne pour l'instant")):"★ Intéressés : réponses reçues par e-mail (clé de participation non configurée)";
     it.appendChild(pi);
     {
-      const lab=document.createElement("div"); lab.className="rint"; lab.textContent="Présents au roulage ("+(r.pilotes||[]).length+") — cliquez pour cocher :"; it.appendChild(lab);
+      const lab=document.createElement("div"); lab.className="rint"; lab.textContent="Inscrits ("+MLRR.nbInscrits(r)+") — cliquez sur les membres inscrits :"; it.appendChild(lab);
       const wrap=document.createElement("div"); wrap.className="rpils";
       const sel=new Set((r.pilotes||[]).map(MLRR.norm));
       const cands=pilotesPossibles(); (r.pilotes||[]).forEach(p=>{ if(!cands.some(c=>MLRR.norm(c)===MLRR.norm(p))) cands.push(p); });
@@ -505,6 +505,7 @@ function renderRoulagesAdm(){
         const sp=document.createElement("span"); sp.textContent=MLRR.label(n)+(l.classList.contains("int")?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
       if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
       it.appendChild(wrap);
+      it.appendChild(MLRR.guestEditor(r,async()=>{ await stageRoulages(); renderRoulagesAdm(); }));
     }
     const acts=document.createElement("div"); acts.className="racts";
     const btn=(txt,fn)=>{ const x=document.createElement("button"); x.className="linkbtn"; x.type="button"; x.textContent=txt; x.onclick=fn; acts.appendChild(x); return x; };

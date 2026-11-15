@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=202611151123">
+<link rel="stylesheet" href="style.css?v=202611151127">
 </head>
 <body>
 
@@ -390,8 +390,8 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="membres/membres.js?v=202611151123"></script>
-<script src="membres/roulages.js?v=202611151123"></script>
+<script src="membres/membres.js?v=202611151127"></script>
+<script src="membres/roulages.js?v=202611151127"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -587,15 +587,15 @@ const DEPOT="mlracingteam29-code/mlr29";
     const info=document.createElement("div"); info.className="info";
     const h=document.createElement("h3"); h.textContent=r.circuit||"Roulage";
     const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
-    if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes présent(e) ✓"; h.appendChild(bd); }
+    if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes inscrit(e) ✓"; h.appendChild(bd); }
     const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
     if(r.dates && !MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+r.dates; info.appendChild(p); }
     if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
     if(ROLE==="bureau"){ info.appendChild(presenceEditor(r)); }
-    else if(valid||pil.length){
-      const p=document.createElement("p"); p.className="rl-who";
-      p.textContent=pil.length?"Présents ("+pil.length+") : "+names(pil):"Liste des présents bientôt communiquée par le bureau.";
+    else{
+      const n=MLRR.nbInscrits(r), p=document.createElement("p"); p.className="rl-who";
+      const b=document.createElement("b"); b.textContent="Inscrits ("+n+") : "; p.append(b, n?MLRR.inscrits(r).join(", "):"personne pour l'instant");
       info.appendChild(p);
     }
     if(!valid && ROLE!=="bureau"){
@@ -628,7 +628,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     SAVING=SAVING.then(async()=>{
       try{ const bytes=await MLRR.encode(KEY,RL);
         const cur=await ghApi("contents/membres/roulages.bin?ref=main"); const sha=cur.ok?(await cur.json()).sha:undefined;
-        const body={message:"Roulages : présents mis à jour (site)",content:MLRT.b64(bytes),branch:"main"}; if(sha) body.sha=sha;
+        const body={message:"Roulages : inscrits mis à jour (site)",content:MLRT.b64(bytes),branch:"main"}; if(sha) body.sha=sha;
         const r=await ghApi("contents/membres/roulages.bin",{method:"PUT",body:JSON.stringify(body)}); if(!r.ok) throw new Error(r.status);
         st.className="cstatus ok"; st.textContent="Enregistré ✓ Les membres le voient d'ici une à deux minutes.";
       }catch(e){ st.className="cstatus ko"; st.textContent="L'enregistrement n'a pas abouti ("+e.message+"), réessayez."; }
@@ -637,7 +637,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   function presenceEditor(r){
     const box=document.createElement("div"); box.className="rl-pres";
     const ints=(INT[r.id]||[]), pil=r.pilotes||[];
-    const t=document.createElement("div"); t.className="rl-who"; t.textContent="Présents ("+pil.length+") — cliquez pour cocher :"; box.appendChild(t);
+    const t=document.createElement("div"); t.className="rl-who"; t.textContent="Inscrits ("+MLRR.nbInscrits(r)+") — cliquez sur les membres inscrits :"; box.appendChild(t);
     const wrap=document.createElement("div"); wrap.className="rpils";
     const cands=MEMBRES.slice(); pil.forEach(p=>{ if(!cands.some(c=>MLRR.norm(c)===MLRR.norm(p))) cands.push(p); });
     cands.forEach(n=>{ const l=document.createElement("label"); const isInt=ints.some(x=>MLRR.norm(x)===MLRR.norm(n)); l.className="rpil"+(isInt?" int":"");
@@ -646,6 +646,7 @@ const DEPOT="mlracingteam29-code/mlr29";
       const sp=document.createElement("span"); sp.textContent=MLRR.label(n)+(isInt?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
     if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
     box.appendChild(wrap);
+    box.appendChild(MLRR.guestEditor(r,()=>{ renderRoulages(); saveRL(); }));
     const v=document.createElement("button"); v.type="button"; v.className="linkbtn"; v.textContent=r.statut==="valide"?"Repasser en « proposé »":"✓ Valider le roulage";
     v.onclick=()=>{ r.statut=r.statut==="valide"?"propose":"valide"; renderRoulages(); saveRL(); };
     box.appendChild(v);

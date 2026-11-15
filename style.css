@@ -290,3 +290,9 @@
 .rpil:has(input:checked){border-color:var(--red);background:rgba(225,6,0,.15)}
 .rl-pres .linkbtn{background:none;border:0;color:var(--red2);cursor:pointer;font:600 14px "Saira";padding:0}
 .rl-hint{color:var(--muted);margin-left:10px}
+.rl-guests{margin:6px 0 10px;display:grid;gap:6px;max-width:440px}
+.rl-grow{display:flex;gap:6px;align-items:center}
+.rl-grow input{padding:7px 10px;font-size:14px}
+.rl-x,.rl-add{flex:none;background:#0f0f12;border:1px solid var(--line);color:#fff;border-radius:9px;padding:7px 11px;cursor:pointer;font:600 14px "Saira";white-space:nowrap}
+.rl-x:hover{border-color:var(--red);color:var(--red2)}
+.rl-add{border-color:var(--red);background:rgba(225,6,0,.15)}

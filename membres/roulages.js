@@ -116,6 +116,32 @@ const MLRR = (() => {
   const label = id => NOMS[norm(id)] || String(id || "");
   const labels = list => (list || []).map(label).sort((a, b) => a.localeCompare(b, "fr")).join(", ");
 
-  return { loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
+  /* Inscrits = membres cochés + invités saisis à la main par le bureau */
+  const inscrits = r => (r.pilotes || []).map(label).sort((a, b) => a.localeCompare(b, "fr"))
+    .concat((r.invites || []).map(n => n + " (invité)"));
+  const nbInscrits = r => (r.pilotes || []).length + (r.invites || []).length;
+
+  /* Éditeur bureau : lignes libres pour les invités. onChange() est appelé après chaque modification. */
+  function guestEditor(r, onChange) {
+    const box = document.createElement("div"); box.className = "rl-guests";
+    const t = document.createElement("div"); t.className = "rl-who"; t.textContent = "Invités (hors membres) — à saisir à la main :"; box.appendChild(t);
+    (r.invites || []).forEach((n, i) => {
+      const row = document.createElement("div"); row.className = "rl-grow";
+      const inp = document.createElement("input"); inp.value = n; inp.placeholder = "Nom Prénom";
+      inp.onchange = () => { const v = inp.value.trim(); r.invites = (r.invites || []).slice(); if (v) r.invites[i] = v; else r.invites.splice(i, 1); onChange(); };
+      const x = document.createElement("button"); x.type = "button"; x.className = "rl-x"; x.textContent = "✕"; x.title = "Retirer";
+      x.onclick = () => { r.invites = (r.invites || []).filter((_, k) => k !== i); onChange(); };
+      row.append(inp, x); box.appendChild(row);
+    });
+    const row = document.createElement("div"); row.className = "rl-grow";
+    const inp = document.createElement("input"); inp.placeholder = "Ajouter un invité : NOM Prénom";
+    const add = document.createElement("button"); add.type = "button"; add.className = "rl-add"; add.textContent = "＋ Ajouter";
+    const go = () => { const v = inp.value.trim(); if (!v) { inp.focus(); return; } r.invites = (r.invites || []).concat(v); onChange(); };
+    add.onclick = go; inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); go(); } };
+    row.append(inp, add); box.appendChild(row);
+    return box;
+  }
+
+  return { inscrits, nbInscrits, guestEditor, loadNoms, label, labels, fromTxt, loadTxt, merge, span, isPast, sorted, newId, calBox, empty, decode, encode, Store, byRoulage, norm };
 })();
 if (typeof module !== "undefined") module.exports = MLRR;
