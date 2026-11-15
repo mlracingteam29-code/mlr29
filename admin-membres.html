@@ -488,8 +488,8 @@ function renderRoulagesAdm(){
     const pi=document.createElement("div"); pi.className="rint";
     pi.textContent=RL.cfg&&RL.cfg.tok?("★ Intéressés ("+ints.length+") : "+(ints.length?ints.join(", "):"personne pour l'instant")):"★ Intéressés : réponses reçues par e-mail (clé de participation non configurée)";
     it.appendChild(pi);
-    if(V){
-      const lab=document.createElement("div"); lab.className="rint"; lab.textContent="Membres qui roulent ("+(r.pilotes||[]).length+") :"; it.appendChild(lab);
+    {
+      const lab=document.createElement("div"); lab.className="rint"; lab.textContent="Présents au roulage ("+(r.pilotes||[]).length+") — cliquez pour cocher :"; it.appendChild(lab);
       const wrap=document.createElement("div"); wrap.className="rpils";
       const sel=new Set((r.pilotes||[]).map(MLRR.norm));
       const cands=pilotesPossibles(); (r.pilotes||[]).forEach(p=>{ if(!cands.some(c=>MLRR.norm(c)===MLRR.norm(p))) cands.push(p); });
@@ -504,7 +504,7 @@ function renderRoulagesAdm(){
     const btn=(txt,fn)=>{ const x=document.createElement("button"); x.className="linkbtn"; x.type="button"; x.textContent=txt; x.onclick=fn; acts.appendChild(x); return x; };
     btn(V?"Repasser en « proposé »":"✓ Valider le roulage",async()=>{ r.statut=V?"propose":"valide"; if(!V&&!(r.pilotes||[]).length){ r.pilotes=ints.slice(); } await stageRoulages(); renderRoulagesAdm();
       setSt($("#rst"),"ok",V?"Roulage repassé en proposition.":"Roulage validé"+(ints.length?" : les intéressés sont pré-cochés, ajustez la liste.":".")+" Pensez à publier (encadré jaune)."); });
-    if(V && ints.length) btn("Cocher tous les intéressés",async()=>{ const set=r.pilotes||[]; ints.forEach(n=>{ if(!set.some(p=>MLRR.norm(p)===MLRR.norm(n))) set.push(n); }); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); });
+    if(ints.length) btn("Cocher tous les intéressés",async()=>{ const set=r.pilotes||[]; ints.forEach(n=>{ if(!set.some(p=>MLRR.norm(p)===MLRR.norm(n))) set.push(n); }); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); });
     btn("Modifier",()=>{ REDIT=r; $("#rcirc").value=r.circuit||""; $("#rdates").value=r.dates||""; $("#rtype").value=r.type||""; $("#rinfos").value=r.infos||""; $("#radd").textContent="Enregistrer"; $("#rcancel").hidden=false; $("#rcirc").scrollIntoView({behavior:"smooth",block:"center"}); });
     const del=btn("Supprimer",async()=>{ if(del.dataset.c!=="1"){ del.dataset.c="1"; del.textContent="Confirmer ?"; setTimeout(()=>{del.dataset.c="";del.textContent="Supprimer";},3000); return; }
       RL.roulages=RL.roulages.filter(x=>x!==r); if(/^t-/.test(r.id)) RL.retires=[...(RL.retires||[]),r.id]; await stageRoulages(); renderRoulagesAdm(); });

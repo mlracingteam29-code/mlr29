@@ -569,7 +569,10 @@ const DEPOT="mlracingteam29-code/mlr29";
   let WHO="", RL=null, INT={}, MINE=new Set(), STORE=null;
   const LSK=()=>"mlrt_interets_"+MLRR.norm(WHO);
   async function loadRoulages(){
-    try{ const r=await fetch("membres/roulages.bin",{cache:"no-cache"}); RL=await MLRR.decode(KEY,r.ok?await r.arrayBuffer():null); }catch(_){ RL=MLRR.empty(); }
+    try{ let buf=null;
+      if(ROLE==="bureau"&&ghTok()){ try{ const x=await ghApi("contents/membres/roulages.bin?ref=main"); if(x.ok){ const j=await x.json(); buf=MLRT.unb64(j.content.replace(/\n/g,"")).buffer; } }catch(_){} }
+      if(!buf){ const r=await fetch("membres/roulages.bin",{cache:"no-cache"}); buf=r.ok?await r.arrayBuffer():null; }
+      RL=await MLRR.decode(KEY,buf); }catch(_){ RL=MLRR.empty(); }
     MLRR.merge(RL,await MLRR.loadTxt());
     STORE=typeof MLRR!=="undefined"?MLRR.Store(RL.cfg):null; INT={}; MINE=new Set();
     if(STORE){ try{ const all=await STORE.readAll(KEY); INT=MLRR.byRoulage(all);
@@ -584,16 +587,18 @@ const DEPOT="mlracingteam29-code/mlr29";
     const info=document.createElement("div"); info.className="info";
     const h=document.createElement("h3"); h.textContent=r.circuit||"Roulage";
     const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
-    if(valid && moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous roulez ✓"; h.appendChild(bd); }
+    if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes présent(e) ✓"; h.appendChild(bd); }
     const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
     if(r.dates && !MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+r.dates; info.appendChild(p); }
     if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
-    if(valid){
+    if(ROLE==="bureau"){ info.appendChild(presenceEditor(r)); }
+    else if(valid||pil.length){
       const p=document.createElement("p"); p.className="rl-who";
-      p.textContent=pil.length?"Pilotes ("+pil.length+") : "+names(pil):"Liste des pilotes bientôt communiquée par le bureau.";
+      p.textContent=pil.length?"Présents ("+pil.length+") : "+names(pil):"Liste des présents bientôt communiquée par le bureau.";
       info.appendChild(p);
-    }else{
+    }
+    if(!valid && ROLE!=="bureau"){
       const lab=document.createElement("label"); lab.className="rl-check";
       const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=MINE.has(r.id); cb.disabled=past;
       const t=document.createElement("span"); t.textContent="Je suis intéressé(e)";
@@ -603,6 +608,48 @@ const DEPOT="mlracingteam29-code/mlr29";
       cb.onchange=()=>toggleInterest(r,cb);
     }
     el.append(MLRR.calBox(r),info); return el;
+  }
+  /* ---- Bureau : cocher les présents directement depuis le site ---- */
+  let ROLE="", MEMBRES=[];
+  const ghTok=()=>{ try{ return localStorage.getItem("mlrt_gh_token")||""; }catch(_){ return ""; } };
+  const ghApi=(p,opt={})=>fetch("https://api.github.com/repos/"+DEPOT+"/"+p,{...opt,cache:"no-store",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+ghTok(),"X-GitHub-Api-Version":"2022-11-28",...(opt.headers||{})}});
+  async function loadMembres(){
+    try{ const a=await (await fetch("membres/acces.json",{cache:"no-cache"})).json(); const out=[];
+      for(const c of a.comptes){ if(c.role==="bureau"||c.role==="partenaire"||!c.nom) continue; try{ out.push(await MLRT.decText(KEY,c.nom)); }catch(_){} }
+      MEMBRES=out.sort((x,y)=>x.localeCompare(y,"fr")); }catch(_){ MEMBRES=[]; }
+  }
+  let SAVING=Promise.resolve();
+  function saveRL(){
+    const st=$("#rlSt"); st.className="cstatus";
+    if(!ghTok()){ st.classList.add("ko"); st.innerHTML=""; st.append("Pour enregistrer depuis le site, activez d'abord la publication directe sur cet appareil (");
+      const a=document.createElement("a"); a.href="admin-membres.html"; a.textContent="page de gestion"; st.append(a," › Publication directe)."); return; }
+    st.textContent="Enregistrement…";
+    SAVING=SAVING.then(async()=>{
+      try{ const bytes=await MLRR.encode(KEY,RL);
+        const cur=await ghApi("contents/membres/roulages.bin?ref=main"); const sha=cur.ok?(await cur.json()).sha:undefined;
+        const body={message:"Roulages : présents mis à jour (site)",content:MLRT.b64(bytes),branch:"main"}; if(sha) body.sha=sha;
+        const r=await ghApi("contents/membres/roulages.bin",{method:"PUT",body:JSON.stringify(body)}); if(!r.ok) throw new Error(r.status);
+        st.className="cstatus ok"; st.textContent="Enregistré ✓ Les membres le voient d'ici une à deux minutes.";
+      }catch(e){ st.className="cstatus ko"; st.textContent="L'enregistrement n'a pas abouti ("+e.message+"), réessayez."; }
+    });
+  }
+  function presenceEditor(r){
+    const box=document.createElement("div"); box.className="rl-pres";
+    const ints=(INT[r.id]||[]), pil=r.pilotes||[];
+    const t=document.createElement("div"); t.className="rl-who"; t.textContent="Présents ("+pil.length+") — cliquez pour cocher :"; box.appendChild(t);
+    const wrap=document.createElement("div"); wrap.className="rpils";
+    const cands=MEMBRES.slice(); pil.forEach(p=>{ if(!cands.some(c=>MLRR.norm(c)===MLRR.norm(p))) cands.push(p); });
+    cands.forEach(n=>{ const l=document.createElement("label"); const isInt=ints.some(x=>MLRR.norm(x)===MLRR.norm(n)); l.className="rpil"+(isInt?" int":"");
+      const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=pil.some(p=>MLRR.norm(p)===MLRR.norm(n));
+      cb.onchange=()=>{ const set=(r.pilotes||[]).filter(p=>MLRR.norm(p)!==MLRR.norm(n)); if(cb.checked) set.push(n); r.pilotes=set; renderRoulages(); saveRL(); };
+      const sp=document.createElement("span"); sp.textContent=n+(isInt?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
+    if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
+    box.appendChild(wrap);
+    const v=document.createElement("button"); v.type="button"; v.className="linkbtn"; v.textContent=r.statut==="valide"?"Repasser en « proposé »":"✓ Valider le roulage";
+    v.onclick=()=>{ r.statut=r.statut==="valide"?"propose":"valide"; renderRoulages(); saveRL(); };
+    box.appendChild(v);
+    if(ints.length){ const h=document.createElement("small"); h.className="rl-hint"; h.textContent=" ★ = a coché « intéressé »"; box.appendChild(h); }
+    return box;
   }
   function renderRoulages(){
     const box=$("#mRl"); box.hidden=false; $("#rlLock").hidden=true; $("#rlWho").textContent=WHO;
@@ -636,7 +683,8 @@ const DEPOT="mlracingteam29-code/mlr29";
     }catch(e){ cb.checked=!cb.checked; cb.disabled=false; st.classList.add("ko"); st.textContent="L'enregistrement n'a pas abouti, réessayez dans un instant."; }
   }
   async function enter(raw,who,role){
-    KEY=await MLRT.importMaster(raw); WHO=who;
+    KEY=await MLRT.importMaster(raw); WHO=who; ROLE=role||"membre";
+    if(ROLE==="bureau") await loadMembres();
     try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
     $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";
     $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
@@ -662,7 +710,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     }catch(err){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
     btn.disabled=false; btn.textContent="Se connecter";
   });
-  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; $("#mRl").hidden=true; $("#rlLock").hidden=false; WHO=""; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
+  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; $("#mRl").hidden=true; $("#rlLock").hidden=false; WHO=""; ROLE=""; MEMBRES=[]; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
   try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
   /* rafraîchit la liste à chaque ouverture de l'onglet */
   window.refreshMembres=async()=>{ if(!KEY) return; try{ INDEX=await loadIndex(); render(); }catch(_){} if(typeof MLRR!=="undefined") loadRoulages(); };

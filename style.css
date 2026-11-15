@@ -283,3 +283,10 @@
 .rl-check{text-transform:none;letter-spacing:0;color:#fff;margin-bottom:0;display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;cursor:pointer;font-weight:600;font-size:14px;background:#0f0f12}
 .rl-check input,.rpil input{width:18px;height:18px;padding:0;accent-color:var(--red);margin:0;flex:none}
 .rl-check:has(input:checked){border-color:var(--red);background:rgba(225,6,0,.12)}
+.rl-pres{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.rpils{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.rpil{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;color:#fff;margin:0;background:#0f0f12}
+.rpil.int{border-color:#e5c07b}
+.rpil:has(input:checked){border-color:var(--red);background:rgba(225,6,0,.15)}
+.rl-pres .linkbtn{background:none;border:0;color:var(--red2);cursor:pointer;font:600 14px "Saira";padding:0}
+.rl-hint{color:var(--muted);margin-left:10px}
