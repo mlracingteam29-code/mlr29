@@ -39,6 +39,21 @@
   .tprev img{margin-top:10px;max-height:180px;border-radius:10px;border:1px solid var(--line)}
   .tpub{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 14px;border-radius:10px;background:rgba(225,6,0,.12);border:1px solid rgba(225,6,0,.45)}
   .msgbox{white-space:pre-wrap;background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;margin:10px 0}
+  .rlist{display:grid;gap:10px;margin-top:12px}
+  .ritem{background:#0f0f12;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .ritem.valide{border-color:rgba(47,191,113,.55)}
+  .ritem.past{opacity:.55}
+  .ritem .rh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .ritem .rh b{font-size:17px}
+  .ritem .rs{font-size:11px;border-radius:99px;padding:2px 9px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+  .rs.prop{background:#2a230e;color:#f1d58a}.rs.val{background:rgba(47,191,113,.15);color:#5fe39a}
+  .ritem small{color:var(--muted)}
+  .ritem .rint{font-size:14px;color:#cfcfd6;margin:6px 0}
+  .rpils{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .rpil{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;color:#fff;margin:0}
+  .rpil.int{border-color:#e5c07b}
+  .rpil:has(input:checked){border-color:var(--red);background:rgba(225,6,0,.15)}
+  .racts{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
   .status{font-size:14px;margin-left:6px}
   .ok{color:var(--ok)} .ko{color:#ff8a80}
   .back{color:var(--muted);text-decoration:none;font-size:14px}
@@ -106,6 +121,41 @@
         <button class="btn ghost small" id="copyMsg">Copier le message</button></div>
       </div>
       <table><thead><tr><th>Identifiant</th><th>Créé le</th><th></th></tr></thead><tbody id="mlist"></tbody></table>
+    </div>
+
+    <!-- Roulages (espace membres) -->
+    <div class="card" id="rlSec">
+      <h3>🏁 Roulages — réservé aux membres</h3>
+      <p>Visible uniquement par les membres connectés (onglet « Fichiers membres »). Proposez une date : les membres cochent « Je suis intéressé(e) ». Ensuite, validez le roulage et cochez les membres qui roulent.</p>
+      <div class="row">
+        <div><label for="rcirc">Circuit / lieu *</label><input id="rcirc" placeholder="ex. Circuit du Mans (Bugatti)"></div>
+        <div><label for="rdates">Date(s) — JJ/MM/AAAA *</label><input id="rdates" placeholder="ex. 13/08/2027 au 14/08/2027"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div><label for="rtype">Type (facultatif)</label><input id="rtype" placeholder="ex. Roulage gros cube, Enduro, Mini moto"></div>
+        <div><label for="rinfos">Infos (facultatif)</label><input id="rinfos" placeholder="ex. 150 € la journée · 12 places"></div>
+        <div style="flex:0"><button class="btn red" id="radd" type="button">Proposer la date</button></div>
+        <div style="flex:0"><button class="btn ghost" id="rcancel" type="button" hidden>Annuler</button></div>
+      </div>
+      <div class="status" id="rst"></div>
+      <div class="rlist" id="rlist"></div>
+      <div class="cta" style="margin-top:12px"><button class="btn ghost small" id="rrefresh" type="button">↻ Actualiser les intéressés</button></div>
+      <details id="rcfgBox" style="margin-top:14px"><summary style="cursor:pointer;color:var(--txt)">⚙️ Clé de participation (pour que les membres puissent cocher) — <span id="rcfgState"></span></summary>
+        <p style="margin-top:10px">Les choix des membres sont enregistrés dans un petit dépôt GitHub séparé (pour qu'aucun membre ne puisse toucher au site). À faire une seule fois :</p>
+        <ol>
+          <li>Connecté à <strong>mlracingteam29-code</strong>, <a href="https://github.com/new?name=mlr29-roulages&visibility=private" target="_blank" rel="noopener">créez le dépôt « mlr29-roulages » ↗</a> (Private), puis « Create repository ».</li>
+          <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Créez une clé ↗</a> : nom « Roulages membres », expiration 1 an, <strong>Only select repositories → mlr29-roulages</strong> (uniquement celui-là), Permissions → <strong>Contents : Read and write</strong> → Generate token.</li>
+          <li>Collez la clé ci-dessous, « Enregistrer et tester », puis publiez (encadré jaune).</li>
+        </ol>
+        <p class="hint">La clé est chiffrée avec l'espace membres : seuls les membres connectés l'utilisent, et elle ne donne accès qu'au dépôt des intérêts. Sans clé, chaque case cochée par un membre vous est envoyée par e-mail.</p>
+        <div class="row">
+          <div><label for="rrepo">Dépôt</label><input id="rrepo" value="mlracingteam29-code/mlr29-roulages" autocapitalize="none"></div>
+          <div><label for="rtok">Clé de participation</label><input id="rtok" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+          <div style="flex:0"><button class="btn red" id="rcfgSave" type="button">Enregistrer et tester</button></div>
+          <div style="flex:0"><button class="btn ghost" id="rcfgDel" type="button">Retirer</button></div>
+        </div>
+        <div class="status" id="rcfgst"></div>
+      </details>
     </div>
 
     <!-- Partenaires -->
@@ -225,6 +275,7 @@
 <footer><div class="wrap"><span>© ML Racing Team — Espace bureau</span><span>mlracingteam29@gmail.com</span></div></footer>
 
 <script src="membres/membres.js"></script>
+<script src="membres/roulages.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const SITE="https://mlracingteam29-code.github.io/mlr29/#fichiers";
@@ -306,6 +357,7 @@ async function renderMembers(){
       t3.appendChild(b); } else { t3.textContent="(vous)"; t3.style.color="var(--muted)"; }
     tr.append(t1,t2,t3); tb.appendChild(tr);
   });
+  if(typeof renderRoulagesAdm==="function" && RL) renderRoulagesAdm();
 }
 function renderFiles(){
   const tb=$("#flist"); tb.innerHTML="";
@@ -338,7 +390,7 @@ $("#lf").addEventListener("submit",async e=>{
       try{ const ib=await ghBytes("membres/index.bin"); const buf=ib?ib.buffer:await (async()=>{ const r=await fetch("membres/index.bin",{cache:"no-cache"}); return r.ok?await r.arrayBuffer():null; })();
         INDEX=buf?JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,buf))):[]; }catch(_){ INDEX=[]; }
       $("#login").hidden=true; $("#app").hidden=false; $("#lcode").value="";
-      await renderMembers(); renderFiles(); ghUI(); loadTeam();
+      await renderMembers(); renderFiles(); ghUI(); loadTeam(); loadRoulages(ghBytes);
     }
   }catch(err){ setSt(st,"ko","Impossible de charger l'espace membres."); }
   $("#lbtn").disabled=false;
@@ -403,6 +455,84 @@ $("#ghPubPending").onclick=async()=>{ const st=$("#pendst"), btn=$("#ghPubPendin
     renderPending(); setSt(st,"ok","Publié ! Le site est à jour d'ici une à deux minutes."); setSt($("#ast"),"ok","Modifications publiées sur le site."); }
   catch(e){ renderPending(); setSt(st,"ko","Échec de la publication ("+e.message+"). Réessayez, ou utilisez « Tout télécharger »."); }
   btn.disabled=false; };
+
+/* ===== Roulages réservés aux membres (membres/roulages.bin + intérêts) ===== */
+let RL=MLRR.empty(), RINT={}, REDIT=null;
+async function loadRoulages(ghBytes){
+  try{ const b=await ghBytes("membres/roulages.bin"); const buf=b?b.buffer:await (async()=>{ const r=await fetch("membres/roulages.bin",{cache:"no-cache"}); return r.ok?await r.arrayBuffer():null; })();
+    RL=await MLRR.decode(KEY,buf); }catch(_){ RL=MLRR.empty(); }
+  rcfgUI(); await loadInterets();
+}
+async function loadInterets(){
+  const st=$("#rst"); const S=MLRR.Store(RL.cfg); RINT={};
+  if(S){ try{ RINT=MLRR.byRoulage(await S.readAll(KEY)); }catch(e){ setSt(st,"ko","Impossible de lire les intéressés ("+e.message+") : vérifiez la clé de participation."); } }
+  renderRoulagesAdm();
+}
+async function stageRoulages(){ stage("roulages.bin",new Blob([await MLRR.encode(KEY,RL)])); }
+function rcfgUI(){ const on=!!(RL.cfg&&RL.cfg.tok); $("#rcfgState").textContent=on?"active ✓":"non configurée (réponses par e-mail)"; $("#rcfgState").style.color=on?"var(--ok)":"#f1d58a";
+  if(RL.cfg&&RL.cfg.repo) $("#rrepo").value=RL.cfg.repo; $("#rtok").value=""; $("#rtok").placeholder=on?"Clé enregistrée ✓ (collez-en une autre pour la remplacer)":"github_pat_…"; }
+function pilotesPossibles(){ return ACCES.comptes.filter(c=>c.role!=="partenaire"&&c.role!=="bureau").map(c=>NAMES[c.h]).filter(n=>n&&n!=="(inconnu)").sort((a,b)=>a.localeCompare(b,"fr")); }
+function renderRoulagesAdm(){
+  const box=$("#rlist"); box.innerHTML="";
+  const list=MLRR.sorted(RL.roulages);
+  if(!list.length){ const e=document.createElement("p"); e.className="hint"; e.textContent="Aucun roulage pour le moment."; box.appendChild(e); return; }
+  list.forEach(r=>{
+    const V=r.statut==="valide", past=MLRR.isPast(r);
+    const it=document.createElement("div"); it.className="ritem"+(V?" valide":"")+(past?" past":"");
+    const rh=document.createElement("div"); rh.className="rh";
+    const t=document.createElement("div"); const b=document.createElement("b"); b.textContent=r.circuit; const sm=document.createElement("small"); sm.textContent="  "+[r.dates,r.type,r.infos].filter(Boolean).join(" · ")+(past?" · terminé":""); t.append(b,sm);
+    const tag=document.createElement("span"); tag.className="rs "+(V?"val":"prop"); tag.textContent=V?"Validé":"Proposé";
+    rh.append(t,tag); it.appendChild(rh);
+    const ints=RINT[r.id]||[];
+    const pi=document.createElement("div"); pi.className="rint";
+    pi.textContent=RL.cfg&&RL.cfg.tok?("★ Intéressés ("+ints.length+") : "+(ints.length?ints.join(", "):"personne pour l'instant")):"★ Intéressés : réponses reçues par e-mail (clé de participation non configurée)";
+    it.appendChild(pi);
+    if(V){
+      const lab=document.createElement("div"); lab.className="rint"; lab.textContent="Membres qui roulent ("+(r.pilotes||[]).length+") :"; it.appendChild(lab);
+      const wrap=document.createElement("div"); wrap.className="rpils";
+      const sel=new Set((r.pilotes||[]).map(MLRR.norm));
+      const cands=pilotesPossibles(); (r.pilotes||[]).forEach(p=>{ if(!cands.some(c=>MLRR.norm(c)===MLRR.norm(p))) cands.push(p); });
+      cands.forEach(n=>{ const l=document.createElement("label"); l.className="rpil"+(ints.some(x=>MLRR.norm(x)===MLRR.norm(n))?" int":"");
+        const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=sel.has(MLRR.norm(n));
+        cb.onchange=async()=>{ const set=(r.pilotes||[]).filter(p=>MLRR.norm(p)!==MLRR.norm(n)); if(cb.checked) set.push(n); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); };
+        const sp=document.createElement("span"); sp.textContent=n+(l.classList.contains("int")?" ★":""); l.append(cb,sp); wrap.appendChild(l); });
+      if(!cands.length){ const h=document.createElement("small"); h.textContent="Aucun membre avec accès pour le moment."; wrap.appendChild(h); }
+      it.appendChild(wrap);
+    }
+    const acts=document.createElement("div"); acts.className="racts";
+    const btn=(txt,fn)=>{ const x=document.createElement("button"); x.className="linkbtn"; x.type="button"; x.textContent=txt; x.onclick=fn; acts.appendChild(x); return x; };
+    btn(V?"Repasser en « proposé »":"✓ Valider le roulage",async()=>{ r.statut=V?"propose":"valide"; if(!V&&!(r.pilotes||[]).length){ r.pilotes=ints.slice(); } await stageRoulages(); renderRoulagesAdm();
+      setSt($("#rst"),"ok",V?"Roulage repassé en proposition.":"Roulage validé"+(ints.length?" : les intéressés sont pré-cochés, ajustez la liste.":".")+" Pensez à publier (encadré jaune)."); });
+    if(V && ints.length) btn("Cocher tous les intéressés",async()=>{ const set=r.pilotes||[]; ints.forEach(n=>{ if(!set.some(p=>MLRR.norm(p)===MLRR.norm(n))) set.push(n); }); r.pilotes=set; await stageRoulages(); renderRoulagesAdm(); });
+    btn("Modifier",()=>{ REDIT=r; $("#rcirc").value=r.circuit||""; $("#rdates").value=r.dates||""; $("#rtype").value=r.type||""; $("#rinfos").value=r.infos||""; $("#radd").textContent="Enregistrer"; $("#rcancel").hidden=false; $("#rcirc").scrollIntoView({behavior:"smooth",block:"center"}); });
+    const del=btn("Supprimer",async()=>{ if(del.dataset.c!=="1"){ del.dataset.c="1"; del.textContent="Confirmer ?"; setTimeout(()=>{del.dataset.c="";del.textContent="Supprimer";},3000); return; }
+      RL.roulages=RL.roulages.filter(x=>x!==r); await stageRoulages(); renderRoulagesAdm(); });
+    it.appendChild(acts); box.appendChild(it);
+  });
+}
+function rReset(){ REDIT=null; ["#rcirc","#rdates","#rtype","#rinfos"].forEach(x=>$(x).value=""); $("#radd").textContent="Proposer la date"; $("#rcancel").hidden=true; }
+$("#rcancel").onclick=rReset;
+$("#radd").onclick=async()=>{
+  const st=$("#rst"), f={circuit:$("#rcirc").value.trim(),dates:$("#rdates").value.trim(),type:$("#rtype").value.trim(),infos:$("#rinfos").value.trim()};
+  if(!f.circuit||!f.dates){ setSt(st,"ko","Indiquez le circuit et la ou les dates."); return; }
+  if(!MLRR.span(f.dates)){ setSt(st,"ko","Écrivez les dates au format JJ/MM/AAAA (ex. 13/08/2027 au 14/08/2027)."); return; }
+  if(REDIT) Object.assign(REDIT,f); else RL.roulages.push({id:MLRR.newId(),...f,statut:"propose",pilotes:[],cree:new Date().toISOString().slice(0,10)});
+  const was=!!REDIT; rReset(); await stageRoulages(); renderRoulagesAdm();
+  setSt(st,"ok",(was?"Roulage modifié.":"Date proposée aux membres.")+" Publiez-la avec l'encadré jaune en haut de la page.");
+};
+$("#rrefresh").onclick=async()=>{ setSt($("#rst"),"","Actualisation…"); await loadInterets(); setSt($("#rst"),"ok","Liste des intéressés à jour."); };
+$("#rcfgSave").onclick=async()=>{
+  const st=$("#rcfgst"), repo=$("#rrepo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/+$/,""), tok=$("#rtok").value.trim()||(RL.cfg&&RL.cfg.tok)||"";
+  if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){ setSt(st,"ko","Dépôt au format compte/nom, ex. mlracingteam29-code/mlr29-roulages."); return; }
+  if(!tok){ setSt(st,"ko","Collez la clé de participation."); return; }
+  if(repo.toLowerCase()===(GH.owner+"/"+GH.repo).toLowerCase()){ setSt(st,"ko","N'utilisez pas le dépôt du site : créez le dépôt séparé mlr29-roulages."); return; }
+  setSt(st,"","Test de la clé…");
+  let ok=false; try{ ok=await MLRR.Store({repo,tok}).test(); }catch(_){}
+  if(!ok){ setSt(st,"ko","Clé refusée ou sans droit d'écriture sur "+repo+" (vérifiez le dépôt sélectionné et « Contents : Read and write »)."); return; }
+  RL.cfg={repo,tok}; await stageRoulages(); rcfgUI(); await loadInterets();
+  setSt(st,"ok","Clé valide ✓ Publiez maintenant (encadré jaune) : les membres pourront cocher directement.");
+};
+$("#rcfgDel").onclick=async()=>{ RL.cfg=null; await stageRoulages(); rcfgUI(); renderRoulagesAdm(); setSt($("#rcfgst"),"","Clé retirée : les réponses des membres arriveront par e-mail. Publiez pour appliquer."); };
 
 /* ===== Éditeur « Nos membres » (equipe.txt + photos du dossier equipe) ===== */
 let TEAM=[], TEAM_ORIG_PHOTOS=new Set(), TEAM_PHOTOS=new Map(), TEAM_DIRTY=false, TEDIT=-1, TPHOTO=null;

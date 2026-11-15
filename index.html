@@ -255,6 +255,15 @@
           <button class="btn ghost small" id="mOut">Se déconnecter</button>
         </span>
       </div>
+      <div class="mrl" id="mRl" hidden>
+        <h3 class="msub">🏁 Roulages des membres</h3>
+        <div id="rlValid" class="dates"></div>
+        <h4 class="msub2" id="rlPropT" hidden>Dates proposées — cochez si vous êtes intéressé(e)</h4>
+        <div id="rlProp" class="dates"></div>
+        <div class="empty" id="rlEmpty" hidden>Aucun roulage pour le moment : les prochaines dates arrivent bientôt.</div>
+        <p class="cstatus" id="rlSt" role="status"></p>
+        <h3 class="msub">📁 Fichiers</h3>
+      </div>
       <div class="files" id="files"></div>
       <div class="empty" id="filesEmpty" hidden>Aucun fichier pour le moment.</div>
     </div>
@@ -377,6 +386,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="membres/membres.js"></script>
+<script src="membres/roulages.js"></script>
 <script>
 /* =====================================================================
    RÉGLAGES DU SITE — à remplir puis redéposer le dossier sur Netlify
@@ -592,11 +602,81 @@ const DEPOT="mlracingteam29-code/mlr29";
       box.appendChild(a);
     });
   }
+  /* ---- Roulages réservés aux membres ---- */
+  let WHO="", RL=null, INT={}, MINE=new Set(), STORE=null;
+  const LSK=()=>"mlrt_interets_"+MLRR.norm(WHO);
+  async function loadRoulages(){
+    try{ const r=await fetch("membres/roulages.bin",{cache:"no-cache"}); RL=await MLRR.decode(KEY,r.ok?await r.arrayBuffer():null); }catch(_){ RL=MLRR.empty(); }
+    STORE=typeof MLRR!=="undefined"?MLRR.Store(RL.cfg):null; INT={}; MINE=new Set();
+    if(STORE){ try{ const all=await STORE.readAll(KEY); INT=MLRR.byRoulage(all);
+        const me=all.find(x=>MLRR.norm(x.id)===MLRR.norm(WHO)); if(me) me.ids.forEach(i=>MINE.add(i)); }catch(_){} }
+    else{ try{ (JSON.parse(localStorage.getItem(LSK())||"[]")).forEach(i=>MINE.add(i)); }catch(_){} }
+    renderRoulages();
+  }
+  function names(list){ return list.length?list.join(", "):""; }
+  function rlCard(r,valid){
+    const past=MLRR.isPast(r);
+    const el=document.createElement("div"); el.className="date"+(past?" past":"");
+    const info=document.createElement("div"); info.className="info";
+    const h=document.createElement("h3"); h.textContent=r.circuit||"Roulage";
+    const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
+    if(valid && moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous roulez ✓"; h.appendChild(bd); }
+    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
+    info.append(h,ty);
+    if(r.dates && !MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+r.dates; info.appendChild(p); }
+    if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
+    if(valid){
+      const p=document.createElement("p"); p.className="rl-who";
+      p.textContent=pil.length?"Pilotes ("+pil.length+") : "+names(pil):"Liste des pilotes bientôt communiquée par le bureau.";
+      info.appendChild(p);
+    }else{
+      const lab=document.createElement("label"); lab.className="rl-check";
+      const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=MINE.has(r.id); cb.disabled=past;
+      const t=document.createElement("span"); t.textContent="Je suis intéressé(e)";
+      lab.append(cb,t); info.appendChild(lab);
+      const list=(INT[r.id]||[]);
+      if(STORE){ const p=document.createElement("p"); p.className="rl-who"; p.textContent=list.length?"Intéressés ("+list.length+") : "+names(list):"Personne pour l'instant, soyez le premier !"; info.appendChild(p); }
+      cb.onchange=()=>toggleInterest(r,cb);
+    }
+    el.append(MLRR.calBox(r),info); return el;
+  }
+  function renderRoulages(){
+    const box=$("#mRl"); box.hidden=false;
+    const all=MLRR.sorted(RL.roulages||[]);
+    const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
+    const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
+    val.forEach(r=>vb.appendChild(rlCard(r,true)));
+    prop.forEach(r=>pb.appendChild(rlCard(r,false)));
+    $("#rlPropT").hidden=!prop.length; $("#rlEmpty").hidden=!!(val.length||prop.length);
+  }
+  async function toggleInterest(r,cb){
+    const st=$("#rlSt"); st.className="cstatus"; st.textContent="Enregistrement…"; cb.disabled=true;
+    const next=new Set(MINE); cb.checked?next.add(r.id):next.delete(r.id);
+    const lib=(r.circuit||"Roulage")+(r.dates?" ("+r.dates+")":"");
+    try{
+      if(STORE){
+        await STORE.write(KEY,WHO,[...next].filter(id=>(RL.roulages||[]).some(x=>x.id===id)));
+        MINE=next; const l=INT[r.id]=(INT[r.id]||[]).filter(x=>MLRR.norm(x)!==MLRR.norm(WHO)); if(cb.checked) l.push(WHO);
+      }else{
+        /* Sans clé de participation : le bureau est prévenu par e-mail */
+        const sujet="Roulage — "+WHO+" "+(cb.checked?"intéressé(e)":"n'est plus intéressé(e)")+" — "+lib;
+        const champs={"Membre":WHO,"Roulage":lib,"Réponse":cb.checked?"Intéressé(e)":"Plus intéressé(e)"};
+        let ok=false;
+        try{ const x=await fetch("https://formsubmit.co/ajax/"+CONTACT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({_subject:sujet,_template:"table",...champs})}); const j=await x.json().catch(()=>({})); ok=x.ok&&j.success!==false&&j.success!=="false"; }catch(_){}
+        if(!ok && WEB3FORMS_KEY){ try{ const x=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:sujet,from_name:"Site ML Racing Team",...champs})}); ok=x.ok; }catch(_){} }
+        if(!ok) throw 0;
+        MINE=next; try{ localStorage.setItem(LSK(),JSON.stringify([...MINE])); }catch(_){}
+      }
+      st.classList.add("ok"); st.textContent=cb.checked?"C'est noté : le bureau voit que vous êtes intéressé(e) par "+lib+".":"C'est noté, vous n'êtes plus indiqué(e) comme intéressé(e).";
+      renderRoulages();
+    }catch(e){ cb.checked=!cb.checked; cb.disabled=false; st.classList.add("ko"); st.textContent="L'enregistrement n'a pas abouti, réessayez dans un instant."; }
+  }
   async function enter(raw,who,role){
-    KEY=await MLRT.importMaster(raw);
+    KEY=await MLRT.importMaster(raw); WHO=who;
     try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
     $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";
     $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
+    if(typeof MLRR!=="undefined") loadRoulages();
   }
   $("#mForm").addEventListener("submit",async e=>{
     e.preventDefault();
@@ -615,10 +695,10 @@ const DEPOT="mlracingteam29-code/mlr29";
     }catch(err){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
     btn.disabled=false; btn.textContent="Se connecter";
   });
-  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
+  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; WHO=""; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
   try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
   /* rafraîchit la liste à chaque ouverture de l'onglet */
-  window.refreshMembres=async()=>{ if(!KEY) return; try{ INDEX=await loadIndex(); render(); }catch(_){} };
+  window.refreshMembres=async()=>{ if(!KEY) return; try{ INDEX=await loadIndex(); render(); }catch(_){} if(typeof MLRR!=="undefined") loadRoulages(); };
 })();
 
 /* Multimédia : photos et vidéos du dossier "medias" (sous-dossiers = albums) + liens YouTube de videos.txt */

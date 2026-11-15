@@ -273,3 +273,13 @@
   .mtags span{font-size:13px;border:1px solid var(--line);background:#141417;border-radius:99px;padding:3px 10px}
   .mtags span.disc{border-color:rgba(225,6,0,.5);color:#ff6a60}
   .mbody p{margin:12px 0 0;color:var(--muted);font-size:15px}
+
+/* Roulages de l'espace membres */
+.mrl{margin-bottom:8px}
+.msub{font-size:24px;margin:22px 0 12px}
+.msub2{font-family:"Saira Condensed";text-transform:uppercase;font-size:18px;color:var(--muted);margin:18px 0 10px;letter-spacing:.04em}
+.mrl .dates{margin-bottom:6px}
+.rl-who{color:#cfcfd6;font-size:14px}
+.rl-check{text-transform:none;letter-spacing:0;color:#fff;margin-bottom:0;display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;cursor:pointer;font-weight:600;font-size:14px;background:#0f0f12}
+.rl-check input,.rpil input{width:18px;height:18px;padding:0;accent-color:var(--red);margin:0;flex:none}
+.rl-check:has(input:checked){border-color:var(--red);background:rgba(225,6,0,.12)}

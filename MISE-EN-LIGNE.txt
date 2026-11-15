@@ -135,3 +135,15 @@ APRÈS CHAQUE MODIFICATION DE index.html
    - La clé reste dans le navigateur de l'appareil (jamais sur le site). « Oublier la clé »
      pour l'effacer ; à refaire après expiration ou sur un nouvel appareil.
    - Sans clé, l'ancienne méthode fonctionne toujours (Tout télécharger + glisser sur GitHub).
+
+13. ROULAGES RÉSERVÉS AUX MEMBRES (onglet « Fichiers membres », après connexion)
+   - Page de gestion > rubrique « Roulages — réservé aux membres » :
+     « Proposer la date » (circuit + dates JJ/MM/AAAA + type + infos), puis publier (encadré jaune).
+   - Les membres connectés voient les dates proposées et cochent « Je suis intéressé(e) ».
+   - « ✓ Valider le roulage » : les intéressés sont pré-cochés ; cochez/décochez les membres qui
+     roulent. Les membres voient alors la liste des pilotes (et « Vous roulez ✓ » pour eux).
+   - Ces roulages ne sont PAS affichés dans l'onglet public « Dates de roulages » (roulages.txt).
+   - CLÉ DE PARTICIPATION (une seule fois, pour que les cases des membres s'enregistrent) :
+     créez le dépôt privé « mlr29-roulages » + une clé limitée à CE dépôt (Contents : Read and write),
+     collez-la dans « Clé de participation » > « Enregistrer et tester », puis publiez.
+     Sans cette clé, chaque case cochée par un membre arrive par e-mail sur mlracingteam29@gmail.com.
