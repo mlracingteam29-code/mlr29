@@ -2,7 +2,7 @@
    - Pages, textes et fichiers de données : réseau d'abord (toujours à jour), copie de secours si pas de réseau.
    - Images, icônes, styles : copie locale d'abord (rapide), mise à jour en arrière-plan.
    - Rien n'est mis en cache pour les autres sites (GitHub API, Google, Facebook…). */
-const VERSION = "mlrt-v1";
+const VERSION = "mlrt-v2";
 const SHELL = ["./", "index.html", "style.css", "manifest.webmanifest", "membres/membres.js", "membres/roulages.js",
   "images/banniere.jpg", "images/app/icon-192.png", "images/app/icon-512.png", "textes.txt", "partenaires.txt", "roulages.txt", "equipe.txt"];
 
