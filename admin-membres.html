@@ -695,7 +695,7 @@ function pinState(){ const c=ACCES&&ACCES.comptes.find(x=>x.role==="invite"); $(
 $("#pinGen").onclick=()=>{ $("#pinNew").value=MLRT.genPin(8); };
 $("#pinSet").onclick=async()=>{
   const st=$("#pinSt"), pin=$("#pinNew").value.replace(/\s+/g,"");
-  if(!/^\d{6,12}$/.test(pin)){ setSt(st,"ko","Le code doit contenir 6 à 12 chiffres (8 conseillés)."); return; }
+  if(!/^\d{5,12}$/.test(pin)){ setSt(st,"ko","Le code doit contenir 5 à 12 chiffres (8 conseillés)."); return; }
   setSt(st,"","Création du code…");
   const c=await MLRT.makeCompte(MLRT.INVITE_ID,pin,RAW,KEY,"invite",MLRT.INVITE_ITER);
   ACCES.comptes=ACCES.comptes.filter(x=>x.role!=="invite").concat(c); NAMES[c.h]=MLRT.INVITE_ID; stageAcces(); await renderMembers(); pinState();
