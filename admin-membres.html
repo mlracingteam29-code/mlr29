@@ -270,8 +270,8 @@
 
     <!-- Code d'accès invités -->
     <div class="card">
-      <h3>🔢 Code d'accès invités</h3>
-      <p>Un seul code à chiffres, sans identifiant, que vous donnez à qui vous voulez : il ouvre les dates de roulages et les fichiers membres en lecture seule (pas d'inscription ni de « je suis intéressé »). Changez-le quand vous voulez : l'ancien ne marchera plus.</p>
+      <h3>🔢 Code d'accès partenaires</h3>
+      <p>Un seul code à chiffres, sans identifiant, à donner à vos partenaires (les membres gardent leur identifiant + code) : il ouvre les dates de roulages et les fichiers membres en lecture seule (pas d'inscription ni de « je suis intéressé »). Changez-le quand vous voulez : l'ancien ne marchera plus.</p>
       <p id="pinState" class="hint"></p>
       <div class="row">
         <div><label for="pinNew">Nouveau code (8 chiffres conseillés, 5 minimum)</label><input id="pinNew" inputmode="numeric" pattern="[0-9]*" maxlength="12"></div>
@@ -376,7 +376,7 @@ async function renderMembers(){
     if(c.role==="invite"){ t0.textContent="—"; t0.style.color="var(--muted)"; } else { const inp=document.createElement("input"); inp.value=NP[c.h]||(c.role==="bureau"?MLRR.label(NAMES[c.h]):""); inp.placeholder="à compléter"; inp.style.padding="6px 9px"; inp.style.fontSize="14px";
       inp.onchange=async()=>{ const v=inp.value.trim(); NP[c.h]=v; if(v) c.np=await MLRT.encText(KEY,v); else delete c.np; stageAcces(); await MLRR.loadNoms(KEY,ACCES); if(typeof renderRoulagesAdm==="function"&&RL) renderRoulagesAdm(); };
       t0.appendChild(inp); }
-    const t1=document.createElement("td"); t1.textContent=c.role==="invite"?"🔢 Accès par code (invités)":NAMES[c.h]; if(c.role==="bureau"||c.role==="partenaire"){ const g=document.createElement("span"); g.className="tag"; g.textContent=c.role; t1.appendChild(g); }
+    const t1=document.createElement("td"); t1.textContent=c.role==="invite"?"🔢 Accès par code (partenaires)":NAMES[c.h]; if(c.role==="bureau"||c.role==="partenaire"){ const g=document.createElement("span"); g.className="tag"; g.textContent=c.role; t1.appendChild(g); }
     const t2=document.createElement("td"); t2.textContent=fr(c.cree);
     const t3=document.createElement("td"); t3.style.textAlign="right";
     const isMe=c===ME.compte;
@@ -691,7 +691,7 @@ $("#fadd").onclick=async()=>{
 };
 
 /* ---- Code d'accès invités ---- */
-function pinState(){ const c=ACCES&&ACCES.comptes.find(x=>x.role==="invite"); $("#pinState").textContent=c?"✅ Un code invité est actif (créé le "+(c.cree||"").split("-").reverse().join("/")+"). Le code lui-même n'est pas conservé : notez-le quand vous le créez.":"Aucun code invité actif pour le moment."; }
+function pinState(){ const c=ACCES&&ACCES.comptes.find(x=>x.role==="invite"); $("#pinState").textContent=c?"✅ Un code partenaire est actif (créé le "+(c.cree||"").split("-").reverse().join("/")+"). Le code lui-même n'est pas conservé : notez-le quand vous le créez.":"Aucun code partenaire actif pour le moment."; }
 $("#pinGen").onclick=()=>{ $("#pinNew").value=MLRT.genPin(8); };
 $("#pinSet").onclick=async()=>{
   const st=$("#pinSt"), pin=$("#pinNew").value.replace(/\s+/g,"");

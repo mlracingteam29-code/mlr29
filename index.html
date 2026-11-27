@@ -196,7 +196,7 @@
     <div class="card mlogin" id="rlLock">
       <div class="lock">🔒</div>
       <h3>Accès réservé aux membres</h3>
-      <p>Les dates de roulages de la team sont réservées aux membres de l'association. Connectez-vous avec l'<strong>identifiant</strong> et le <strong>code</strong> reçus après la validation de votre inscription pour les consulter et indiquer celles qui vous intéressent, ou avec le <strong>code d'accès à chiffres</strong> qui vous a été donné.</p>
+      <p>Les dates de roulages de la team sont réservées aux membres de l'association. Connectez-vous avec l'<strong>identifiant</strong> et le <strong>code</strong> reçus après la validation de votre inscription pour les consulter et indiquer celles qui vous intéressent, Partenaires : utilisez votre <strong>code d'accès partenaire</strong>.</p>
       <div class="cta"><button class="btn red" type="button" id="rlLogin">Se connecter</button>
         <button class="btn ghost" type="button" data-go="inscriptions">Adhérer à l'association</button></div>
     </div>
@@ -273,9 +273,9 @@
       </form>
       <form id="pinForm" class="pin-form" novalidate>
         <div class="pin-sep"><span>ou</span></div>
-        <label for="pinCode">Vous avez un <strong>code d'accès</strong> (chiffres) ?</label>
+        <label for="pinCode"><strong>Partenaires</strong> : entrez votre <strong>code d'accès</strong> (chiffres)</label>
         <div class="cta" style="align-items:center;margin-top:6px">
-          <input id="pinCode" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Code à chiffres" maxlength="12" style="max-width:220px;letter-spacing:.2em;font-size:18px">
+          <input id="pinCode" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Code partenaire" maxlength="12" style="max-width:220px;letter-spacing:.2em;font-size:18px">
           <button class="btn ghost" type="submit" id="pinBtn">Entrer</button>
         </div>
         <span class="cstatus" id="pinSt" role="status"></span>
@@ -880,7 +880,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     try{ ACC=await (await fetch("membres/acces.json",{cache:"no-cache"})).json(); await MLRR.loadNoms(KEY,ACC); }catch(_){ ACC={comptes:[]}; }
     if(ROLE==="bureau") await loadMembres();
     try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
-    $("#mWho").textContent=ROLE==="invite"?"Invité (accès par code)":who; $("#mAdmin").hidden=role!=="bureau";
+    $("#mWho").textContent=ROLE==="invite"?"Partenaire (accès par code)":who; $("#mAdmin").hidden=role!=="bureau";
     $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
     if(typeof MLRR!=="undefined") loadRoulages().catch(()=>{ try{ RL=RL||MLRR.empty(); renderRoulages(); }catch(_){ $("#rlLock").hidden=true; $("#mRl").hidden=false; $("#rlEmpty").hidden=false; $("#rlEmpty").textContent="Les roulages n'ont pas pu se charger : rechargez la page (Ctrl+F5 ou tirez vers le bas sur téléphone)."; } });
     if(BACK_RL){ BACK_RL=false; showTab("roulages",true); }
@@ -910,7 +910,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   $("#pinForm").addEventListener("submit",async e=>{
     e.preventDefault(); const st=$("#pinSt"), btn=$("#pinBtn"); st.className="cstatus"; st.textContent="";
     const code=$("#pinCode").value.replace(/\s+/g,"");
-    if(!/^\d{4,12}$/.test(code)){ st.classList.add("ko"); st.textContent="Saisissez le code à chiffres qui vous a été donné."; return; }
+    if(!/^\d{4,12}$/.test(code)){ st.classList.add("ko"); st.textContent="Saisissez le code partenaire qui vous a été donné."; return; }
     btn.disabled=true; btn.textContent="Vérification…";
     try{ const acces=await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
       const s=await MLRT.login(acces,MLRT.INVITE_ID,code);
