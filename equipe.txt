@@ -29,3 +29,9 @@ Photo : damien.jpg
 Moto : KTM
 Discipline : Photographe officiel, KTMiste
 Texte : Photographe officiel de la ML Racing Team et KTMiste convaincu ! C'est lui qui immortalise nos roulages, du paddock au bord de piste.
+
+Nom : Nogan
+Photo : nogan.jpg
+Moto : Yamaha R6, puis R7 pour la saison 2027
+Discipline : Vitesse
+Texte : Nogan a fait ses débuts sur piste au guidon d'une R6. Cette saison, il passe sur une belle R7 : un nouveau chapitre qui s'annonce rapide !
