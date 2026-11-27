@@ -339,3 +339,6 @@
 .rc-d.on.att{background:#c98a1d}
 .rc-item.att{border-left-color:#e5a93b}
 .rl-statsel{margin-left:8px}
+.badge-att{display:inline-block;vertical-align:middle;margin-left:10px;background:rgba(229,169,59,.15);border:1px solid rgba(229,169,59,.55);color:#f0c46a;font:700 12px "Saira";letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
+.rl-attlist{display:grid;gap:6px;margin-bottom:8px}
+.rl-attlist .rc-item{width:100%}

@@ -199,7 +199,7 @@
       <h3 class="msub" id="rlValidT" hidden>✅ Roulages validés</h3>
       <div id="rlValid" class="dates"></div>
       <h3 class="msub" id="rlAttT" hidden>⏳ En attente de validation</h3>
-      <div id="rlAtt" class="dates"></div>
+      <div id="rlAtt" class="rl-attlist"></div>
       <h3 class="msub" id="rlPropT" hidden>📅 Dates proposées — cochez si vous êtes intéressé(e)</h3>
       <div id="rlProp" class="dates"></div>
       <div class="rl-savebar"><button class="btn red" type="button" id="rlSave" hidden>💾 Enregistrer mes choix</button></div>
@@ -596,6 +596,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
     if(/\bcomplet\b/i.test([r.type,r.infos].join(" "))&&!past){ const bc=document.createElement("span"); bc.className="badge-full"; bc.textContent="Complet"; h.appendChild(bc); el.classList.add("full"); }
     if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes inscrit(e) ✓"; h.appendChild(bd); }
+    if(att&&!past){ const ba=document.createElement("span"); ba.className="badge-att"; ba.textContent="⏳ En attente de validation"; h.appendChild(ba); }
     const ty=document.createElement("div"); ty.className="type"; ty.textContent=[valid||att?MLRR.catOf(r):"",r.type,valid?"validé":att?"en attente de validation":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
     if(!MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+(r.dates||"à confirmer"); info.appendChild(p); }
@@ -733,9 +734,15 @@ const DEPOT="mlracingteam29-code/mlr29";
     const val=all.filter(r=>r.statut==="valide"), att=all.filter(r=>r.statut==="attente"&&!MLRR.isPast(r)), prop=all.filter(r=>r.statut!=="valide"&&r.statut!=="attente"&&!MLRR.isPast(r));
     const vb=$("#rlValid"), ab=$("#rlAtt"), pb=$("#rlProp"); vb.innerHTML=""; ab.innerHTML=""; pb.innerHTML="";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
-    att.forEach(r=>ab.appendChild(rlCard(r,false)));
+    /* les roulages en attente sont rangés dans leur dossier de catégorie ; ici, un raccourci vers chacun */
+    att.forEach(r=>{ const p=MLRR.span(r.dates); const a=document.createElement("button"); a.type="button"; a.className="rc-item att";
+      const d=document.createElement("b"); d.textContent=p?(p.end>p.start?p.start.getDate()+"-"+p.end.getDate()+" "+MOISL[p.start.getMonth()].toLowerCase()+" "+p.start.getFullYear():p.start.getDate()+" "+MOISL[p.start.getMonth()].toLowerCase()+" "+p.start.getFullYear()):"date à confirmer";
+      const n=document.createElement("span"); n.textContent=(r.circuit||"Roulage")+" · "+MLRR.ICONS[MLRR.catOf(r)]+" "+MLRR.catOf(r);
+      a.append(d,n); a.onclick=()=>{ const el=document.getElementById("rl-"+r.id); if(el){ const f=el.closest("details"); if(f) f.open=true; el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
+      ab.appendChild(a); });
     $("#rlAttT").hidden=!att.length;
-    MLRR.CATS.forEach(c=>{ const l=prop.filter(r=>MLRR.catOf(r)===c);
+    const dossier=MLRR.sorted(prop.concat(att));
+    MLRR.CATS.forEach(c=>{ const l=dossier.filter(r=>MLRR.catOf(r)===c);
       const d=document.createElement("details"); d.className="rl-folder"; d.dataset.cat=c; d.open=OPENCATS.has(c);
       const sm=document.createElement("summary"); sm.innerHTML='<span class="ic">📁</span>'; const t=document.createElement("span"); t.textContent=MLRR.ICONS[c]+" "+c; const n=document.createElement("span"); n.className="nb"; n.textContent=l.length?l.length+" date"+(l.length>1?"s":""):"aucune date";
       sm.append(t,n); d.appendChild(sm); d.ontoggle=()=>{ d.open?OPENCATS.add(c):OPENCATS.delete(c); sm.firstChild.textContent=d.open?"📂":"📁"; };
