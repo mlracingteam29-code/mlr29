@@ -101,6 +101,16 @@
    "cle": "9fd7NXMSVqhZ/av0KKQjrC4G8te+JwT5Yt4Rxyr58wlgV9FHmvImyY/BwKu3N30Q",
    "cree": "2026-11-27",
    "iter": 3000000
+  },
+  {
+   "h": "ezEHAYjmABQa1HoQ/SEMlsoRlLowWtWVPUPT+ZPMDSY=",
+   "role": "partenaire",
+   "nom": "ZwiH+68gHookxamgVaNz+Ap70Ry8Dv2Ex2YoxtrZsVUO/a+cvg==",
+   "salt": "ZIR03EKO/qq0hGm2/e7SDw==",
+   "iv": "UaZVR/lwFZOIxuGI",
+   "cle": "haXJH6KB29vNFXQtWfY4APoHEmj1y6VDZ//W1wMcTp15m4BMvL25CXrP8skkfPBb",
+   "cree": "2026-11-27",
+   "np": "ryJB/D6D6qnWSWrLR8WM3mXXpC3vndhk/vV76yP2i9AYANw="
   }
  ]
 }
