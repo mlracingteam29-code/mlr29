@@ -368,3 +368,61 @@ html.is-app header.nav{padding-top:env(safe-area-inset-top)}
 .pin-sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:6px 0 12px}
 .pin-sep::before,.pin-sep::after{content:"";flex:1;height:1px;background:var(--line)}
 .pin-form label{text-transform:none;letter-spacing:0;font-size:15px;color:#ddd}
+
+/* ===== Téléphone : tailles réduites (site et application) ===== */
+@media (max-width:600px){
+  body{font-size:15px;line-height:1.5}
+  .wrap{padding:0 14px}
+  .topbar .wrap{height:48px}
+  .logo{font-size:17px;gap:7px}
+  .logo .badge{padding:1px 6px}
+  .app-btn{padding:5px 10px;font-size:12px}
+  .tabbar .wrap{gap:4px;padding-top:6px}
+  .tabbar button{font-size:13px;padding:9px 11px;border-radius:8px 8px 0 0}
+  section{padding:30px 0}
+  .sec-head{margin-bottom:18px;gap:8px}
+  .sec-head h2{font-size:26px}
+  .sec-head h2::before{width:7px;margin-right:8px}
+  .sec-head p{font-size:14px}
+  .kicker{font-size:11px;letter-spacing:.14em}
+  .intro-band{padding:24px 0 0}
+  .intro-band .accroche{font-size:21px;line-height:1.12}
+  .intro-band + section{padding-top:20px}
+  .banner img{max-height:200px;min-height:0}
+  .story p{font-size:15px;line-height:1.6;margin-bottom:12px}
+  .motto{font-size:18px;padding:16px 18px;margin-top:22px}
+  .card{padding:16px;border-radius:12px}
+  .card h3{font-size:19px}
+  .duo{margin-top:22px}
+  .goals b{font-size:16px}
+  .goals span,.perks li{font-size:14px}
+  .mlogin .lock{font-size:26px}
+  .mlogin h3{font-size:20px}
+  .mlogin p{font-size:14px}
+  input,textarea,select{padding:9px 11px;font-size:16px}
+  label{font-size:11px}
+  .btn{padding:10px 16px;font-size:14px}
+  .btn.small{padding:7px 11px;font-size:13px}
+  .date{gap:12px;padding:12px 13px}
+  .date .cal{width:70px;padding-right:10px}
+  .date .cal b{font-size:24px}
+  .date .cal span{font-size:10px}
+  .date h3{font-size:17px}
+  .date .type{font-size:11px}
+  .date p{font-size:13px}
+  .badge-full,.badge-places,.badge-att{font-size:10px;padding:2px 8px;margin-left:6px}
+  .msub{font-size:19px;margin:18px 0 10px}
+  .rl-folder summary{font-size:15px}
+  .file{padding:11px 12px;gap:11px}
+  .file .ext{width:42px;height:42px;font-size:13px}
+  .file .ftxt b{font-size:15px}
+  .partner{font-size:13px;min-height:46px}
+  .partners{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .mbar{padding:9px 12px;font-size:14px}
+  .gz h3,.album h3{font-size:19px}
+  .wip h3{font-size:21px}
+  .addr-s{font-size:18px}
+  footer{font-size:12px;padding:20px 0 30px}
+  .app-bar{padding:8px 10px;gap:10px}
+  .app-bar img{width:36px;height:36px}
+}

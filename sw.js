@@ -2,7 +2,7 @@
    - Pages, textes et fichiers de données : réseau d'abord (toujours à jour), copie de secours si pas de réseau.
    - Images, icônes, styles : copie locale d'abord (rapide), mise à jour en arrière-plan.
    - Rien n'est mis en cache pour les autres sites (GitHub API, Google, Facebook…). */
-const VERSION = "mlrt-v2";
+const VERSION = "mlrt-v3";
 const SHELL = ["./", "index.html", "style.css", "manifest.webmanifest", "membres/membres.js", "membres/roulages.js",
   "images/banniere.jpg", "images/app/icon-192.png", "images/app/icon-512.png", "textes.txt", "partenaires.txt", "roulages.txt", "equipe.txt"];
 
@@ -15,7 +15,7 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const req = e.request; if (req.method !== "GET") return;
   const url = new URL(req.url); if (url.origin !== location.origin) return;
-  const isStatic = /\.(png|jpe?g|webp|gif|svg|css|ico|woff2?)$/i.test(url.pathname) && !/\/medias\//.test(url.pathname);
+  const isStatic = /\.(png|jpe?g|webp|gif|svg|ico|woff2?)$/i.test(url.pathname) && !/\/medias\//.test(url.pathname);
   if (isStatic) {
     e.respondWith(caches.open(VERSION).then(async c => {
       const hit = await c.match(req);
