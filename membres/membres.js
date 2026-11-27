@@ -66,7 +66,7 @@ const MLRT = (() => {
     return s;
   }
   /* Accès invité : un seul code à chiffres, sans identifiant (dérivation renforcée car un code chiffré est plus court) */
-  const INVITE_ID = "__code_invite__", INVITE_ITER = 1000000;
+  const INVITE_ID = "__code_invite__", INVITE_ITER = 3000000;
   function genPin(n) { const r = rand(n || 8); let s = ""; for (let i = 0; i < (n || 8); i++) s += String(r[i] % 10); if (s[0] === "0") s = "7" + s.slice(1); return s; }
   const randName = () => "f-" + Array.from(rand(8), b => b.toString(16).padStart(2, "0")).join("") + ".bin";
 
