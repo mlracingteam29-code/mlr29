@@ -334,3 +334,8 @@
 .rl-folder[open]>summary{border-bottom:1px solid var(--line)}
 .rl-folder>.dates{padding:10px}
 .rl-folder.vide>summary{opacity:.6}
+/* Roulages en attente de validation */
+.date.att{border-left:4px solid #e5a93b}
+.rc-d.on.att{background:#c98a1d}
+.rc-item.att{border-left-color:#e5a93b}
+.rl-statsel{margin-left:8px}

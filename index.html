@@ -198,6 +198,8 @@
       <div class="rl-cal" id="rlCal"></div>
       <h3 class="msub" id="rlValidT" hidden>✅ Roulages validés</h3>
       <div id="rlValid" class="dates"></div>
+      <h3 class="msub" id="rlAttT" hidden>⏳ En attente de validation</h3>
+      <div id="rlAtt" class="dates"></div>
       <h3 class="msub" id="rlPropT" hidden>📅 Dates proposées — cochez si vous êtes intéressé(e)</h3>
       <div id="rlProp" class="dates"></div>
       <div class="rl-savebar"><button class="btn red" type="button" id="rlSave" hidden>💾 Enregistrer mes choix</button></div>
@@ -587,15 +589,16 @@ const DEPOT="mlracingteam29-code/mlr29";
   function names(list){ return MLRR.labels(list); }
   function rlCard(r,valid){
     const past=MLRR.isPast(r);
-    const el=document.createElement("div"); el.className="date"+(past?" past":"");
+    const att=r.statut==="attente";
+    const el=document.createElement("div"); el.className="date"+(past?" past":"")+(att?" att":"");
     const info=document.createElement("div"); info.className="info";
     const h=document.createElement("h3"); h.textContent=r.circuit||"Roulage";
     const pil=(r.pilotes||[]), moi=pil.some(p=>MLRR.norm(p)===MLRR.norm(WHO));
     if(/\bcomplet\b/i.test([r.type,r.infos].join(" "))&&!past){ const bc=document.createElement("span"); bc.className="badge-full"; bc.textContent="Complet"; h.appendChild(bc); el.classList.add("full"); }
     if(moi){ const bd=document.createElement("span"); bd.className="badge-places"; bd.textContent="Vous êtes inscrit(e) ✓"; h.appendChild(bd); }
-    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[valid?MLRR.catOf(r):"",r.type,valid?"validé":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
+    const ty=document.createElement("div"); ty.className="type"; ty.textContent=[valid||att?MLRR.catOf(r):"",r.type,valid?"validé":att?"en attente de validation":"proposé",past?"terminé":""].filter(Boolean).join(" · ");
     info.append(h,ty);
-    if(r.dates && !MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+r.dates; info.appendChild(p); }
+    if(!MLRR.span(r.dates)){ const p=document.createElement("p"); p.textContent="Dates : "+(r.dates||"à confirmer"); info.appendChild(p); }
     if(r.infos){ const p=document.createElement("p"); p.textContent=r.infos; info.appendChild(p); }
     if(ROLE==="bureau"){ info.appendChild(presenceEditor(r)); }
     else{
@@ -714,8 +717,10 @@ const DEPOT="mlracingteam29-code/mlr29";
     const cs=document.createElement("select"); cs.className="rl-catsel"; cs.title="Catégorie";
     MLRR.CATS.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent="Catégorie : "+c; cs.appendChild(o); }); cs.value=MLRR.catOf(r);
     cs.onchange=()=>{ r.cat=cs.value; renderRoulages(); saveRL(); }; box.appendChild(cs);
-    const v=document.createElement("button"); v.type="button"; v.className="linkbtn"; v.textContent=r.statut==="valide"?"Repasser en « proposé »":"✓ Valider le roulage";
-    v.onclick=()=>{ r.statut=r.statut==="valide"?"propose":"valide"; renderRoulages(); saveRL(); };
+    const v=document.createElement("select"); v.className="rl-catsel rl-statsel"; v.title="Statut";
+    [["propose","Statut : 📅 Proposé"],["attente","Statut : ⏳ En attente de validation"],["valide","Statut : ✅ Validé"]].forEach(([k,t])=>{ const o=document.createElement("option"); o.value=k; o.textContent=t; v.appendChild(o); });
+    v.value=r.statut==="valide"||r.statut==="attente"?r.statut:"propose";
+    v.onchange=()=>{ r.statut=v.value; renderRoulages(); saveRL(); };
     box.appendChild(v);
     if(ints.length){ const h=document.createElement("small"); h.className="rl-hint"; h.textContent=" ★ = a coché « intéressé »"; box.appendChild(h); }
     const iw=document.createElement("p"); iw.className="rl-who"; iw.textContent="Intéressés ("+ints.length+") : "+(ints.length?names(ints):"personne pour l'instant"); box.insertBefore(iw,box.firstChild);
@@ -725,9 +730,11 @@ const DEPOT="mlracingteam29-code/mlr29";
     const box=$("#mRl"); box.hidden=false; $("#rlLock").hidden=true; $("#rlWho").textContent=MLRR.label(WHO);
     renderBureau();
     const all=MLRR.sorted(RL.roulages||[]);
-    const val=all.filter(r=>r.statut==="valide"), prop=all.filter(r=>r.statut!=="valide"&&!MLRR.isPast(r));
-    const vb=$("#rlValid"), pb=$("#rlProp"); vb.innerHTML=""; pb.innerHTML="";
+    const val=all.filter(r=>r.statut==="valide"), att=all.filter(r=>r.statut==="attente"&&!MLRR.isPast(r)), prop=all.filter(r=>r.statut!=="valide"&&r.statut!=="attente"&&!MLRR.isPast(r));
+    const vb=$("#rlValid"), ab=$("#rlAtt"), pb=$("#rlProp"); vb.innerHTML=""; ab.innerHTML=""; pb.innerHTML="";
     val.forEach(r=>vb.appendChild(rlCard(r,true)));
+    att.forEach(r=>ab.appendChild(rlCard(r,false)));
+    $("#rlAttT").hidden=!att.length;
     MLRR.CATS.forEach(c=>{ const l=prop.filter(r=>MLRR.catOf(r)===c);
       const d=document.createElement("details"); d.className="rl-folder"; d.dataset.cat=c; d.open=OPENCATS.has(c);
       const sm=document.createElement("summary"); sm.innerHTML='<span class="ic">📁</span>'; const t=document.createElement("span"); t.textContent=MLRR.ICONS[c]+" "+c; const n=document.createElement("span"); n.className="nb"; n.textContent=l.length?l.length+" date"+(l.length>1?"s":""):"aucune date";
@@ -761,7 +768,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     for(let d=1;d<=nb;d++){
       const k=y+"-"+mo+"-"+d, rs=days[k]||[], c=document.createElement(rs.length?"button":"span"); c.className="rc-d"; c.textContent=d;
       if(new Date(y,mo,d).getTime()===today.getTime()) c.classList.add("today");
-      if(rs.length){ c.type="button"; c.classList.add("on"); if(rs.some(r=>r.statut==="valide")) c.classList.add("val"); if(rs.length>1) c.classList.add("multi");
+      if(rs.length){ c.type="button"; c.classList.add("on"); if(rs.some(r=>r.statut==="valide")) c.classList.add("val"); else if(rs.some(r=>r.statut==="attente")) c.classList.add("att"); if(rs.length>1) c.classList.add("multi");
         c.title=rs.map(r=>r.circuit).join(" · "); c.onclick=()=>{ const el=document.getElementById("rl-"+rs[0].id); if(el){ const f=el.closest("details"); if(f) f.open=true; el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
         rs.forEach(r=>{ if(!mois.includes(r)) mois.push(r); }); }
       g.appendChild(c);
@@ -770,7 +777,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     const ul=document.createElement("div"); ul.className="rc-list";
     if(!mois.length){ ul.textContent="Aucun roulage ce mois-ci."; ul.classList.add("none"); }
     MLRR.sorted(mois).forEach(r=>{ const p=MLRR.span(r.dates); const J=["DIM","LUN","MAR","MER","JEU","VEN","SAM"];
-      const a=document.createElement("button"); a.type="button"; a.className="rc-item"+(r.statut==="valide"?" val":"");
+      const a=document.createElement("button"); a.type="button"; a.className="rc-item"+(r.statut==="valide"?" val":r.statut==="attente"?" att":"");
       const d=document.createElement("b"); d.textContent=p.end>p.start?J[p.start.getDay()]+" "+p.start.getDate()+" → "+J[p.end.getDay()]+" "+p.end.getDate()+(p.end.getMonth()!==p.start.getMonth()?" "+MOISL[p.end.getMonth()].slice(0,4).toLowerCase()+".":""):J[p.start.getDay()]+" "+p.start.getDate();
       const n=document.createElement("span"); n.textContent=(r.circuit||"Roulage")+(r.type?" · "+r.type:"");
       a.append(d,n); a.onclick=()=>{ const el=document.getElementById("rl-"+r.id); if(el){ const f=el.closest("details"); if(f) f.open=true; el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1600); } };
@@ -850,7 +857,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     }catch(err){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
     btn.disabled=false; btn.textContent="Se connecter";
   });
-  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; $("#mRl").hidden=true; $("#rlLock").hidden=false; WHO=""; ROLE=""; MEMBRES=[]; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
+  $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlAtt").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; $("#mRl").hidden=true; $("#rlLock").hidden=false; WHO=""; ROLE=""; MEMBRES=[]; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
   try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
   /* rafraîchit la liste à chaque ouverture de l'onglet */
   window.refreshMembres=async()=>{ if(!KEY) return; try{ INDEX=await loadIndex(); render(); }catch(_){} if(typeof MLRR!=="undefined") loadRoulages(); };
