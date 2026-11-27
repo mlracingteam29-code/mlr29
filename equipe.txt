@@ -35,3 +35,9 @@ Photo : nogan.jpg
 Moto : Yamaha R6, puis R7 pour la saison 2027
 Discipline : Vitesse
 Texte : Nogan a fait ses débuts sur piste au guidon d'une R6. Cette saison, il passe sur une belle R7 : un nouveau chapitre qui s'annonce rapide !
+
+Nom : Luc alias « CUL »
+Photo : luc.jpg
+Moto : Suzuki GSR 750 dédiée à la piste
+Discipline : Vitesse
+Texte : Luc, alias « CUL », a fait ses premiers tours de piste au guidon d'un GSR 750 entièrement dédié au circuit. Genou au sol et sourire garanti ! (Photo : Leïla Largeas Photographe)
