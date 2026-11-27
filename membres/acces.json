@@ -81,6 +81,16 @@
    "cle": "/XRyEiYVcb1U5HDvffH0pT4l5o+1q4lTsDvg36hvbOQSf0/uW6Cd5270lHG2nuGl",
    "cree": "2026-11-15",
    "np": "PZ/2/tb3OdCThaIVVjbQ1bfzL48dF7iI6cIZWV1qygo/Qu9mOO4ohAC81lrdAr+1"
+  },
+  {
+   "h": "QKUyZfal4E+B/D+HGJ1IF4A2PdCrgiwU+XePVci70vI=",
+   "role": "membre",
+   "nom": "LdUeYtBkjHE46JmTkhz20mJXESoiJKih3SqA0qzaWbX5CP9b",
+   "salt": "dpYIrTCwmjYT9v56ppe3ZQ==",
+   "iv": "21dMVTOIQ6hQZtmo",
+   "cle": "O0uarR+383jr39biu5CeeKThxY5NYCJFIaXSnT70kF6uhUE/dkcGtZAJMk767wxx",
+   "cree": "2026-11-27",
+   "np": "PN8Bx8b77PkNSiDQ1AXGj2SWPHq03Z5R+QPAORoGbJ+hKZFVpw=="
   }
  ]
 }
