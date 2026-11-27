@@ -268,6 +268,20 @@
       <table><thead><tr><th>Fichier</th><th>Taille</th><th>Ajouté le</th><th></th></tr></thead><tbody id="flist"></tbody></table>
     </div>
 
+    <!-- Code d'accès invités -->
+    <div class="card">
+      <h3>🔢 Code d'accès invités</h3>
+      <p>Un seul code à chiffres, sans identifiant, que vous donnez à qui vous voulez : il ouvre les dates de roulages et les fichiers membres en lecture seule (pas d'inscription ni de « je suis intéressé »). Changez-le quand vous voulez : l'ancien ne marchera plus.</p>
+      <p id="pinState" class="hint"></p>
+      <div class="row">
+        <div><label for="pinNew">Nouveau code (8 chiffres conseillés, 6 minimum)</label><input id="pinNew" inputmode="numeric" pattern="[0-9]*" maxlength="12"></div>
+        <div style="flex:0"><button class="btn ghost" id="pinGen" type="button">Générer</button></div>
+        <div style="flex:0"><button class="btn red" id="pinSet" type="button">Enregistrer le code</button></div>
+        <div style="flex:0"><button class="btn ghost" id="pinDel" type="button">Désactiver</button></div>
+      </div>
+      <div class="status" id="pinSt"></div>
+    </div>
+
     <!-- Code bureau -->
     <div class="card">
       <h3>🔑 Changer mon code bureau</h3>
@@ -328,7 +342,7 @@ async function drawCard(nom,num,course,kind){
   CARD_NAME="carte-"+(P?"partenaire":"membre")+"-"+SAISON+"-"+(nom||"membre").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()+".png";
   $("#cardOut").hidden=false;
 }
-function nextNum(kind){ const P=kind==="partenaire"; const n=ACCES.comptes.filter(c=>P?c.role==="partenaire":(c.role!=="bureau"&&c.role!=="partenaire")).length; return (P?"P":"")+SAISON+"-"+String(n).padStart(3,"0"); }
+function nextNum(kind){ const P=kind==="partenaire"; const n=ACCES.comptes.filter(c=>P?c.role==="partenaire":(c.role!=="bureau"&&c.role!=="partenaire"&&c.role!=="invite")).length; return (P?"P":"")+SAISON+"-"+String(n).padStart(3,"0"); }
 $("#ctype").onchange=()=>{ const P=$("#ctype").value==="partenaire"; $("#ccourseLbl").textContent=P?"Contact (facultatif)":"N° de course (facultatif)"; document.querySelector('label[for="cname"]').textContent=P?"Entreprise / partenaire":"Nom et prénom"; };
 $("#cgen").onclick=async()=>{ const n=$("#cname").value.trim(); if(!n){ setSt($("#cst"),"ko","Indiquez le nom."); return; } setSt($("#cst"),"",""); await drawCard(n,$("#cnum").value.trim(),$("#ccourse").value.trim(),$("#ctype").value); };
 $("#cdl").onclick=()=>{ $("#cardCanvas").toBlob(b=>download(CARD_NAME,b),"image/png"); };
@@ -359,10 +373,10 @@ async function renderMembers(){
   ACCES.comptes.slice().sort((a,b)=>(a.role==="bureau"?-1:1)-(b.role==="bureau"?-1:1)||NAMES[a.h].localeCompare(NAMES[b.h])).forEach(c=>{
     const tr=document.createElement("tr");
     const t0=document.createElement("td");
-    { const inp=document.createElement("input"); inp.value=NP[c.h]||(c.role==="bureau"?MLRR.label(NAMES[c.h]):""); inp.placeholder="à compléter"; inp.style.padding="6px 9px"; inp.style.fontSize="14px";
+    if(c.role==="invite"){ t0.textContent="—"; t0.style.color="var(--muted)"; } else { const inp=document.createElement("input"); inp.value=NP[c.h]||(c.role==="bureau"?MLRR.label(NAMES[c.h]):""); inp.placeholder="à compléter"; inp.style.padding="6px 9px"; inp.style.fontSize="14px";
       inp.onchange=async()=>{ const v=inp.value.trim(); NP[c.h]=v; if(v) c.np=await MLRT.encText(KEY,v); else delete c.np; stageAcces(); await MLRR.loadNoms(KEY,ACCES); if(typeof renderRoulagesAdm==="function"&&RL) renderRoulagesAdm(); };
       t0.appendChild(inp); }
-    const t1=document.createElement("td"); t1.textContent=NAMES[c.h]; if(c.role==="bureau"||c.role==="partenaire"){ const g=document.createElement("span"); g.className="tag"; g.textContent=c.role; t1.appendChild(g); }
+    const t1=document.createElement("td"); t1.textContent=c.role==="invite"?"🔢 Accès par code (invités)":NAMES[c.h]; if(c.role==="bureau"||c.role==="partenaire"){ const g=document.createElement("span"); g.className="tag"; g.textContent=c.role; t1.appendChild(g); }
     const t2=document.createElement("td"); t2.textContent=fr(c.cree);
     const t3=document.createElement("td"); t3.style.textAlign="right";
     const isMe=c===ME.compte;
@@ -406,7 +420,7 @@ $("#lf").addEventListener("submit",async e=>{
       try{ const ib=await ghBytes("membres/index.bin"); const buf=ib?ib.buffer:await (async()=>{ const r=await fetch("membres/index.bin",{cache:"no-cache"}); return r.ok?await r.arrayBuffer():null; })();
         INDEX=buf?JSON.parse(new TextDecoder().decode(await MLRT.decBytes(KEY,buf))):[]; }catch(_){ INDEX=[]; }
       $("#login").hidden=true; $("#app").hidden=false; $("#lcode").value="";
-      await renderMembers(); renderFiles(); ghUI(); loadTeam(); await MLRR.loadNoms(KEY,ACCES); loadRoulages(ghBytes);
+      await renderMembers(); pinState(); renderFiles(); ghUI(); loadTeam(); await MLRR.loadNoms(KEY,ACCES); loadRoulages(ghBytes);
     }
   }catch(err){ setSt(st,"ko","Impossible de charger l'espace membres."); }
   $("#lbtn").disabled=false;
@@ -504,7 +518,7 @@ async function stageRoulages(){ stage("roulages.bin",new Blob([await MLRR.encode
     catch(e){ setSt($("#rst"),"ko","Publication automatique impossible ("+e.message+") : utilisez l'encadré jaune."); } },700); } }
 function rcfgUI(){ const on=!!(RL.cfg&&RL.cfg.tok); $("#rcfgState").textContent=on?"active ✓":"non configurée (réponses par e-mail)"; $("#rcfgState").style.color=on?"var(--ok)":"#f1d58a";
   if(RL.cfg&&RL.cfg.repo) $("#rrepo").value=RL.cfg.repo; $("#rtok").value=""; $("#rtok").placeholder=on?"Clé enregistrée ✓ (collez-en une autre pour la remplacer)":"github_pat_…"; }
-function pilotesPossibles(){ return ACCES.comptes.filter(c=>c.role!=="partenaire").map(c=>NAMES[c.h]).filter(n=>n&&n!=="(inconnu)").sort((a,b)=>MLRR.label(a).localeCompare(MLRR.label(b),"fr")); }
+function pilotesPossibles(){ return ACCES.comptes.filter(c=>c.role!=="partenaire"&&c.role!=="invite").map(c=>NAMES[c.h]).filter(n=>n&&n!=="(inconnu)").sort((a,b)=>MLRR.label(a).localeCompare(MLRR.label(b),"fr")); }
 function renderRoulagesAdm(){
   const box=$("#rlist"); box.innerHTML="";
   const list=MLRR.sorted(RL.roulages);
@@ -675,6 +689,20 @@ $("#fadd").onclick=async()=>{
   await stageIndex(); renderFiles(); $("#fin").value="";
   setSt(st,"ok",files.length+" fichier(s) prêt(s). Envoyez-les sur GitHub (encadré jaune en haut).");
 };
+
+/* ---- Code d'accès invités ---- */
+function pinState(){ const c=ACCES&&ACCES.comptes.find(x=>x.role==="invite"); $("#pinState").textContent=c?"✅ Un code invité est actif (créé le "+(c.cree||"").split("-").reverse().join("/")+"). Le code lui-même n'est pas conservé : notez-le quand vous le créez.":"Aucun code invité actif pour le moment."; }
+$("#pinGen").onclick=()=>{ $("#pinNew").value=MLRT.genPin(8); };
+$("#pinSet").onclick=async()=>{
+  const st=$("#pinSt"), pin=$("#pinNew").value.replace(/\s+/g,"");
+  if(!/^\d{6,12}$/.test(pin)){ setSt(st,"ko","Le code doit contenir 6 à 12 chiffres (8 conseillés)."); return; }
+  setSt(st,"","Création du code…");
+  const c=await MLRT.makeCompte(MLRT.INVITE_ID,pin,RAW,KEY,"invite",MLRT.INVITE_ITER);
+  ACCES.comptes=ACCES.comptes.filter(x=>x.role!=="invite").concat(c); NAMES[c.h]=MLRT.INVITE_ID; stageAcces(); await renderMembers(); pinState();
+  setSt(st,"ok","Code "+pin+" enregistré — notez-le ! Il sera actif une fois acces.json envoyé sur GitHub (encadré jaune).");
+};
+$("#pinDel").onclick=async()=>{ if(!ACCES.comptes.some(x=>x.role==="invite")){ setSt($("#pinSt"),"","Aucun code actif."); return; }
+  ACCES.comptes=ACCES.comptes.filter(x=>x.role!=="invite"); stageAcces(); await renderMembers(); pinState(); setSt($("#pinSt"),"ok","Code invité désactivé (après envoi de acces.json sur GitHub)."); };
 
 $("#bset").onclick=async()=>{
   const st=$("#bst"); const code=$("#bcode").value.trim(); if(code.length<12){ setSt(st,"ko","12 caractères minimum."); return; }

@@ -91,6 +91,16 @@
    "cle": "O0uarR+383jr39biu5CeeKThxY5NYCJFIaXSnT70kF6uhUE/dkcGtZAJMk767wxx",
    "cree": "2026-11-27",
    "np": "PN8Bx8b77PkNSiDQ1AXGj2SWPHq03Z5R+QPAORoGbJ+hKZFVpw=="
+  },
+  {
+   "h": "TQ6ge5NUX01y7QWZ2ME4ywoIPtS4ojAvUat4WYvDEZ0=",
+   "role": "invite",
+   "nom": "wPnvFZpvcIhcUN8YWePMWlk0bAeZTw7YViNgx8GGUistL9YAq4ryErpmYA==",
+   "salt": "VkxlbXsKT5Nk7RU4kh2Xfw==",
+   "iv": "1uTryGAszhHqro1A",
+   "cle": "sBpGBHPWLrZnHZnCWT15a9Ie6e9kznBnHMX6bfTCrXkjP8cbH1LtL3r3QzfLbOmK",
+   "cree": "2026-11-27",
+   "iter": 1000000
   }
  ]
 }

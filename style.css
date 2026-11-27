@@ -363,3 +363,8 @@
 .app-btn .short{display:none}
 @media(max-width:600px){.top-links{gap:10px}.top-links .fb-top{display:none}.app-btn{padding:6px 12px;font-size:13px}.app-btn .long{display:none}.app-btn .short{display:inline}.logo{white-space:nowrap;font-size:20px}}
 html.is-app header.nav{padding-top:env(safe-area-inset-top)}
+
+.pin-form{margin-top:14px}
+.pin-sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:6px 0 12px}
+.pin-sep::before,.pin-sep::after{content:"";flex:1;height:1px;background:var(--line)}
+.pin-form label{text-transform:none;letter-spacing:0;font-size:15px;color:#ddd}

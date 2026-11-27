@@ -45,7 +45,7 @@ const MLRT = (() => {
     const c = acces.comptes.find(x => x.h === h);
     if (!c) return null;
     try {
-      const k = await derive(code, unb64(c.salt), acces.iter);
+      const k = await derive(code, unb64(c.salt), c.iter || acces.iter);
       const raw = new Uint8Array(await subtle.decrypt({ name: "AES-GCM", iv: unb64(c.iv) }, k, unb64(c.cle)));
       return { raw, key: await importMaster(raw), role: c.role || "membre", compte: c };
     } catch (e) { return null; }
@@ -57,7 +57,7 @@ const MLRT = (() => {
     const k = await derive(code, salt, iter || ITER);
     const cle = await subtle.encrypt({ name: "AES-GCM", iv }, k, raw);
     return { h: await idHash(id), role: role || "membre", nom: await encText(masterKey, String(id).trim()),
-             salt: b64(salt), iv: b64(iv), cle: b64(cle), cree: new Date().toISOString().slice(0, 10) };
+             salt: b64(salt), iv: b64(iv), cle: b64(cle), cree: new Date().toISOString().slice(0, 10), ...(iter && iter !== ITER ? { iter } : {}) };
   }
 
   function genCode() {
@@ -65,8 +65,11 @@ const MLRT = (() => {
     for (let i = 0; i < 12; i++) { s += A[r[i] % A.length]; if (i === 3 || i === 7) s += "-"; }
     return s;
   }
+  /* Accès invité : un seul code à chiffres, sans identifiant (dérivation renforcée car un code chiffré est plus court) */
+  const INVITE_ID = "__code_invite__", INVITE_ITER = 1000000;
+  function genPin(n) { const r = rand(n || 8); let s = ""; for (let i = 0; i < (n || 8); i++) s += String(r[i] % 10); if (s[0] === "0") s = "7" + s.slice(1); return s; }
   const randName = () => "f-" + Array.from(rand(8), b => b.toString(16).padStart(2, "0")).join("") + ".bin";
 
-  return { ITER, b64, unb64, rand, idHash, derive, importMaster, encBytes, decBytes, encText, decText, login, makeCompte, genCode, randName };
+  return { ITER, INVITE_ID, INVITE_ITER, genPin, b64, unb64, rand, idHash, derive, importMaster, encBytes, decBytes, encText, decText, login, makeCompte, genCode, randName };
 })();
 if (typeof module !== "undefined") module.exports = MLRT;

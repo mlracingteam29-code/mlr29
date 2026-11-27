@@ -196,7 +196,7 @@
     <div class="card mlogin" id="rlLock">
       <div class="lock">🔒</div>
       <h3>Accès réservé aux membres</h3>
-      <p>Les dates de roulages de la team sont réservées aux membres de l'association. Connectez-vous avec l'<strong>identifiant</strong> et le <strong>code</strong> reçus après la validation de votre inscription pour les consulter et indiquer celles qui vous intéressent.</p>
+      <p>Les dates de roulages de la team sont réservées aux membres de l'association. Connectez-vous avec l'<strong>identifiant</strong> et le <strong>code</strong> reçus après la validation de votre inscription pour les consulter et indiquer celles qui vous intéressent, ou avec le <strong>code d'accès à chiffres</strong> qui vous a été donné.</p>
       <div class="cta"><button class="btn red" type="button" id="rlLogin">Se connecter</button>
         <button class="btn ghost" type="button" data-go="inscriptions">Adhérer à l'association</button></div>
     </div>
@@ -270,6 +270,15 @@
           <button class="btn red" type="submit" id="mBtn">Se connecter</button>
           <span class="cstatus" id="mStatus" role="status"></span>
         </div>
+      </form>
+      <form id="pinForm" class="pin-form" novalidate>
+        <div class="pin-sep"><span>ou</span></div>
+        <label for="pinCode">Vous avez un <strong>code d'accès</strong> (chiffres) ?</label>
+        <div class="cta" style="align-items:center;margin-top:6px">
+          <input id="pinCode" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Code à chiffres" maxlength="12" style="max-width:220px;letter-spacing:.2em;font-size:18px">
+          <button class="btn ghost" type="submit" id="pinBtn">Entrer</button>
+        </div>
+        <span class="cstatus" id="pinSt" role="status"></span>
       </form>
       <p class="hint" style="margin-top:14px">Pas encore membre ? <a href="#adhesion" data-go="inscriptions">Adhérer à l'association</a> · Identifiant ou code perdu ? <a href="#contact" data-go="contact">Contactez le bureau</a></p>
     </div>
@@ -641,7 +650,7 @@ const DEPOT="mlracingteam29-code/mlr29";
       const b=document.createElement("b"); b.textContent="Inscrits ("+n+") : "; p.append(b, n?MLRR.inscrits(r).join(", "):"personne pour l'instant");
       info.appendChild(p);
     }
-    if(!valid && ROLE!=="bureau"){
+    if(!valid && ROLE!=="bureau" && ROLE!=="invite"){
       const lab=document.createElement("label"); lab.className="rl-check";
       const cb=document.createElement("input"); cb.type="checkbox"; cb.disabled=past;
       const t=document.createElement("span"); t.textContent="Je suis intéressé(e)";
@@ -661,7 +670,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   let NOMID={};
   async function loadMembres(){
     try{ const out=[];
-      for(const c of ACC.comptes){ if(c.role==="partenaire"||!c.nom) continue; try{ const id=await MLRT.decText(KEY,c.nom); NOMID[c.h]=id; out.push(id); }catch(_){} }
+      for(const c of ACC.comptes){ if(c.role==="partenaire"||c.role==="invite"||!c.nom) continue; try{ const id=await MLRT.decText(KEY,c.nom); NOMID[c.h]=id; out.push(id); }catch(_){} }
       MEMBRES=out.sort((x,y)=>MLRR.label(x).localeCompare(MLRR.label(y),"fr")); }catch(_){ MEMBRES=[]; }
   }
   let SAVING=Promise.resolve();
@@ -698,7 +707,7 @@ const DEPOT="mlracingteam29-code/mlr29";
       const b=document.createElement("button"); b.type="button"; b.className="btn red"; b.textContent="📤 Publier sur le site"; b.onclick=publierManuel; box.appendChild(b);
       return;
     }
-    const sansNom=(ACC&&ACC.comptes||[]).filter(c=>c.role!=="partenaire"&&c.role!=="bureau"&&c.nom&&!c.np);
+    const sansNom=(ACC&&ACC.comptes||[]).filter(c=>c.role!=="partenaire"&&c.role!=="bureau"&&c.role!=="invite"&&c.nom&&!c.np);
     const needKey=forceKey||!ghTok();
     if(!needKey&&!sansNom.length){ box.hidden=true; return; }
     box.hidden=false;
@@ -829,7 +838,7 @@ const DEPOT="mlracingteam29-code/mlr29";
   function majSave(){
     const b=$("#rlSave"); if(!b) return;
     const diff=PEND.size!==MINE.size||[...PEND].some(x=>!MINE.has(x));
-    b.hidden=!diff||ROLE==="bureau";
+    b.hidden=!diff||ROLE==="bureau"||ROLE==="invite";
   }
   async function saveInterest(){
     const st=$("#rlSt"), b=$("#rlSave"); st.className="cstatus"; st.textContent="Enregistrement…"; b.disabled=true;
@@ -871,7 +880,7 @@ const DEPOT="mlracingteam29-code/mlr29";
     try{ ACC=await (await fetch("membres/acces.json",{cache:"no-cache"})).json(); await MLRR.loadNoms(KEY,ACC); }catch(_){ ACC={comptes:[]}; }
     if(ROLE==="bureau") await loadMembres();
     try{ INDEX=await loadIndex(); }catch(e){ INDEX=[]; }
-    $("#mWho").textContent=who; $("#mAdmin").hidden=role!=="bureau";
+    $("#mWho").textContent=ROLE==="invite"?"Invité (accès par code)":who; $("#mAdmin").hidden=role!=="bureau";
     $("#mLogin").hidden=true; $("#mSpace").hidden=false; render();
     if(typeof MLRR!=="undefined") loadRoulages().catch(()=>{ try{ RL=RL||MLRR.empty(); renderRoulages(); }catch(_){ $("#rlLock").hidden=true; $("#mRl").hidden=false; $("#rlEmpty").hidden=false; $("#rlEmpty").textContent="Les roulages n'ont pas pu se charger : rechargez la page (Ctrl+F5 ou tirez vers le bas sur téléphone)."; } });
     if(BACK_RL){ BACK_RL=false; showTab("roulages",true); }
@@ -897,6 +906,19 @@ const DEPOT="mlracingteam29-code/mlr29";
       }
     }catch(err){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
     btn.disabled=false; btn.textContent="Se connecter";
+  });
+  $("#pinForm").addEventListener("submit",async e=>{
+    e.preventDefault(); const st=$("#pinSt"), btn=$("#pinBtn"); st.className="cstatus"; st.textContent="";
+    const code=$("#pinCode").value.replace(/\s+/g,"");
+    if(!/^\d{4,12}$/.test(code)){ st.classList.add("ko"); st.textContent="Saisissez le code à chiffres qui vous a été donné."; return; }
+    btn.disabled=true; btn.textContent="Vérification…";
+    try{ const acces=await (await fetch("membres/acces.json",{cache:"no-cache"})).json();
+      const s=await MLRT.login(acces,MLRT.INVITE_ID,code);
+      if(!s){ st.classList.add("ko"); st.textContent="Code incorrect."; }
+      else{ try{ sessionStorage.setItem("mlrt_membre",JSON.stringify({k:MLRT.b64(s.raw),who:"Invité",role:"invite"})); }catch(_){}
+        $("#pinCode").value=""; await enter(s.raw,"Invité","invite"); }
+    }catch(_){ st.classList.add("ko"); st.textContent="Connexion impossible pour le moment, réessayez."; }
+    btn.disabled=false; btn.textContent="Entrer";
   });
   $("#mOut").onclick=()=>{ try{ sessionStorage.removeItem("mlrt_membre"); }catch(_){}; KEY=null; INDEX=[]; $("#files").innerHTML=""; $("#rlValid").innerHTML=""; $("#rlAtt").innerHTML=""; $("#rlProp").innerHTML=""; $("#rlSt").textContent=""; $("#mRl").hidden=true; $("#rlLock").hidden=false; WHO=""; ROLE=""; MEMBRES=[]; RL=null; STORE=null; $("#mSpace").hidden=true; $("#mLogin").hidden=false; };
   try{ const s=JSON.parse(sessionStorage.getItem("mlrt_membre")||"null"); if(s&&s.k) enter(MLRT.unb64(s.k),s.who,s.role); }catch(_){}
