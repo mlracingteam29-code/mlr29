@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ML Racing Team — Association moto</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0b0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ML Racing">
+<link rel="apple-touch-icon" href="images/app/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="images/app/favicon-48.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Saira:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,7 +23,7 @@
   <div class="topbar">
     <div class="wrap">
       <div class="logo" data-go="presentation"><span class="badge"><span>ML</span></span> Racing Team</div>
-      <div class="top-links"><a class="fb-top" href="#infos" data-go="infos">L'association</a>
+      <div class="top-links"><button class="app-btn" type="button" id="appBtn" hidden>📲 <span class="long">Installer l'appli</span><span class="short">Appli</span></button><a class="fb-top" href="#infos" data-go="infos">L'association</a>
       <a class="fb-top" href="https://www.facebook.com/profile.php?id=100063546707767" target="_blank" rel="noopener">Facebook ↗</a></div>
     </div>
   </div>
@@ -385,6 +393,32 @@
   </div>
 </section>
 </main>
+
+<!-- Installation de l'application -->
+<div class="app-bar" id="appBar" hidden>
+  <img src="images/app/icon-192.png" alt="" width="44" height="44">
+  <div><b>ML Racing Team</b><small>Installez l'application sur votre téléphone</small></div>
+  <button class="btn red small" type="button" id="appBarGo">Installer</button>
+  <button class="app-x" type="button" id="appBarX" aria-label="Fermer">✕</button>
+</div>
+<div class="app-modal" id="appModal" hidden>
+  <div class="app-box" role="dialog" aria-modal="true" aria-labelledby="appTitle">
+    <button class="app-x" type="button" id="appModalX" aria-label="Fermer">✕</button>
+    <img src="images/app/icon-192.png" alt="" width="72" height="72">
+    <h3 id="appTitle">Installer l'application</h3>
+    <div id="appIos" hidden>
+      <p>Sur <strong>iPhone / iPad</strong>, dans <strong>Safari</strong> :</p>
+      <ol><li>Touchez le bouton <strong>Partager</strong> <span class="ios-share">⬆︎</span> en bas de l'écran</li>
+      <li>Choisissez <strong>« Sur l'écran d'accueil »</strong></li><li>Touchez <strong>Ajouter</strong></li></ol>
+      <p class="hint">Si vous êtes dans Chrome ou Facebook sur iPhone, ouvrez d'abord le site dans Safari.</p>
+    </div>
+    <div id="appOther" hidden>
+      <p>Sur <strong>Android</strong>, dans <strong>Chrome</strong> : menu <strong>⋮</strong> en haut à droite → <strong>« Installer l'application »</strong> (ou « Ajouter à l'écran d'accueil »).</p>
+      <p>Sur <strong>ordinateur</strong> (Chrome ou Edge) : cliquez sur l'icône d'installation à droite de la barre d'adresse.</p>
+    </div>
+    <p class="hint">L'icône ML Racing Team apparaît alors avec vos autres applis. Elle se met à jour toute seule.</p>
+  </div>
+</div>
 
 <div class="checker"></div>
 <footer>
@@ -978,6 +1012,29 @@ function fmtMonth(m){ if(!m) return ""; const [y,mo]=String(m).split("-"); retur
 
 
 
+
+/* ---- Application installable ---- */
+(function(){
+  if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+  const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+  const ua=navigator.userAgent, ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1), mobile=ios||/android/i.test(ua);
+  let deferred=null;
+  const btn=$("#appBtn"), bar=$("#appBar");
+  const dismissed=()=>{ try{ return localStorage.getItem("mlrt_app_bar")==="non"; }catch(_){ return false; } };
+  function showHelp(){ $("#appIos").hidden=!ios; $("#appOther").hidden=ios; $("#appModal").hidden=false; }
+  async function install(){
+    if(deferred){ deferred.prompt(); try{ await deferred.userChoice; }catch(_){} deferred=null; bar.hidden=true; return; }
+    showHelp();
+  }
+  if(standalone){ document.documentElement.classList.add("is-app"); return; }
+  btn.hidden=false; btn.onclick=install; $("#appBarGo").onclick=install;
+  if(mobile && !dismissed()) setTimeout(()=>{ bar.hidden=false; },1500);
+  $("#appBarX").onclick=()=>{ bar.hidden=true; try{ localStorage.setItem("mlrt_app_bar","non"); }catch(_){} };
+  $("#appModalX").onclick=()=>{ $("#appModal").hidden=true; };
+  $("#appModal").addEventListener("click",e=>{ if(e.target.id==="appModal") $("#appModal").hidden=true; });
+  window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferred=e; });
+  window.addEventListener("appinstalled",()=>{ bar.hidden=true; btn.hidden=true; });
+})();
 </script>
 </body>
 </html>

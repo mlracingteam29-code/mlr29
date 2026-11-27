@@ -1,0 +1,22 @@
+{
+  "name": "ML Racing Team",
+  "short_name": "ML Racing",
+  "description": "L'association moto ML Racing Team : roulages, gazettes, fichiers membres, multimédia et contact.",
+  "lang": "fr",
+  "start_url": "./index.html?app=1",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0b0d",
+  "theme_color": "#0b0b0d",
+  "icons": [
+    { "src": "images/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "images/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "images/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Dates de roulages", "url": "./index.html#roulages", "icons": [{ "src": "images/app/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Fichiers membres", "url": "./index.html#fichiers", "icons": [{ "src": "images/app/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Nous contacter", "url": "./index.html#contact", "icons": [{ "src": "images/app/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
